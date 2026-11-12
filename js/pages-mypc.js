@@ -37,10 +37,10 @@
     return t.sort((a, b) => b.length - a.length)[0] || '';
   }
   function pseudoCpu(c) {
-    const plat = { AM4: 'AM4 / DDR4', AM5: 'AM5 / DDR5', LGA1700: 'LGA1700 / DDR4または5', LGA1851: 'LGA1851 / DDR5' }[c.sock] || c.sock;
+    const plat = { AM4: 'AM4 / DDR4', AM5: 'AM5 / DDR5', LGA1700: 'LGA1700 / DDR4または5', LGA1851: 'LGA1851 / DDR5', LGA1200: 'LGA1200 / DDR4' }[c.sock] || c.sock;
     return { id: 'n:' + c.id, sock: c.sock, name: c.name, gs: c.gs, mt: c.mt, pw: c.pw, plat: plat, path: c.sock === 'AM5' ? 'cpu' : c.sock === 'AM4' ? 'am4' : 'board' };
   }
-  const CPUS = D.cpu.map(pseudoCpu).concat(D.oldCpu.map(o => Object.assign({}, o, { id: 'o:' + o.id })));
+  const CPUS = D.cpu.filter(c => !c.legacy).map(pseudoCpu).concat(D.oldCpu.map(o => Object.assign({}, o, { id: 'o:' + o.id })));
   const IGPU = { id: 'igpu', name: '内蔵グラフィックス（グラボなし）', score: 3, tgp: 0, vram: 0 };
   const GPUS = D.gpu.filter(g => g.id !== 'none').map(g => ({ id: 'n:' + g.id, name: g.name, score: g.score, tgp: g.tgp, vram: g.vram }))
     .concat(D.oldGpu.map(o => Object.assign({}, o, { id: 'o:' + o.id })), [IGPU]);

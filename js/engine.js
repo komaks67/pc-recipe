@@ -80,10 +80,16 @@ window.PCR_ENGINE = (function () {
     if (B.mb.chip === 'A620' && B.cpu.pw >= 165) add('warn', 'A620と大型CPU', 'A620は電源回路が簡素なボードが多く、消費電力の大きいCPU（' + B.cpu.name + '）との組み合わせはおすすめできません。B650以上にしましょう。');
     if (B.cpu.bios && B.cpu.sock === B.mb.sock) add('warn', 'BIOS更新の可能性', B.cpu.name + ' は比較的新しい（または追加された）CPUです。マザーボードの在庫によっては、BIOS更新が必要な場合があります。製品ページの「対応CPU」と「必要なBIOS」を確認しましょう。');
     if (B.mb.chip === 'H610' && (B.cpu.fam === '13' || B.cpu.fam === '14') && B.cpu.sock === B.mb.sock) add('warn', 'BIOS更新の可能性', 'H610は発売が古いので、第13・14世代CPUには、BIOS更新が必要な場合があります。購入前に対応CPUとBIOSの版を確認しましょう。');
+    if ((B.cpu.fam === '1000' || B.cpu.fam === '2000') && B.mb.sock === 'AM4' && (B.mb.chip === 'A520' || B.mb.chip === 'B550' || B.mb.chip === 'X570')) add('ng', 'CPUとチップセットの組み合わせ', B.cpu.name + ' は古い世代のため、' + B.mb.chip + 'のボードでは動作しないものがほとんどです。B450など400番台のボードを選んでください。');
+    if (B.cpu.fam === '5000' && B.mb.chip === 'B450') add('warn', 'BIOS更新の可能性', 'B450は発売が古いので、Ryzen 5000を使うにはBIOS更新が必要です。更新にはCPUが1つ必要になる場合があるので、販売店の「対応済み」表記を確認してください。');
+    if (B.cpu.sock === 'LGA1200' && B.mb.sock === 'LGA1200' && B.cpu.fam === '11' && B.mb.m2g < 4) add('warn', 'PCIe 4.0 は使えません', B.mb.chip + 'のボードでは、第11世代CPUでもPCIe 4.0（Gen4）の速度は出ません。');
+    if (B.cpu.win11 === false && B.os.id === 'win11') add('warn', 'Windows 11 は公式非対応', B.cpu.name + ' はMicrosoftのWindows 11の対応CPUに入っていません。通常のやり方ではインストールできないので、OSなし（Windows 10など手持ち）の構成も検討してください。');
+    if (B.cpu.legacy) add('warn', '旧世代のCPUです', B.cpu.name + ' は新品の流通が少なく、中古品が中心です。価格は目安で、保証や状態は購入先ごとに確認が必要です。');
     if (B.cpu.unstable) add('warn', '第13・14世代の不安定問題', B.cpu.name + ' を含む第13・14世代の一部CPUは、過去に動作が不安定になる問題があり、Intelが対策のBIOS更新を案内しています。最新のBIOSにして使いましょう。');
     if (B.mb.chip === 'A520' && B.cpu.tdp >= 105) add('warn', 'A520と高出力CPU', 'A520は電源回路が簡素なボードが多く、消費電力の大きいCPU（' + B.cpu.name + '）との組み合わせはおすすめできません。B550以上にしましょう。');
     if (B.gpu.id === 'none' && B.cpu.igpu === false) add('ng', '映像の出力', B.cpu.name + ' は内蔵グラフィックスがありません。グラフィックボードを付けないと、画面に映りません。');
     if (B.cpu.oc && B.mb.sock === 'LGA1700' && B.mb.chip !== 'Z790') add('ok', 'KシリーズCPUとチップセット', 'このCPUはオーバークロック対応ですが、' + B.mb.chip + 'では設定できません。普通に使う分には問題ありません。');
+    if (B.cpu.oc && (B.mb.sock === 'LGA1200' || B.mb.sock === 'LGA1151' || B.mb.sock === 'LGA1151-v1') && B.cpu.sock === B.mb.sock && !B.mb.oc) add('ok', 'KシリーズCPUとチップセット', 'このCPUはオーバークロック対応ですが、' + B.mb.chip + 'では設定できません。普通に使う分には問題ありません。');
     if (B.cpu.oc && B.mb.sock === 'LGA1851' && B.mb.chip !== 'Z890') add('ok', 'KシリーズCPUとチップセット', 'このCPUはオーバークロック対応ですが、' + B.mb.chip + 'では設定できません。普通に使う分には問題ありません。');
     if (B.mb.memOc === false) add('warn', 'メモリの高速化', B.mb.chip + 'はメモリのオーバークロックに対応していません。高速メモリを買っても、速度が下がって動くことがあります。');
 
@@ -228,7 +234,7 @@ window.PCR_ENGINE = (function () {
     const t = { DDR5: { 16: 'd5-16', 32: 'd5-32', 48: 'd5-48', 64: 'd5-64' }, DDR4: { 16: 'd4-16', 32: 'd4-32', 48: 'd4-32', 64: 'd4-64' } }[type];
     return t[cap] || t[32];
   };
-  E.platformTypes = function (sock) { return sock === 'AM4' ? ['DDR4'] : sock === 'LGA1700' ? ['DDR5', 'DDR4'] : ['DDR5']; };
+  E.platformTypes = function (sock) { return (sock === 'AM4' || sock === 'LGA1200' || sock === 'LGA1151' || sock === 'LGA1151-v1') ? ['DDR4'] : sock === 'LGA1700' ? ['DDR5', 'DDR4'] : ['DDR5']; };
   E.defaultMb = function (sock, forms, opt) {
     opt = opt || {};
     const form = (forms.indexOf('ATX') >= 0 && !opt.small && !(opt.cheap && forms.indexOf('mATX') >= 0)) ? 'ATX' : forms.indexOf('mATX') >= 0 ? 'mATX' : 'ITX';
@@ -238,7 +244,10 @@ window.PCR_ENGINE = (function () {
     const map = {
       AM5: { ATX: 'am5-b850-a', mATX: opt.cheap ? 'am5-b650-m' : 'am5-b850-m', ITX: 'am5-b850-i' },
       LGA1851: { ATX: opt.oc ? 'in-z890-a' : 'in-b860-a', mATX: 'in-b860-m', ITX: 'in-b860-i' },
-      AM4: { ATX: 'am4-b550-a', mATX: (opt.cheap && !strong) ? 'am4-a520-m' : 'am4-b550-m', ITX: 'am4-b550-i' },
+      LGA1200: { ATX: opt.oc ? 'in-z590-a' : 'in-b560-a', mATX: opt.cheap ? 'in-h510-m' : 'in-b560-m', ITX: 'in-b560-i' },
+      LGA1151: { ATX: opt.oc ? 'in-z390-a' : 'in-z390-a', mATX: 'in-b365-m', ITX: 'in-b365-i' },
+      'LGA1151-v1': { ATX: 'in-z270-a', mATX: 'in-b250-m', ITX: 'in-b250-i' },
+      AM4: { ATX: (cpu.fam === '1000' || cpu.fam === '2000') ? 'am4-b450-a' : 'am4-b550-a', mATX: (cpu.fam === '1000' || cpu.fam === '2000') ? 'am4-b450-m' : (opt.cheap && !strong) ? 'am4-a520-m' : 'am4-b550-m', ITX: (cpu.fam === '1000' || cpu.fam === '2000') ? 'am4-b450-i' : 'am4-b550-i' },
       LGA1700: type === 'DDR4'
         ? { ATX: opt.oc ? 'in-z790-a-d4' : 'in-b760-a-d4', mATX: (opt.cheap && !strong) ? 'in-h610-m-d4' : 'in-b760-m-d4', ITX: 'in-b760-i-d4' }
         : { ATX: opt.oc ? 'in-z790-a-d5' : 'in-b760-a-d5', mATX: 'in-b760-m-d5', ITX: 'in-b760-i-d5' }
@@ -297,7 +306,7 @@ window.PCR_ENGINE = (function () {
   E.autoBuild = function (o) {
     const officeOnly = !o.game && (!o.edit || o.edit === 'none') && !o.stream;
     const gpus = prune(officeOnly ? D.gpu.filter(g => g.id === 'none') : D.gpu.filter(g => g.id !== 'none'), gpuBetter);
-    const cpus = prune(D.cpu, cpuBetter);
+    const cpus = prune(D.cpu.filter(c => !c.legacy), cpuBetter);
     let caps = [32];
     if (officeOnly) caps = [o.budget >= 150000 ? 32 : 16];
     else if (o.edit === '4k' && o.budget >= 280000) caps = [64];
@@ -353,7 +362,7 @@ window.PCR_ENGINE = (function () {
     res.gpuOptions.sort((a, b) => a.cost - b.cost);
 
     // CPU交換案
-    D.cpu.filter(c => c.gs >= oc.gs * 1.15).forEach(c => {
+    D.cpu.filter(c => !c.legacy && c.gs >= oc.gs * 1.15).forEach(c => {
       const r = run(c.gs, og.score, inp.memGB);
       let cost = c.price, note = '';
       if (oc.sock === c.sock) note = 'CPUだけの交換でOK（BIOS更新が必要な場合あり）';

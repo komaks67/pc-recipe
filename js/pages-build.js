@@ -10,7 +10,7 @@
 
   function specLine(k, p) {
     switch (k) {
-      case 'cpu': return esc(p.b) + ' / ' + esc(p.core) + ' / 最大消費電力 約' + p.pw + 'W / ソケット ' + p.sock + (p.plus ? ' / 2026年3月発売の新型' : '') + (['7000', '5000', '12', '13', '14'].indexOf(p.fam) >= 0 ? ' / 前の世代' : '') + (p.igpu === false ? ' / 内蔵グラフィックスなし' : '') + ' / ゲーム性能の目安 ' + p.gs;
+      case 'cpu': return esc(p.b) + ' / ' + esc(p.core) + ' / 最大消費電力 約' + p.pw + 'W / ソケット ' + p.sock + (p.plus ? ' / 2026年3月発売の新型' : '') + (p.legacy ? ' / 旧世代・中古中心' : '') + (['7000', '5000', '12', '13', '14'].indexOf(p.fam) >= 0 ? ' / 前の世代' : '') + (p.igpu === false ? ' / 内蔵グラフィックスなし' : '') + ' / ゲーム性能の目安 ' + p.gs;
       case 'gpu': return p.id === 'none' ? 'CPU内蔵グラフィックスで表示します（事務・学習向け）' : 'VRAM ' + p.vram + 'GB / 消費電力 ' + p.tgp + 'W / 長さ 約' + p.len + 'mm / 電源端子 ' + p.conn + ' / 推奨電源 ' + p.rec + 'W' + (p.older ? ' / 前の世代（在庫により販売終了の場合あり）' : '');
       case 'mb': return p.chip + ' / ' + p.form + ' / ' + p.sock + ' / ' + p.mem + ' / M.2は Gen' + p.m2g + 'まで / Wi-Fi: ' + WIFI[p.wifi];
       case 'mem': return p.type + ' / 合計 ' + p.cap + 'GB（2枚組）';
