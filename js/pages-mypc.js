@@ -57,21 +57,23 @@
   function matchGpu(text) {
     const parts = String(text || '').split(/\s;\s/).map(x => x.trim()).filter(Boolean);
     let integrated = false;
+    const missed = [];   // 名前はあるのに、サイトのデータに見つからなかった専用GPU
     for (const p of parts) {
       const k = gpuKey(p);
-      if (!k) { integrated = true; continue; }
+      if (!k || /uhd|iris|vega|radeon\(tm\)\s*graphics|radeon graphics/i.test(p)) { integrated = true; continue; }
       const hit = GPUS.find(g => g.id !== 'igpu' && gpuKey(g.name) === k);
       if (hit) return { id: hit.id, from: p, laptop: /laptop/i.test(p) };
-      if (/uhd|iris|vega|radeon\(tm\)\s*graphics|radeon graphics/i.test(p)) integrated = true;
+      missed.push(p);
     }
+    if (missed.length) return { miss: missed.join(' ; '), laptop: /laptop/i.test(missed.join(' ')) };   // 内蔵グラフィックスに置きかえない
     return integrated ? { id: 'igpu', from: parts.join(' / ') } : null;
   }
   function matchCpu(text) {
     const toks = String(text || '').split(/\s+/).map(norm).filter(Boolean);
     const exact = CPUS.filter(c => { const t = cpuTok(c.name); return t && toks.indexOf(t) >= 0; }).sort((a, b) => cpuTok(b.name).length - cpuTok(a.name).length)[0];
     if (exact) return { id: exact.id, from: text };
-    const strip = t => t.replace(/[a-z0-9]*?(\d{3,}[a-z0-9]*)$/, '$1').replace(/[a-z]+$/, '');
-    const near = CPUS.find(c => { const t = cpuTok(c.name); const b = t.replace(/[a-z]+\d*$/, ''); return b.length >= 4 && toks.some(x => x.replace(/[a-z]+\d*$/, '') === b && x.replace(/[a-z]+\d*$/, '').length >= 4); });
+    const base = t => t.replace(/[a-z]+$/, '');
+    const near = CPUS.find(c => { const b = base(cpuTok(c.name)); return b.length >= 4 && /\d/.test(b) && toks.some(x => base(x) === b); });
     return near ? { id: near.id, from: text, near: true } : null;
   }
 
@@ -152,7 +154,8 @@
     $('#m-probe', el).onclick = () => {
       const r = browserProbe(), msg = [];
       const g = matchGpu(r.gpuText);
-      if (g) { ST.gpu = g.id; msg.push(['ok', 'グラフィックボード: <b>' + esc(gpuById(g.id).name) + '</b> と読み取りました' + (g.laptop ? '（ノートPC用のGPUです。性能は少し低めです）' : '')]); }
+      if (g && g.id) { ST.gpu = g.id; msg.push(['ok', 'グラフィックボード: <b>' + esc(gpuById(g.id).name) + '</b> と読み取りました' + (g.laptop ? '（ノートPC用のGPUです。性能は少し低めです）' : '')]); }
+      else if (g && g.miss) msg.push(['warn', 'グラフィックボード「' + esc(g.miss) + '」は、サイトのデータに見つかりませんでした。下で近いものを選んでください。' + (g.laptop ? '（ノートPC用のGPUは、交換できません）' : '')]);
       else msg.push(['warn', 'グラフィックボードの名前を読み取れませんでした' + (r.gpuText ? '（' + esc(r.gpuText) + '）' : '') + '。下で選んでください。']);
       msg.push(['warn', 'CPUは、スレッド数が <b>' + r.threads + '</b> と分かりました。名前は分からないので、下で選んでください。']);
       msg.push(['warn', 'メモリの量・規格、電源は、ブラウザからは分かりません。下で選んでください（正確に読み取るなら、確認用スクリプトが使えます）。']);
@@ -169,7 +172,8 @@
       if (c) { ST.cpu = c.id; msg.push([c.near ? 'warn' : 'ok', 'CPU: <b>' + esc(cpuById(c.id).name) + '</b>' + (c.near ? '（近い型番を選びました。違っていたら下で直してください）' : '') + '　<span class="muted">読み取り: ' + esc(o.CPU) + '</span>']); }
       else msg.push(['warn', 'CPU「' + esc(o.CPU || '') + '」は、サイトのデータに見つかりませんでした。近いものを下で選んでください。']);
       const g = matchGpu(o.GPU || '');
-      if (g) { ST.gpu = g.id; msg.push(['ok', 'グラフィックボード: <b>' + esc(gpuById(g.id).name) + '</b>　<span class="muted">読み取り: ' + esc(o.GPU) + '</span>']); }
+      if (g && g.id) { ST.gpu = g.id; msg.push(['ok', 'グラフィックボード: <b>' + esc(gpuById(g.id).name) + '</b>　<span class="muted">読み取り: ' + esc(o.GPU) + '</span>']); }
+      else if (g && g.miss) msg.push(['warn', 'グラフィックボード「' + esc(g.miss) + '」は、サイトのデータに見つかりませんでした。下で近いものを選んでください。' + (g.laptop ? '（ノートPC用のGPUは、交換できません）' : '')]);
       else msg.push(['warn', 'グラフィックボード「' + esc(o.GPU || '') + '」は、サイトのデータに見つかりませんでした。近いものを下で選んでください。']);
       const gb = +o.MEM; if (gb) { ST.memGB = [8, 16, 32, 64].reduce((a, b) => Math.abs(b - gb) < Math.abs(a - gb) ? b : a); msg.push(['ok', 'メモリ: <b>' + gb + 'GB</b>' + (o.MEMTYPE && o.MEMTYPE !== 'unknown' ? '（' + esc(o.MEMTYPE) + '）' : '')]); }
       if (o.MEMTYPE === 'DDR4' || o.MEMTYPE === 'DDR5') ST.memType = o.MEMTYPE;
