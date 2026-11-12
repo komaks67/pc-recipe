@@ -286,8 +286,21 @@ window.PCR_DATA = (function () {
     { id: 'g-4070s',  name: 'GeForce RTX 4070 SUPER',  score: 47, tgp: 220, vram: 12 },
     { id: 'g-rx7800xt',name:'Radeon RX 7800 XT',       score: 45, tgp: 263, vram: 16 },
     { id: 'g-4080s',  name: 'GeForce RTX 4080 SUPER',  score: 62, tgp: 320, vram: 16 },
-    { id: 'g-4090',   name: 'GeForce RTX 4090',        score: 80, tgp: 450, vram: 24 }
+    { id: 'g-4090',   name: 'GeForce RTX 4090',        score: 80, tgp: 450, vram: 24 },
+    /* 以下は「今のPCから診断」用に追加した旧世代（性能の値は相対的な見積もり） */
+    { id: 'g-1650',   name: 'GeForce GTX 1650',        score: 6,  tgp: 75,  vram: 4 },
+    { id: 'g-rx580',  name: 'Radeon RX 580',           score: 7,  tgp: 185, vram: 8 },
+    { id: 'g-1660',   name: 'GeForce GTX 1660',        score: 10, tgp: 120, vram: 6 },
+    { id: 'g-2060',   name: 'GeForce RTX 2060',        score: 14, tgp: 160, vram: 6 },
+    { id: 'g-rx5700xt', name: 'Radeon RX 5700 XT',     score: 16, tgp: 225, vram: 8 },
+    { id: 'g-2070s',  name: 'GeForce RTX 2070 SUPER',  score: 19, tgp: 215, vram: 8 },
+    { id: 'g-3060ti', name: 'GeForce RTX 3060 Ti',     score: 25, tgp: 200, vram: 8 },
+    { id: 'g-rx6700xt', name: 'Radeon RX 6700 XT',     score: 24, tgp: 230, vram: 12 },
+    { id: 'g-3070ti', name: 'GeForce RTX 3070 Ti',     score: 30, tgp: 290, vram: 8 },
+    { id: 'g-3080',   name: 'GeForce RTX 3080',        score: 40, tgp: 320, vram: 10 },
+    { id: 'g-rx6800xt', name: 'Radeon RX 6800 XT',     score: 40, tgp: 300, vram: 16 }
   ];
+  D.oldGpu.sort(function (a, b) { return a.score - b.score; });
 
   /* ---------- 用語集（ホバーで出る説明） ---------- */
   D.glossary = [

@@ -328,7 +328,7 @@ window.PCR_ENGINE = (function () {
 
   /* ---------- 今のPCからのアップグレード診断 ---------- */
   E.upgradeDiag = function (inp) {
-    const oc = D.by.oldCpu[inp.cpu], og = D.by.oldGpu[inp.gpu];
+    const oc = inp.cpuObj || D.by.oldCpu[inp.cpu], og = inp.gpuObj || D.by.oldGpu[inp.gpu];   // cpuObj/gpuObj: 「今のPCから診断」で読み取ったパーツ
     const games = inp.games.map(id => D.by.games[id]).filter(Boolean);
     const memStub = { cap: inp.memGB };
     const run = (cpuGs, gpuScore, memCap) => {
