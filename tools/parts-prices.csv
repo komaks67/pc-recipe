@@ -1,0 +1,63 @@
+﻿category,id,name,price
+cpu,r5-9600x,Ryzen 5 9600X,35000
+cpu,r7-9700x,Ryzen 7 9700X,48000
+cpu,r7-9800x3d,Ryzen 7 9800X3D,68000
+cpu,r9-9900x,Ryzen 9 9900X,58000
+cpu,r9-9950x,Ryzen 9 9950X,85000
+cpu,r9-9950x3d,Ryzen 9 9950X3D,98000
+cpu,cu5-245k,Core Ultra 5 245K,45000
+cpu,cu5-250kp,Core Ultra 5 250K Plus,38000
+cpu,cu7-265k,Core Ultra 7 265K,62000
+cpu,cu7-270kp,Core Ultra 7 270K Plus,47000
+cpu,cu9-285k,Core Ultra 9 285K,90000
+gpu,none,グラフィックボードなし(CPU内蔵),0
+gpu,rtx5050,GeForce RTX 5050,40000
+gpu,rtx5060,GeForce RTX 5060,55000
+gpu,rx9060xt,Radeon RX 9060 XT 16GB,68000
+gpu,rtx5060ti,GeForce RTX 5060 Ti 16GB,78000
+gpu,rtx5070,GeForce RTX 5070,95000
+gpu,rx9070,Radeon RX 9070,105000
+gpu,rtx5070ti,GeForce RTX 5070 Ti,135000
+gpu,rx9070xt,Radeon RX 9070 XT,120000
+gpu,rtx5080,GeForce RTX 5080,190000
+gpu,rtx5090,GeForce RTX 5090,450000
+mb,am5-a620-m,AM5 A620 Micro-ATX,12000
+mb,am5-b650-m,AM5 B650 Micro-ATX,17000
+mb,am5-b850-m,AM5 B850 Micro-ATX,22000
+mb,am5-b850-a,AM5 B850 ATX,26000
+mb,am5-b850-i,AM5 B850 Mini-ITX,38000
+mb,am5-x870e-a,AM5 X870E ATX,48000
+mb,in-h810-m,LGA1851 H810 Micro-ATX,15000
+mb,in-b860-m,LGA1851 B860 Micro-ATX,21000
+mb,in-b860-a,LGA1851 B860 ATX,26000
+mb,in-b860-i,LGA1851 B860 Mini-ITX,36000
+mb,in-z890-a,LGA1851 Z890 ATX,40000
+mem,d5-16,DDR5-5600 16GB(8GB×2),20000
+mem,d5-32,DDR5-5600 32GB(16GB×2),38000
+mem,d5-32f,DDR5-6000 32GB(16GB×2),41000
+mem,d5-64,DDR5-6000 64GB(32GB×2),80000
+ssd,sata-1,SATA SSD 1TB,9000
+ssd,g4-1,NVMe Gen4 SSD 1TB,11000
+ssd,g4-2,NVMe Gen4 SSD 2TB,20000
+ssd,g5-1,NVMe Gen5 SSD 1TB,18000
+ssd,g5-2,NVMe Gen5 SSD 2TB,33000
+psu,p550,550W 80PLUS Bronze (ATX),6500
+psu,p650,650W 80PLUS Gold (ATX 3.x),9500
+psu,p750,750W 80PLUS Gold (ATX 3.x),12000
+psu,p850,850W 80PLUS Gold (ATX 3.x),15000
+psu,p1000,1000W 80PLUS Gold (ATX 3.x),22000
+psu,p1200,1200W 80PLUS Platinum (ATX 3.x),32000
+psu,sfx750,750W 80PLUS Gold (SFX・小型ケース用),20000
+case,c-mid,ミドルタワー(標準),10000
+case,c-quiet,ミドルタワー(静音重視),14000
+case,c-air,ミドルタワー(エアフロー重視),11000
+case,c-matx,コンパクト(Micro-ATX),8500
+case,c-itx,Mini-ITX 小型,15000
+case,c-full,フルタワー(大型),22000
+cooler,k-low,低背 空冷クーラー(〜47mm),3500
+cooler,k-air-s,空冷 120mmタワー,4500
+cooler,k-air-l,空冷 大型デュアルタワー,7500
+cooler,k-aio240,簡易水冷 240mm,12000
+cooler,k-aio360,簡易水冷 360mm,17000
+os,win11,Windows 11 Home,16000
+os,none,OSなし(手持ちのライセンスを使う),0

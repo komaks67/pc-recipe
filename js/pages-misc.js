@@ -1,0 +1,137 @@
+/* ============================================================
+   ホーム / 読みもの / 保存 / このサイトについて
+   ============================================================ */
+(function () {
+  const U = PCR_UI, D = PCR_DATA, E = PCR_ENGINE, CFG = PCR_CONFIG;
+  const $ = U.$, $$ = U.$$, esc = U.esc, yen = U.yen;
+
+  /* ---------- ホーム ---------- */
+  U.route('/', '', function (el) {
+    el.innerHTML =
+      '<section class="hero"><h1>はじめてでも迷わない、<br>PCパーツの“レシピ”づくり。</h1>' +
+      '<p class="lead tipify">用途と予算を答えるだけで、CPU・GPU・メモリの組み合わせを提案。パーツ同士が合うか、電源は足りるかも、その場でチェックできます。BTOでも自作でもOKです。</p>' +
+      '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる</a><a class="btn sub" href="#/guide/bto-or-diy">BTOと自作の違いを知る</a></div></section>' +
+      '<div class="grid g2 sp2"><a class="card mode" href="#/bto"><div class="ico">🖥️</div><h2>BTOモード</h2><p class="muted">ショップで注文する人向け。CPU・GPU・メモリ・SSDを選ぶと、電源の目安やfps、メーカー比較までまとめて確認。</p><b>BTOパソコンを選ぶ →</b></a>' +
+      '<a class="card mode" href="#/build"><div class="ico">🔧</div><h2>自作モード</h2><p class="muted">パーツを自分で選んで組む人向け。ソケット・メモリ規格・ケースに入るかなど、合わない組み合わせはすぐ警告。</p><b>パーツを組む →</b></a></div>' +
+      '<h2 class="sp2">できること</h2><div class="grid g3">' +
+      [['🧭', '用途・予算診断', 'ゲーム・配信・動画編集・事務から、最適な構成を3プラン提案します。', '#/wizard'],
+       ['✅', '互換性・電源チェック', 'CPUとマザボ、GPUの長さ、電源容量、冷却力などを自動で判定します。', '#/build'],
+       ['🎮', 'ゲーム別fpsの目安', 'Apex・VALORANT・Palworldなど、構成ごとの目安fpsを表示します。', '#/games'],
+       ['🔁', 'パーツ変更シミュレーター', 'ひとつ上げると、いくら増えて何fps伸びるかが一目でわかります。', '#/build'],
+       ['🔋', '今のPCの診断', '今のパーツを選ぶだけで、どこを替えると効果が大きいか診断します。', '#/upgrade'],
+       ['📘', '用語集・読みもの', '分からない言葉はカーソルを合わせれば解説。組み立て手順もあります。', '#/guide']]
+        .map(f => '<a class="card flat card-link feat" href="' + f[3] + '"><span class="ico">' + f[0] + '</span><span><b>' + f[1] + '</b><br><span class="muted">' + f[2] + '</span></span></a>').join('') + '</div>' +
+      '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。</li><li>データの確認日: ' + esc(CFG.dataDate) + '。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
+  });
+
+  U.route('/404', 'ページが見つかりません', function (el) {
+    el.innerHTML = '<div class="card"><h1>ページが見つかりません</h1><p><a class="btn" href="#/">ホームへ戻る</a></p></div>';
+  });
+
+  /* ---------- 読みもの ---------- */
+  U.route('/guide', '読みもの・用語集', function (el, q, arg) {
+    if (arg === 'glossary') {
+      el.innerHTML = '<p><a href="#/guide">← 読みもの一覧</a></p><h1>用語集</h1><input type="text" id="gq" placeholder="言葉をしぼりこむ（例: メモリ）" aria-label="用語を検索"><div class="card sp"><dl id="gl"></dl></div>';
+      const dl = $('#gl', el);
+      const draw = () => {
+        const w = $('#gq', el).value.trim().toLowerCase();
+        const list = D.glossary.slice().sort((a, b) => a[0].localeCompare(b[0], 'ja')).filter(g => !w || (g[0] + g[1]).toLowerCase().indexOf(w) >= 0);
+        dl.innerHTML = list.length ? list.map(g => '<dt style="font-weight:800;margin-top:12px">' + esc(g[0]) + '</dt><dd style="margin:0">' + esc(g[1]) + '</dd>').join('') : '<p class="muted">見つかりませんでした。</p>';
+      };
+      $('#gq', el).addEventListener('input', draw); draw(); return;
+    }
+    if (arg) {
+      const a = D.articles.find(x => x.id === arg);
+      if (!a) { el.innerHTML = '<div class="card"><p>記事が見つかりません。</p><a href="#/guide">一覧へ</a></div>'; return; }
+      document.title = a.title + ' | ' + CFG.siteName;
+      const i = D.articles.indexOf(a), nx = D.articles[i + 1];
+      el.innerHTML = '<p><a href="#/guide">← 読みもの一覧</a></p><article class="article tipify"><h1>' + esc(a.title) + '</h1><p class="muted">' + esc(a.lead) + '</p>' + a.html +
+        '</article><div class="row sp2"><a class="btn" href="#/wizard">診断してみる</a>' + (nx ? '<a class="btn sub" href="#/guide/' + nx.id + '">次: ' + esc(nx.title) + '</a>' : '') + '</div>';
+      return;
+    }
+    el.innerHTML = '<h1>読みもの・用語集</h1><p class="muted">はじめての人向けに、やさしく解説しています。</p><div class="grid g2">' +
+      D.articles.map(a => '<a class="card card-link" href="#/guide/' + a.id + '"><h3>' + esc(a.title) + '</h3><p class="muted">' + esc(a.lead) + '</p></a>').join('') +
+      '<a class="card card-link" href="#/guide/glossary"><h3>📖 用語集</h3><p class="muted">CPU・GPU・VRAMなど、' + D.glossary.length + '個の言葉をやさしく説明しています。</p></a></div>';
+  });
+
+  /* ---------- 保存ページ ---------- */
+  const MODE = { build: '自作', bto: 'BTO' };
+  U.route('/saved', '保存した構成', function (el) {
+    const sel = [];
+    function openLink(s) {
+      return s.mode === 'bto' ? '#/bto?cpu=' + s.ids.cpu + '&gpu=' + s.ids.gpu + '&mem=' + s.ids.mem + '&ssd=' + s.ids.ssd : '#/build?' + U.idsToQuery(s.ids);
+    }
+    function compareHtml() {
+      if (sel.length !== 2) return '<p class="muted">比べたい構成を2つ選ぶと、ここに表示されます。</p>';
+      const list = U.getSaved(), A = list.find(x => x.id === sel[0]), B = list.find(x => x.id === sel[1]);
+      if (!A || !B) return '';
+      const c = U.prefs(), a = E.evaluate(A.ids, c), b = E.evaluate(B.ids, c);
+      const row = (lbl, x, y) => '<tr><th>' + lbl + '</th><td' + (x !== y ? ' style="font-weight:800"' : '') + '>' + x + '</td><td' + (x !== y ? ' style="font-weight:800"' : '') + '>' + y + '</td></tr>';
+      return '<div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>' + esc(A.name) + '</th><th>' + esc(B.name) + '</th></tr></thead><tbody>' +
+        E.KEYS.map(k => row(E.LABEL[k], esc(a.B[k].name), esc(b.B[k].name))).join('') +
+        row('合計', yen(a.total), yen(b.total)) + row('平均fps(目安)', Math.round(a.avgFps) + 'fps', Math.round(b.avgFps) + 'fps') + row('電源の推奨', a.power.rec + 'W', b.power.rec + 'W') + row('電気代(月)', yen(a.monthly), yen(b.monthly)) +
+        '</tbody></table></div><p class="muted">差があるところは太字です。fpsは「見積もりの条件」（' + ({ 1080: 'フルHD', 1440: 'WQHD', 2160: '4K' }[c.res]) + '・選択中のゲーム）での目安です。</p>';
+    }
+    function draw() {
+      const list = U.getSaved(), fav = U.getFav();
+      let h = '<h1>保存した構成・お気に入り</h1><div class="chk warn"><span class="mk">!</span><div>この画面の保存は、<b>このブラウザの中</b>にだけ残ります。ブラウザのデータを消すと消えます。大事な構成は「共有URL」や下の「ファイルで書き出し」でも残しておきましょう。</div></div>';
+      h += '<div class="card sp"><h2>保存した構成（' + list.length + ' / 20）</h2>';
+      if (!list.length) h += '<p class="muted">まだありません。<a href="#/build">自作ビルダー</a>や<a href="#/bto">BTOモード</a>、<a href="#/wizard">診断</a>から保存できます。</p>';
+      else h += '<div class="tbl-wrap"><table class="t"><thead><tr><th>比べる</th><th>名前</th><th>合計(目安)</th><th>保存日</th><th></th></tr></thead><tbody>' +
+        list.map(s => '<tr><td><input type="checkbox" data-cmp="' + s.id + '"' + (sel.indexOf(s.id) >= 0 ? ' checked' : '') + ' aria-label="比較に選ぶ"></td><td><b>' + esc(s.name) + '</b><br><span class="badge ok">' + MODE[s.mode] + '</span> ' + esc(D.by.cpu[s.ids.cpu].name) + ' / ' + esc(D.by.gpu[s.ids.gpu].name) + '</td><td>' + yen(s.total) + '</td><td>' + new Date(s.date).toLocaleDateString('ja-JP') + '</td>' +
+          '<td><div class="row"><a class="btn sm" href="' + openLink(s) + '">開く</a><button class="btn sub sm" data-ren="' + s.id + '">名前</button><button class="btn sub sm" data-dup="' + s.id + '">複製</button><button class="btn sub sm" data-del="' + s.id + '">削除</button></div></td></tr>').join('') + '</tbody></table></div>';
+      h += '</div><div class="card sp"><h2>構成を比べる</h2><div id="cmp">' + compareHtml() + '</div></div>';
+      h += '<div class="card sp"><h2>★ お気に入りのパーツ（' + fav.length + '）</h2>' + (fav.length ? fav.filter(f => D.by[f.k] && D.by[f.k][f.id]).map(f => { const p = D.by[f.k][f.id]; return '<div class="row" style="justify-content:space-between;margin-bottom:8px"><span><span class="badge ok">' + E.LABEL[f.k] + '</span> ' + esc(p.name) + ' ' + (p.price ? yen(p.price) : '') + '</span><span>' + U.links(p.q) + ' <button class="btn sub sm" data-unfav="' + f.k + ':' + f.id + '">外す</button></span></div>'; }).join('') : '<p class="muted">自作ビルダーの各パーツの ☆ を押すと、ここに集まります。</p>') + '</div>';
+      h += '<div class="card sp"><h2>バックアップ（ファイル）</h2><p class="muted">保存した構成・お気に入り・価格メモを1つのファイルに書き出して、別の端末で読み込めます。</p><div class="row"><button class="btn sub" id="ex">⬇ 書き出す</button><label class="btn sub" style="cursor:pointer">⬆ 読み込む<input type="file" id="im" accept="application/json,.json" hidden></label></div></div>';
+      el.innerHTML = h;
+    }
+    draw();
+    el.addEventListener('click', e => {
+      const t = e.target;
+      const list = U.getSaved();
+      if (t.dataset.del) { U.updateSaved(list.filter(x => x.id !== t.dataset.del)); const i = sel.indexOf(t.dataset.del); if (i >= 0) sel.splice(i, 1); draw(); }
+      if (t.dataset.dup) { const s = list.find(x => x.id === t.dataset.dup); if (s && list.length < 20) { list.unshift(Object.assign({}, s, { id: 's' + Date.now().toString(36), name: s.name + ' (コピー)', date: new Date().toISOString() })); U.updateSaved(list); draw(); } else U.toast('保存できるのは20件までです'); }
+      if (t.dataset.ren) { const s = list.find(x => x.id === t.dataset.ren); const n = s && prompt('新しい名前', s.name); if (n && n.trim()) { s.name = n.trim().slice(0, 30); U.updateSaved(list); draw(); } }
+      if (t.dataset.unfav) { const [k, id] = t.dataset.unfav.split(':'); U.toggleFav(k, id); draw(); }
+      if (t.id === 'ex') U.download('pc-recipe-backup.json', JSON.stringify({ v: 1, saved: list, fav: U.getFav(), memo: U.store.get('pcr.btoMemo.v1', []) }, null, 1), 'application/json');
+    });
+    el.addEventListener('change', e => {
+      const t = e.target;
+      if (t.dataset.cmp) { const i = sel.indexOf(t.dataset.cmp); if (t.checked && i < 0) sel.push(t.dataset.cmp); if (!t.checked && i >= 0) sel.splice(i, 1); while (sel.length > 2) { const old = sel.shift(); const cb = $('[data-cmp="' + old + '"]', el); if (cb) cb.checked = false; } $('#cmp', el).innerHTML = compareHtml(); }
+      if (t.id === 'im' && t.files[0]) {
+        const r = new FileReader();
+        r.onload = () => {
+          try {
+            const d = JSON.parse(r.result); if (!d || d.v !== 1) throw new Error('v');
+            const valid = s => s && s.ids && E.KEYS.every(k => D.by[k][s.ids[k]]);
+            const have = U.getSaved(), add = (d.saved || []).filter(valid).filter(s => !have.some(h => h.id === s.id));
+            U.updateSaved(have.concat(add).slice(0, 20));
+            const fav = U.getFav(); (d.fav || []).forEach(f => { if (D.by[f.k] && D.by[f.k][f.id] && !fav.some(x => x.k === f.k && x.id === f.id)) fav.push(f); }); U.store.set('pcr.fav.v1', fav);
+            if (Array.isArray(d.memo) && !U.store.get('pcr.btoMemo.v1', []).length) U.store.set('pcr.btoMemo.v1', d.memo.slice(0, 20));
+            U.toast(add.length + '件の構成を読み込みました'); draw();
+          } catch (err) { U.toast('このファイルは読み込めませんでした'); }
+        };
+        r.readAsText(t.files[0]);
+      }
+    });
+  });
+
+  /* ---------- このサイトについて ---------- */
+  U.route('/about', 'このサイトについて・免責', function (el) {
+    el.innerHTML = '<h1>このサイトについて</h1><div class="article tipify">' +
+      '<h2>PC Recipe とは</h2><p>BTOパソコンや自作PCを選ぶ人のための、診断・チェックサイトです。むずかしい言葉は、カーソルを合わせると説明が出ます。</p>' +
+      '<h2>データと計算方法</h2><ul>' +
+      '<li><b>パーツの仕様</b>（ソケット、メモリ規格、消費電力、推奨電源など）は、メーカー公式の情報をもとにしています。データ確認日: <b>' + esc(CFG.dataDate) + '</b>。</li>' +
+      '<li><b>性能の数値</b>（ゲーム性能・動画編集性能の指数）は、公開されているベンチマークの傾向をもとにした<b>相対的な目安</b>で、公式の数字ではありません。</li>' +
+      '<li><b>fps</b>は、ゲームごとの「GPU側の上限」と「CPU側の上限」から計算した目安です（実測ではありません）。メモリが足りないときや配信時は少し下げています。</li>' +
+      '<li><b>電源の推奨容量</b>は、CPUとGPUの最大消費電力に周辺機器分を足し、約25%の余裕を持たせて計算し、GPUメーカーの推奨容量と比べて大きい方を採用しています。</li>' +
+      '<li><b>価格</b>は目安です' + (CFG.priceIsPlaceholder ? '（現在は仮の値です）' : '') + '。実際の価格は購入先でご確認ください。</li>' +
+      '<li><b>パーツの寸法</b>（GPUの長さ、クーラーの高さなど）は、一般的なクラスの値です。実際の製品は必ず製品ページで確認してください。</li></ul>' +
+      '<h2>広告（アフィリエイト）について</h2><p>当サイトは、Amazonアソシエイト、楽天アフィリエイト、各ASP（アフィリエイトサービス）の広告を利用することがあります。「PR」と書かれたリンクや、各社へのリンクから購入されると、当サイトに報酬が入ることがあります。商品の評価や並び順は、報酬の有無で変えていません。' +
+      (CFG.affiliate.amazonTag ? '<br>Amazonのアソシエイトとして、当サイトは適格販売により収入を得ています。' : '') + '</p>' +
+      '<h2>免責</h2><p>当サイトの情報は正確を心がけていますが、完全性・正確性を保証するものではありません。パーツの互換性、動作、性能、価格、在庫は変わることがあります。購入や組み立てによって生じた損害について、当サイトは責任を負いません。購入前に、メーカーおよび販売店の公式情報を必ずご確認ください。</p>' +
+      '<h2>プライバシー</h2><p>当サイトは、保存した構成・お気に入り・設定を、お使いのブラウザの中（localStorage）にだけ保存します。サーバーには送信しません。リンク先（各ショップ）では、それぞれのサイトの方針に従って情報が扱われます。</p>' +
+      (CFG.contactUrl ? '<h2>お問い合わせ・誤りの報告</h2><p><a href="' + esc(CFG.contactUrl) + '" target="_blank" rel="noopener">こちらのフォーム</a>からご連絡ください。</p>' : '') +
+      '</div>';
+  });
+})();
