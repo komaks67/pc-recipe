@@ -3,7 +3,7 @@
 用途と予算から、BTO／自作PCのおすすめ構成を診断し、パーツの互換性・電源容量・ゲーム別fpsの目安をチェックできる、**サーバー不要の静的サイト**です（HTML / CSS / JavaScript のみ）。
 
 ## まず見てみる
-- `index.html` をダブルクリックすると、そのままブラウザで動きます。
+- `[index.html](https://komaks67.github.io/pc-recipe/)` をクリックすると、そのままブラウザで動きます。
 
 ## 無料で公開する（GitHub Pages の例）
 1. GitHub で新しいリポジトリを作る（Public）
