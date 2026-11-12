@@ -27,6 +27,7 @@ window.PCR_ENGINE = (function () {
     const memPen = !!(B.mem && B.mem.cap < need);
     if (memPen) f *= 0.85;
     if (opt.stream) f *= 0.9;
+    if (game.cap) f = Math.min(f, game.cap);   // フレームレートの上限があるゲーム
     return { fps: f, gpuF: gpuF, cpuF: cpuF, limit: gpuF <= cpuF ? 'GPU' : 'CPU', memPen: memPen };
   };
   E.fpsLabel = function (f) {
@@ -55,7 +56,8 @@ window.PCR_ENGINE = (function () {
     const pw = E.power(B);
     const cs = B.case;
     const list = D.psu.filter(p => cs.psu.indexOf(p.form) >= 0).sort((a, b) => a.w - b.w);
-    const good = list.filter(p => p.w >= pw.rec && (B.gpu.id === 'none' || p.grade !== 'Bronze'));
+    const needAtx3 = B.gpu.conn === '12V-2x6' && list.some(p => p.atx3 && p.w >= pw.rec);
+    const good = list.filter(p => p.w >= pw.rec && (B.gpu.id === 'none' || p.grade !== 'Bronze') && (!needAtx3 || p.atx3));
     const ok = good.length ? good : list.filter(p => p.w >= pw.rec);
     if (ok.length) return ok.sort((a, b) => a.price - b.price)[0].id;
     return list[list.length - 1].id;
@@ -73,9 +75,15 @@ window.PCR_ENGINE = (function () {
     else add('ok', 'CPUとマザーボード', 'ソケットが同じ（' + B.cpu.sock + '）なので取り付けできます。');
 
     // BIOS更新
-    if (B.cpu.sock === 'AM5' && B.mb.chip === 'B650') add('warn', 'BIOS更新の可能性', 'B650は発売が古いので、在庫によっては Ryzen 9000 を使うためにBIOS更新が必要な場合があります。購入前にお店や製品ページで確認してください。');
+    if (B.cpu.sock === 'AM5' && B.mb.chip === 'B650' && B.cpu.fam === '9000') add('warn', 'BIOS更新の可能性', 'B650は発売が古いので、在庫によっては Ryzen 9000 を使うためにBIOS更新が必要な場合があります。購入前にお店や製品ページで確認してください。');
     if (B.cpu.plus && B.cpu.sock === B.mb.sock) add('warn', 'BIOS更新の可能性', 'Core Ultra 200S Plus は2026年3月発売の新しいCPUです。マザーボードの製造時期によっては、BIOS更新が必要な場合があります。製品ページの対応CPU表で確認してください。');
     if (B.mb.chip === 'A620' && B.cpu.pw >= 165) add('warn', 'A620と大型CPU', 'A620は電源回路が簡素なボードが多く、消費電力の大きいCPU（' + B.cpu.name + '）との組み合わせはおすすめできません。B650以上にしましょう。');
+    if (B.cpu.bios && B.cpu.sock === B.mb.sock) add('warn', 'BIOS更新の可能性', B.cpu.name + ' は比較的新しい（または追加された）CPUです。マザーボードの在庫によっては、BIOS更新が必要な場合があります。製品ページの「対応CPU」と「必要なBIOS」を確認しましょう。');
+    if (B.mb.chip === 'H610' && (B.cpu.fam === '13' || B.cpu.fam === '14') && B.cpu.sock === B.mb.sock) add('warn', 'BIOS更新の可能性', 'H610は発売が古いので、第13・14世代CPUには、BIOS更新が必要な場合があります。購入前に対応CPUとBIOSの版を確認しましょう。');
+    if (B.cpu.unstable) add('warn', '第13・14世代の不安定問題', B.cpu.name + ' を含む第13・14世代の一部CPUは、過去に動作が不安定になる問題があり、Intelが対策のBIOS更新を案内しています。最新のBIOSにして使いましょう。');
+    if (B.mb.chip === 'A520' && B.cpu.tdp >= 105) add('warn', 'A520と高出力CPU', 'A520は電源回路が簡素なボードが多く、消費電力の大きいCPU（' + B.cpu.name + '）との組み合わせはおすすめできません。B550以上にしましょう。');
+    if (B.gpu.id === 'none' && B.cpu.igpu === false) add('ng', '映像の出力', B.cpu.name + ' は内蔵グラフィックスがありません。グラフィックボードを付けないと、画面に映りません。');
+    if (B.cpu.oc && B.mb.sock === 'LGA1700' && B.mb.chip !== 'Z790') add('ok', 'KシリーズCPUとチップセット', 'このCPUはオーバークロック対応ですが、' + B.mb.chip + 'では設定できません。普通に使う分には問題ありません。');
     if (B.cpu.oc && B.mb.sock === 'LGA1851' && B.mb.chip !== 'Z890') add('ok', 'KシリーズCPUとチップセット', 'このCPUはオーバークロック対応ですが、' + B.mb.chip + 'では設定できません。普通に使う分には問題ありません。');
     if (B.mb.memOc === false) add('warn', 'メモリの高速化', B.mb.chip + 'はメモリのオーバークロックに対応していません。高速メモリを買っても、速度が下がって動くことがあります。');
 
@@ -151,6 +159,7 @@ window.PCR_ENGINE = (function () {
     if (B.gpu.id !== 'none' && B.gpu.vram <= 8 && ctx.res >= 1440) add('warn', 'VRAM(8GB)が少なめ', 'WQHD以上の高画質では、VRAMが足りずカクつくことがあります。12〜16GBのGPUが安心です。');
     if (B.gpu.id !== 'none' && B.gpu.vram <= 8 && ctx.res === 1080) add('warn', 'VRAM(8GB)は余裕が少なめ', 'フルHDでも、最新ゲームの最高画質ではVRAMが足りなくなることがあります。設定を調整すれば遊べます。');
     if (B.case.id === 'c-itx' && (B.gpu.tgp > 250 || B.cpu.pw > 150)) add('warn', '小型ケースは熱に注意', '小さなケースに高消費電力のパーツを入れると、熱がこもって性能が下がる、うるさくなることがあります。');
+    if (B.cpu.sock === 'AM4' || B.cpu.sock === 'LGA1700') add('warn', '新しい買い替えには向かない世代', B.cpu.sock + ' は、新しいCPUが出ない世代です。DDR4を使うなど安く組めますが、将来CPUだけを新しいものに替えることはできません。長く使いたいなら、AM5やLGA1851も検討しましょう。');
     if (B.os.id === 'none') add('warn', 'OSなしの構成', 'Windowsのライセンスを別に用意する必要があります（持っていなければ追加費用）。');
     if (ctx.stream && B.cpu.mt < 55) add('warn', '配信にはCPUが弱め', 'ゲームをしながら配信すると、CPUの負担が増えます。コア数の多いCPUが安心です。');
     if (B.mb.chip === 'A620' && B.cpu.pw >= 120) add('warn', 'A620は拡張性が低め', 'A620は安価ですが、将来CPUを強いものに替えにくい場合があります。');
@@ -183,7 +192,7 @@ window.PCR_ENGINE = (function () {
     let list;
     if (key === 'gpu') list = D.gpu.slice().sort((a, b) => a.score - b.score);
     else if (key === 'cpu') list = D.cpu.filter(c => c.sock === cur.sock).sort((a, b) => (a.gs * 0.7 + a.mt * 0.3) - (b.gs * 0.7 + b.mt * 0.3));
-    else if (key === 'mem') list = D.mem.slice().sort((a, b) => a.cap - b.cap || a.price - b.price);
+    else if (key === 'mem') list = D.mem.filter(m => m.type === cur.type).sort((a, b) => a.cap - b.cap || a.price - b.price);
     else if (key === 'ssd') list = D.ssd.slice().sort((a, b) => a.price - b.price);
     else return { up: null, down: null };
     const i = list.findIndex(x => x.id === cur.id);
@@ -201,22 +210,38 @@ window.PCR_ENGINE = (function () {
     const cpu = D.by.cpu[n.cpu];
     if (changed === 'cpu' && D.by.mb[n.mb].sock !== cpu.sock) {
       const form = D.by.mb[n.mb].form;
-      n.mb = E.defaultMb(cpu.sock, [form], { cheap: D.by.mb[n.mb].price < 20000 });
+      n.mb = E.defaultMb(cpu.sock, [form], { cheap: D.by.mb[n.mb].price < 20000, memType: D.by.mem[n.mem].type, cpu: cpu });
+      if (D.by.mem[n.mem].type !== D.by.mb[n.mb].mem) n.mem = E.memFor(D.by.mem[n.mem].cap, D.by.mb[n.mb].mem);
+    }
+    if (changed === 'mem' && cpu.sock === 'LGA1700' && D.by.mb[n.mb].mem !== D.by.mem[n.mem].type) {
+      n.mb = E.defaultMb(cpu.sock, [D.by.mb[n.mb].form], { cheap: D.by.mb[n.mb].price < 16000, memType: D.by.mem[n.mem].type, cpu: cpu });
     }
     if (changed === 'case') {
       const cs = D.by.case[n.case];
-      if (cs.form.indexOf(D.by.mb[n.mb].form) < 0) n.mb = E.defaultMb(cpu.sock, cs.form, {});
+      if (cs.form.indexOf(D.by.mb[n.mb].form) < 0) n.mb = E.defaultMb(cpu.sock, cs.form, { memType: D.by.mem[n.mem].type, cpu: cpu });
     }
     return n;
   };
 
   /* ---------- 自動で部品を埋める ---------- */
+  E.memFor = function (cap, type) {
+    const t = { DDR5: { 16: 'd5-16', 32: 'd5-32', 48: 'd5-48', 64: 'd5-64' }, DDR4: { 16: 'd4-16', 32: 'd4-32', 48: 'd4-32', 64: 'd4-64' } }[type];
+    return t[cap] || t[32];
+  };
+  E.platformTypes = function (sock) { return sock === 'AM4' ? ['DDR4'] : sock === 'LGA1700' ? ['DDR5', 'DDR4'] : ['DDR5']; };
   E.defaultMb = function (sock, forms, opt) {
     opt = opt || {};
     const form = (forms.indexOf('ATX') >= 0 && !opt.small && !(opt.cheap && forms.indexOf('mATX') >= 0)) ? 'ATX' : forms.indexOf('mATX') >= 0 ? 'mATX' : 'ITX';
+    const cpu = opt.cpu || {};
+    const strong = cpu.tdp >= 105 || cpu.fam === '13' || cpu.fam === '14';
+    const type = opt.memType || 'DDR5';
     const map = {
       AM5: { ATX: 'am5-b850-a', mATX: opt.cheap ? 'am5-b650-m' : 'am5-b850-m', ITX: 'am5-b850-i' },
-      LGA1851: { ATX: opt.oc ? 'in-z890-a' : 'in-b860-a', mATX: 'in-b860-m', ITX: 'in-b860-i' }
+      LGA1851: { ATX: opt.oc ? 'in-z890-a' : 'in-b860-a', mATX: 'in-b860-m', ITX: 'in-b860-i' },
+      AM4: { ATX: 'am4-b550-a', mATX: (opt.cheap && !strong) ? 'am4-a520-m' : 'am4-b550-m', ITX: 'am4-b550-i' },
+      LGA1700: type === 'DDR4'
+        ? { ATX: opt.oc ? 'in-z790-a-d4' : 'in-b760-a-d4', mATX: (opt.cheap && !strong) ? 'in-h610-m-d4' : 'in-b760-m-d4', ITX: 'in-b760-i-d4' }
+        : { ATX: opt.oc ? 'in-z790-a-d5' : 'in-b760-a-d5', mATX: 'in-b760-m-d5', ITX: 'in-b760-i-d5' }
     };
     return map[sock][form];
   };
@@ -225,12 +250,14 @@ window.PCR_ENGINE = (function () {
     const ids = Object.assign({}, p);
     const cpu = D.by.cpu[ids.cpu], gpu = D.by.gpu[ids.gpu];
     if (!ids.case) {
-      const pref = { mini: ['c-itx'], compact: ['c-matx', 'c-mid'], mid: [opt.quiet ? 'c-quiet' : 'c-mid', 'c-air', 'c-full'], large: ['c-full'] }[opt.size || 'mid'];
-      ids.case = pref.find(id => { const c = D.by.case[id]; return gpu.len <= c.gpuMax && gpu.slots <= c.gpuSlots; }) || pref[pref.length - 1];
+      const pref = { mini: ['c-itx', 'c-itx-l'], compact: ['c-matx', 'c-matx-air', 'c-mid-s', 'c-mid'], mid: [opt.quiet ? 'c-quiet' : 'c-mid', 'c-air', 'c-full'], large: ['c-full', 'c-full-dual'] }[opt.size || 'mid'];
+      const gpuOk = c => gpu.len <= c.gpuMax && gpu.slots <= c.gpuSlots;
+      const coolOk = c => D.cooler.some(k => k.tdpMax >= cpu.pw && (k.id !== 'k-low' || c.coolerMax < 100) && (k.kind === '空冷' ? k.h <= c.coolerMax : c.rad.indexOf(k.rad) >= 0));
+      ids.case = pref.find(id => gpuOk(D.by.case[id]) && coolOk(D.by.case[id])) || pref.find(id => gpuOk(D.by.case[id])) || pref[pref.length - 1];
     }
     const cs = D.by.case[ids.case];
-    if (!ids.mb) ids.mb = E.defaultMb(cpu.sock, cs.form, { cheap: opt.cheap, small: opt.size === 'compact' });
-    if (!ids.mem) ids.mem = 'd5-32';
+    if (!ids.mb) ids.mb = E.defaultMb(cpu.sock, cs.form, { cheap: opt.cheap, small: opt.size === 'compact', memType: opt.memType || (ids.mem && D.by.mem[ids.mem].type) || 'DDR5', cpu: cpu });
+    if (!ids.mem) ids.mem = D.by.mb[ids.mb].mem === 'DDR4' ? 'd4-32' : 'd5-32';
     if (!ids.ssd) ids.ssd = 'g4-1';
     if (!ids.os) ids.os = opt.noOs ? 'none' : 'win11';
     if (!ids.cooler) {
@@ -259,28 +286,42 @@ window.PCR_ENGINE = (function () {
     const w = parts.reduce((s, x) => s + x.w, 0);
     return parts.reduce((s, x) => s + x.v * x.w, 0) / w;
   };
+  /* 他のどれにも「同じ以上の性能で、安く、省電力」で負けているパーツは、候補から外す（計算を速くするため） */
+  function prune(list, better) {
+    return list.filter(a => !list.some(b => b !== a && better(b, a)));
+  }
+  const cpuBetter = (b, a) => b.sock === a.sock && b.price <= a.price && b.gs >= a.gs && b.mt >= a.mt && b.pw <= a.pw && (a.igpu === false || b.igpu !== false) && !(b.unstable && !a.unstable) && !(b.bios && !a.bios) &&
+    (b.price < a.price || b.gs > a.gs || b.mt > a.mt || b.pw < a.pw);
+  const gpuBetter = (b, a) => b.price <= a.price && b.score >= a.score && b.tgp <= a.tgp && b.vram >= a.vram && b.len <= a.len && b.slots <= a.slots && b.rec <= a.rec &&
+    (b.price < a.price || b.score > a.score || b.tgp < a.tgp || b.vram > a.vram);
   E.autoBuild = function (o) {
     const officeOnly = !o.game && (!o.edit || o.edit === 'none') && !o.stream;
-    const gpus = officeOnly ? D.gpu.filter(g => g.id === 'none') : D.gpu.filter(g => g.id !== 'none');
-    let memIds = ['d5-32'];
-    if (officeOnly) memIds = [o.budget >= 150000 ? 'd5-32' : 'd5-16'];
-    else if (o.edit === '4k' && o.budget >= 280000) memIds = ['d5-64'];
-    else if (o.maxPerf && o.budget >= 200000) memIds = ['d5-32'];
-    else if (o.budget < 260000) memIds = ['d5-32', 'd5-16'];   // 予算が少ないときは16GBも候補にする
+    const gpus = prune(officeOnly ? D.gpu.filter(g => g.id === 'none') : D.gpu.filter(g => g.id !== 'none'), gpuBetter);
+    const cpus = prune(D.cpu, cpuBetter);
+    let caps = [32];
+    if (officeOnly) caps = [o.budget >= 150000 ? 32 : 16];
+    else if (o.edit === '4k' && o.budget >= 280000) caps = [64];
+    else if (o.maxPerf && o.budget >= 200000) caps = [32];
+    else if (o.budget < 260000) caps = [32, 16];   // 予算が少ないときは16GBも候補にする
     const ssdId = (o.edit && o.edit !== 'none') || o.budget >= 200000 ? 'g4-2' : 'g4-1';
     const ctx = { res: o.res, games: o.games, stream: o.stream, purposeGame: o.game };
     let best = null, cheapest = null;
-    D.cpu.forEach(cpu => gpus.forEach(gpu => memIds.forEach(memId => {
-      const ids = E.complete({ cpu: cpu.id, gpu: gpu.id, mem: memId, ssd: ssdId }, { size: o.size, quiet: o.quiet, cheap: o.budget < 200000, noOs: !o.os });
-      const ev = E.evaluate(ids, ctx);
-      if (ev.hasNg) return;
-      const sat = E.satisfaction(ev.B, o);
-      const lowMem = !officeOnly && D.by.mem[memId].cap < 32 ? 6 : 0;
-      const util = Math.min(sat, o.maxPerf ? 5 : 1.12) * 100 - (o.maxPerf ? 0.5 : 8) * ev.total / o.budget - lowMem;
-      const rec = { ids: ids, ev: ev, sat: sat, util: util };
-      if (!cheapest || ev.total < cheapest.ev.total) cheapest = rec;
-      if (ev.total <= o.budget && (!best || util > best.util || (util === best.util && ev.total < best.ev.total))) best = rec;
-    })));
+    cpus.forEach(cpu => {
+      if (officeOnly && cpu.igpu === false) return;   // グラボなしの構成には、内蔵グラフィックスが必要
+      gpus.forEach(gpu => caps.forEach(cap => E.platformTypes(cpu.sock).forEach(type => {
+        const ids = E.complete({ cpu: cpu.id, gpu: gpu.id, mem: E.memFor(cap, type), ssd: ssdId }, { size: o.size, quiet: o.quiet, cheap: o.budget < 200000, noOs: !o.os, memType: type });
+        if (D.by.mb[ids.mb].m2g < D.by.ssd[ids.ssd].gen) ids.ssd = D.by.ssd[ids.ssd].cap >= 2 ? 'g3-2' : 'g3-1';   // 古いボードにはGen3 SSD
+        const ev = E.evaluate(ids, ctx);
+        if (ev.hasNg) return;
+        const sat = E.satisfaction(ev.B, o);
+        const lowMem = !officeOnly && D.by.mem[ids.mem].cap < 32 ? 6 : 0;
+        const oldPlat = cpu.sock === 'AM4' || cpu.sock === 'LGA1700' ? (o.maxPerf ? 10 : 4) : 0;   // 新しいCPUが出ない世代は、少しだけ不利にする
+        const util = Math.min(sat, o.maxPerf ? 5 : 1.12) * 100 - (o.maxPerf ? 0.5 : 8) * ev.total / o.budget - lowMem - oldPlat;
+        const rec = { ids: ids, ev: ev, sat: sat, util: util };
+        if (!cheapest || ev.total < cheapest.ev.total) cheapest = rec;
+        if (ev.total <= o.budget && (!best || util > best.util || (util === best.util && ev.total < best.ev.total))) best = rec;
+      })));
+    });
     if (best) return Object.assign(best, { over: false });
     return Object.assign(cheapest, { over: true });
   };
@@ -315,10 +356,11 @@ window.PCR_ENGINE = (function () {
     D.cpu.filter(c => c.gs >= oc.gs * 1.15).forEach(c => {
       const r = run(c.gs, og.score, inp.memGB);
       let cost = c.price, note = '';
-      if (oc.path === 'cpu' && c.sock === 'AM5') note = 'CPUだけの交換でOK（BIOS更新が必要な場合あり）';
+      if (oc.sock === c.sock) note = 'CPUだけの交換でOK（BIOS更新が必要な場合あり）';
       else {
-        const mb = D.by.mb[E.defaultMb(c.sock, ['ATX'], { cheap: true })];
-        const m = D.by.mem['d5-32'];
+        const type = c.sock === 'AM4' ? 'DDR4' : 'DDR5';
+        const mb = D.by.mb[E.defaultMb(c.sock, ['ATX'], { cheap: true, memType: type, cpu: c })];
+        const m = D.by.mem[E.memFor(32, type)];
         cost += mb.price + m.price;
         note = '今のPCは ' + oc.plat + ' です。' + c.sock + ' に替えるには、マザーボードとDDR5メモリも一緒に交換が必要（CPU込みで目安 ' + cost.toLocaleString('ja-JP') + '円）。';
       }

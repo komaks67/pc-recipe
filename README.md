@@ -3,7 +3,7 @@
 用途と予算から、BTO／自作PCのおすすめ構成を診断し、パーツの互換性・電源容量・ゲーム別fpsの目安をチェックできる、**サーバー不要の静的サイト**です（HTML / CSS / JavaScript のみ）。
 
 ## まず見てみる
-- `https://komaks67.github.io/pc-recipe/` をブラウザで開くと、そのままブラウザで動きます。
+- `index.html` をダブルクリックすると、そのままブラウザで動きます。
 
 ## 無料で公開する（GitHub Pages の例）
 1. GitHub で新しいリポジトリを作る（Public）
@@ -79,3 +79,36 @@ GitHub に置いている場合は、`.github/workflows/update-prices.yml` に�
 - **共有URLが短く**なりました（`#/build?b=...`）。以前のURLも引き続き開けます
 - **サイト内検索**（ヘッダーの検索欄、`#/search`）… パーツ名・読みもの・用語・ページ名から探せます
 - **価格の推移**（`#/history`）… パーツごとの折れ線グラフと、記録期間の中で今が安いか高いかの目安。履歴は `node tools/update-prices.mjs` を実行するたびに `js/price-history.js` へ1点ずつ追加されます（記録が2回たまるとグラフが出ます）
+
+## パーツ追加（DDR4 / AM4 / LGA1700 まで対応）
+
+- CPU 55種（Ryzen 9000・7000・5000、Core Ultra 200S、Core 第12〜14世代）、GPU 31種（RTX 50・40、RX 9000・7000、Intel Arc B570/B580）、マザーボード 28種、メモリ（DDR4・DDR5）、SSD、電源、ケース、クーラーを増やしました
+- 互換チェックが次のものに対応しました: DDR4/DDR5の取り違え、LGA1700のDDR4/DDR5ボード、内蔵グラフィックスなしCPU（F型番など）、A520と高出力CPU、BIOS更新が必要になりやすいCPU、第13・14世代の不安定問題の注意
+- AM4 / LGA1700 は「新しいCPUが出ない世代」として、おまかせ構成ではほんの少しだけ不利に扱います
+- `node tools/update-prices.mjs --init` は、入力済みの価格を消さずに、増えたパーツの行だけを足します
+
+### 注意（スペックの確かさ）
+- 性能の目安（gs / mt / score）は、相対的な見積もりです（公式の数字ではありません）
+- Ryzen 9000 の型番・コア数・TDP は、AMDの製品一覧の掲載を確認しました。それ以外（Intel第12〜14世代、Core Ultraの非K型番、各GPUのTGP・長さ・厚み）は、一般に知られた仕様をもとにした目安です。購入前に、必ずメーカーの公式ページで確認してください
+- RTX 30 / RX 6000 は、新品での入手が難しいため入れていません（アップグレード診断の「今のPC」の選択肢にはあります）
+- RTX 50 SUPER は、確認した時点で未発売のため入れていません
+
+## 第5弾: サーバー用PC診断 / ゲーム追加 / パーツ写真
+
+### サーバー用PC診断（`#/server`）
+- ARK（Ascended / Evolved）、Minecraft Java版（MOD入り）、Palworld、Terraria、Valheim、Rust、7 Days to Die に対応
+- ゲーム・人数・MODの量・同時に動かすサーバー数から、**必要なメモリ**と**CPUの1コアの速さ**の目安を出し、3つの構成（買うとき最安／3年間の合計が最安／余裕あり）を提案します
+- 24時間つけっぱなしの**電気代**（`config.js` の電気代単価で計算）と、本体＋電気代の3年間合計を表示
+- 内蔵グラフィックス付きCPUを優先し、グラボなしで組みます。24時間動かすため、不安定問題のある第13・14世代の一部CPUは除外します
+- 必要スペックは `js/pages-server.js` の `D.servers`（`ram` `per` `gs` `mt` など）を書き換えると調整できます。**公式情報と各社の公開情報にもとづく目安**で、Terraria・Valheim などは軽さを考えた推定を含みます
+
+### 遊ぶゲームの追加（fps診断）
+- ARK Ascended/Evolved、Minecraft、Valheim、Rust、7DTD、ELDEN RING（60fps上限）、BG3、黒神話、OW2、Marvel Rivals、BF6、Warzone、PUBG、HELLDIVERS 2、LoL、GTA V を追加（計26本）
+- 追加分のfpsは計算モデルによる目安で、実測ではありません（`D.games` の `g / c / k` で調整できます）
+
+### パーツ写真（楽天API・任意）
+- 写真は `js/images.js` に入れたときだけ表示されます。**空のままなら、これまでどおり文字だけ**で動きます
+- 取得: `RAKUTEN_APP_ID` / `RAKUTEN_ACCESS_KEY` / `RAKUTEN_REFERER`（楽天に登録したサイトURL）を環境変数にして `node tools/fetch-images.mjs`
+- GitHub では Settings → Secrets に同じ3つを登録し、Actions の「fetch-images」を手動実行すると `js/images.js` が更新されます（キーはサイトのファイルに書きません）
+- 写真が入ると、フッターに「Supported by Rakuten Developers」と著作権の表示が出ます。Amazonの商品画像は使っていません
+- 型番が合わない商品は写真に使いません。合わないものは `js/images.js` を手で直せます

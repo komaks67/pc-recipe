@@ -196,3 +196,9 @@ dl { margin: 0; }
 /* 検索ボックス */
 .sf input { width: 120px; padding: 7px 10px; border-radius: 10px; font-size: .88rem; }
 @media (max-width: 720px) { .sf input { width: 84px; } }
+
+/* パーツ写真（楽天APIから取得できたときだけ表示） */
+.pimg { object-fit: contain; border-radius: 8px; background: #fff; border: 1px solid var(--line); vertical-align: middle; flex: none; }
+.part .top .pimg { margin-right: 8px; }
+.t td .pimg { margin-right: 6px; }
+.img-credit { font-size: .78rem; color: var(--muted); margin-top: 6px; }

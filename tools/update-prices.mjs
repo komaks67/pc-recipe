@@ -44,13 +44,17 @@ const toObjs = rows => { const h = rows[0].map(x => x.trim()); return rows.slice
 const esc = v => /[",\n]/.test(v) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
 
 if (process.argv.includes('--init')) {
+  // すでに入力した価格は消さずに、新しく増えたパーツの行だけを足す
+  const old = {};
+  const pf0 = path.join(root, 'tools/parts-prices.csv');
+  if (fs.existsSync(pf0)) toObjs(parseCsv(fs.readFileSync(pf0, 'utf8'))).forEach(r => { old[r.category + '/' + r.id] = r.price; });
   const lines = ['category,id,name,price'];
-  KEYS.forEach(k => D[k].forEach(p => lines.push([k, p.id, p.name, p.price].map(esc).join(','))));
-  fs.writeFileSync(path.join(root, 'tools/parts-prices.csv'), '﻿' + lines.join('\n') + '\n');
+  KEYS.forEach(k => D[k].forEach(p => lines.push([k, p.id, p.name, old[k + '/' + p.id] !== undefined && old[k + '/' + p.id] !== '' ? old[k + '/' + p.id] : p.price].map(esc).join(','))));
+  fs.writeFileSync(pf0, '\uFEFF' + lines.join('\n') + '\n');
   if (!fs.existsSync(path.join(root, 'tools/bto-models.csv'))) {
-    fs.writeFileSync(path.join(root, 'tools/bto-models.csv'), '﻿maker,name,cpu,gpu,memGB,ssdTB,price,warranty_years,delivery_days,url,updated\n');
+    fs.writeFileSync(path.join(root, 'tools/bto-models.csv'), '\uFEFFmaker,name,cpu,gpu,memGB,ssdTB,price,warranty_years,delivery_days,url,updated\n');
   }
-  console.log('tools/parts-prices.csv と tools/bto-models.csv を作りました。価格を入れてから、もう一度 node tools/update-prices.mjs を実行してください。');
+  console.log('tools/parts-prices.csv を更新しました（入力済みの価格はそのまま残しています）。価格を入れてから、もう一度 node tools/update-prices.mjs を実行してください。');
   process.exit(0);
 }
 

@@ -77,6 +77,15 @@ window.PCR_UI = (function () {
   };
 
   /* ---------- 構成のテキスト出力 ---------- */
+  /* パーツ写真（js/images.js にあるときだけ表示。無ければ空） */
+  U.partImg = function (k, id, size) {
+    const m = (window.PCR_IMAGES || {})[k]; const im = m && m[id];
+    if (!im || !im.u) return '';
+    const n = size || 48;
+    return '<img class="pimg" src="' + U.esc(im.u) + '" alt="" width="' + n + '" height="' + n + '" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">';
+  };
+  U.hasImages = function () { const m = window.PCR_IMAGES || {}; return Object.keys(m).some(k => Object.keys(m[k] || {}).length); };
+
   U.buildText = function (ids, ctx, name) {
     const ev = E.evaluate(ids, ctx);
     const L = [];

@@ -12,100 +12,213 @@ window.PCR_DATA = (function () {
   /* ---------- CPU ----------
      sock: ソケット / tdp: 公称TDP / pw: 最大時の消費電力の目安(W)
      gs: ゲーム性能の目安(Ryzen 7 9800X3D = 100) / mt: 動画編集など多コア性能の目安(最大=100)
-     plus: Core Ultra 200S Plus（2026年3月発売。仕様は公式で要確認） */
+     fam: 世代の区分 / igpu:false = 内蔵グラフィックスなし / bios:true = 新しいBIOSが必要な場合あり / unstable: 13・14世代の不安定問題の対象
+   plus: Core Ultra 200S Plus（2026年3月発売） */
   D.cpu = [
-    { id: 'r5-9600x',  name: 'Ryzen 5 9600X',  b: 'AMD', sock: 'AM5', core: '6コア/12スレッド',  tdp: 65,  pw: 90,  gs: 68,  mt: 45,  price: 35000, q: 'Ryzen 5 9600X' },
-    { id: 'r7-9700x',  name: 'Ryzen 7 9700X',  b: 'AMD', sock: 'AM5', core: '8コア/16スレッド',  tdp: 65,  pw: 90,  gs: 74,  mt: 55,  price: 48000, q: 'Ryzen 7 9700X' },
-    { id: 'r7-9800x3d',name: 'Ryzen 7 9800X3D',b: 'AMD', sock: 'AM5', core: '8コア/16スレッド',  tdp: 120, pw: 125, gs: 100, mt: 56,  price: 68000, q: 'Ryzen 7 9800X3D', x3d: true },
-    { id: 'r9-9900x',  name: 'Ryzen 9 9900X',  b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 165, gs: 72,  mt: 75,  price: 58000, q: 'Ryzen 9 9900X' },
-    { id: 'r9-9950x',  name: 'Ryzen 9 9950X',  b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 75,  mt: 100, price: 85000, q: 'Ryzen 9 9950X' },
-    { id: 'r9-9950x3d',name: 'Ryzen 9 9950X3D',b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 97,  mt: 100, price: 98000, q: 'Ryzen 9 9950X3D', x3d: true },
-    { id: 'cu5-245k',  name: 'Core Ultra 5 245K',     b: 'Intel', sock: 'LGA1851', core: '14コア(6P+8E)',  tdp: 125, pw: 160, gs: 68, mt: 62,  price: 45000, q: 'Core Ultra 5 245K', oc: true },
-    { id: 'cu5-250kp', name: 'Core Ultra 5 250K Plus',b: 'Intel', sock: 'LGA1851', core: 'Eコア増量版(詳細は公式で確認)', tdp: 125, pw: 160, gs: 74, mt: 80,  price: 38000, q: 'Core Ultra 5 250K Plus', oc: true, plus: true },
-    { id: 'cu7-265k',  name: 'Core Ultra 7 265K',     b: 'Intel', sock: 'LGA1851', core: '20コア(8P+12E)', tdp: 125, pw: 250, gs: 76, mt: 82,  price: 62000, q: 'Core Ultra 7 265K', oc: true },
-    { id: 'cu7-270kp', name: 'Core Ultra 7 270K Plus',b: 'Intel', sock: 'LGA1851', core: 'Eコア増量版(詳細は公式で確認)', tdp: 125, pw: 250, gs: 82, mt: 95,  price: 47000, q: 'Core Ultra 7 270K Plus', oc: true, plus: true },
-    { id: 'cu9-285k',  name: 'Core Ultra 9 285K',     b: 'Intel', sock: 'LGA1851', core: '24コア(8P+16E)', tdp: 125, pw: 250, gs: 80, mt: 100, price: 90000, q: 'Core Ultra 9 285K', oc: true }
+    { id: 'r5-9500f', name: 'Ryzen 5 9500F', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 63, mt: 43, price: 24000, q: 'Ryzen 5 9500F', fam: '9000', igpu: false },
+    { id: 'r5-9600', name: 'Ryzen 5 9600', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 66, mt: 44, price: 29000, q: 'Ryzen 5 9600', fam: '9000' },
+    { id: 'r5-9600x', name: 'Ryzen 5 9600X', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 90, gs: 68, mt: 45, price: 35000, q: 'Ryzen 5 9600X', fam: '9000' },
+    { id: 'r7-9700x', name: 'Ryzen 7 9700X', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 65, pw: 90, gs: 74, mt: 55, price: 48000, q: 'Ryzen 7 9700X', fam: '9000' },
+    { id: 'r7-9800x3d', name: 'Ryzen 7 9800X3D', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 120, pw: 125, gs: 100, mt: 56, price: 68000, q: 'Ryzen 7 9800X3D', fam: '9000', x3d: true },
+    { id: 'r7-9850x3d', name: 'Ryzen 7 9850X3D', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 120, pw: 130, gs: 105, mt: 58, price: 78000, q: 'Ryzen 7 9850X3D', fam: '9000', x3d: true },
+    { id: 'r9-9900x', name: 'Ryzen 9 9900X', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 165, gs: 72, mt: 75, price: 58000, q: 'Ryzen 9 9900X', fam: '9000' },
+    { id: 'r9-9900x3d', name: 'Ryzen 9 9900X3D', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 165, gs: 95, mt: 78, price: 79000, q: 'Ryzen 9 9900X3D', fam: '9000', x3d: true },
+    { id: 'r9-9950x', name: 'Ryzen 9 9950X', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 75, mt: 100, price: 85000, q: 'Ryzen 9 9950X', fam: '9000' },
+    { id: 'r9-9950x3d', name: 'Ryzen 9 9950X3D', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 97, mt: 100, price: 98000, q: 'Ryzen 9 9950X3D', fam: '9000', x3d: true },
+    { id: 'r9-9950x3d2', name: 'Ryzen 9 9950X3D2 Dual Edition', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 200, pw: 245, gs: 98, mt: 100, price: 120000, q: 'Ryzen 9 9950X3D2 Dual Edition', fam: '9000', x3d: true },
+    { id: 'r5-7500f', name: 'Ryzen 5 7500F', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 56, mt: 40, price: 22000, q: 'Ryzen 5 7500F', fam: '7000', igpu: false },
+    { id: 'r5-7600', name: 'Ryzen 5 7600', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 60, mt: 42, price: 28000, q: 'Ryzen 5 7600', fam: '7000' },
+    { id: 'r5-7600x', name: 'Ryzen 5 7600X', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 105, pw: 142, gs: 64, mt: 46, price: 31000, q: 'Ryzen 5 7600X', fam: '7000' },
+    { id: 'r7-7700', name: 'Ryzen 7 7700', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 65, pw: 88, gs: 66, mt: 52, price: 38000, q: 'Ryzen 7 7700', fam: '7000' },
+    { id: 'r7-7700x', name: 'Ryzen 7 7700X', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 105, pw: 142, gs: 68, mt: 54, price: 42000, q: 'Ryzen 7 7700X', fam: '7000' },
+    { id: 'r7-7800x3d', name: 'Ryzen 7 7800X3D', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 120, pw: 130, gs: 92, mt: 55, price: 52000, q: 'Ryzen 7 7800X3D', fam: '7000', x3d: true },
+    { id: 'r9-7900', name: 'Ryzen 9 7900', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 65, pw: 88, gs: 66, mt: 70, price: 52000, q: 'Ryzen 9 7900', fam: '7000' },
+    { id: 'r9-7900x', name: 'Ryzen 9 7900X', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 170, pw: 230, gs: 70, mt: 76, price: 55000, q: 'Ryzen 9 7900X', fam: '7000' },
+    { id: 'r9-7900x3d', name: 'Ryzen 9 7900X3D', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 162, gs: 88, mt: 74, price: 65000, q: 'Ryzen 9 7900X3D', fam: '7000', x3d: true },
+    { id: 'r9-7950x', name: 'Ryzen 9 7950X', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 230, gs: 72, mt: 92, price: 70000, q: 'Ryzen 9 7950X', fam: '7000' },
+    { id: 'r9-7950x3d', name: 'Ryzen 9 7950X3D', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 120, pw: 162, gs: 90, mt: 92, price: 80000, q: 'Ryzen 9 7950X3D', fam: '7000', x3d: true },
+    { id: 'cu5-225', name: 'Core Ultra 5 225', b: 'Intel', sock: 'LGA1851', core: '10コア(6P+4E)', tdp: 65, pw: 121, gs: 60, mt: 42, price: 28000, q: 'Core Ultra 5 225', fam: 'U200' },
+    { id: 'cu5-245', name: 'Core Ultra 5 245', b: 'Intel', sock: 'LGA1851', core: '14コア(6P+8E)', tdp: 65, pw: 121, gs: 66, mt: 60, price: 40000, q: 'Core Ultra 5 245', fam: 'U200' },
+    { id: 'cu5-245k', name: 'Core Ultra 5 245K', b: 'Intel', sock: 'LGA1851', core: '14コア(6P+8E)', tdp: 125, pw: 160, gs: 68, mt: 62, price: 45000, q: 'Core Ultra 5 245K', fam: 'U200', oc: true },
+    { id: 'cu5-250kp', name: 'Core Ultra 5 250K Plus', b: 'Intel', sock: 'LGA1851', core: '18コア(6P+12E)', tdp: 125, pw: 160, gs: 74, mt: 80, price: 38000, q: 'Core Ultra 5 250K Plus', fam: 'U200P', oc: true, plus: true },
+    { id: 'cu7-265', name: 'Core Ultra 7 265', b: 'Intel', sock: 'LGA1851', core: '20コア(8P+12E)', tdp: 65, pw: 182, gs: 74, mt: 80, price: 55000, q: 'Core Ultra 7 265', fam: 'U200' },
+    { id: 'cu7-265k', name: 'Core Ultra 7 265K', b: 'Intel', sock: 'LGA1851', core: '20コア(8P+12E)', tdp: 125, pw: 250, gs: 76, mt: 82, price: 62000, q: 'Core Ultra 7 265K', fam: 'U200', oc: true },
+    { id: 'cu7-270kp', name: 'Core Ultra 7 270K Plus', b: 'Intel', sock: 'LGA1851', core: '24コア(8P+16E)', tdp: 125, pw: 250, gs: 82, mt: 95, price: 47000, q: 'Core Ultra 7 270K Plus', fam: 'U200P', oc: true, plus: true },
+    { id: 'cu9-285', name: 'Core Ultra 9 285', b: 'Intel', sock: 'LGA1851', core: '24コア(8P+16E)', tdp: 65, pw: 182, gs: 78, mt: 98, price: 82000, q: 'Core Ultra 9 285', fam: 'U200' },
+    { id: 'cu9-285k', name: 'Core Ultra 9 285K', b: 'Intel', sock: 'LGA1851', core: '24コア(8P+16E)', tdp: 125, pw: 250, gs: 80, mt: 100, price: 90000, q: 'Core Ultra 9 285K', fam: 'U200', oc: true },
+    { id: 'i3-12100f', name: 'Core i3-12100F', b: 'Intel', sock: 'LGA1700', core: '4コア/8スレッド', tdp: 58, pw: 89, gs: 42, mt: 20, price: 11000, q: 'Core i3-12100F', fam: '12', igpu: false },
+    { id: 'i5-12400f', name: 'Core i5-12400F', b: 'Intel', sock: 'LGA1700', core: '6コア/12スレッド', tdp: 65, pw: 117, gs: 52, mt: 38, price: 16000, q: 'Core i5-12400F', fam: '12', igpu: false },
+    { id: 'i5-12600k', name: 'Core i5-12600K', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 125, pw: 150, gs: 60, mt: 55, price: 27000, q: 'Core i5-12600K', fam: '12', oc: true },
+    { id: 'i5-13400f', name: 'Core i5-13400F', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 56, mt: 52, price: 24000, q: 'Core i5-13400F', fam: '13', igpu: false },
+    { id: 'i5-13600k', name: 'Core i5-13600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 72, mt: 76, price: 38000, q: 'Core i5-13600K', fam: '13', oc: true },
+    { id: 'i5-14400f', name: 'Core i5-14400F', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 58, mt: 52, price: 25000, q: 'Core i5-14400F', fam: '14', igpu: false },
+    { id: 'i5-14600k', name: 'Core i5-14600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 74, mt: 78, price: 40000, q: 'Core i5-14600K', fam: '14', oc: true },
+    { id: 'i7-13700k', name: 'Core i7-13700K', b: 'Intel', sock: 'LGA1700', core: '16コア(8P+8E)', tdp: 125, pw: 253, gs: 72, mt: 85, price: 48000, q: 'Core i7-13700K', fam: '13', oc: true, unstable: true },
+    { id: 'i7-14700f', name: 'Core i7-14700F', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 65, pw: 219, gs: 74, mt: 90, price: 48000, q: 'Core i7-14700F', fam: '14', igpu: false, unstable: true },
+    { id: 'i7-14700k', name: 'Core i7-14700K', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 125, pw: 253, gs: 76, mt: 95, price: 55000, q: 'Core i7-14700K', fam: '14', oc: true, unstable: true },
+    { id: 'i9-13900k', name: 'Core i9-13900K', b: 'Intel', sock: 'LGA1700', core: '24コア(8P+16E)', tdp: 125, pw: 253, gs: 78, mt: 98, price: 70000, q: 'Core i9-13900K', fam: '13', oc: true, unstable: true },
+    { id: 'i9-14900k', name: 'Core i9-14900K', b: 'Intel', sock: 'LGA1700', core: '24コア(8P+16E)', tdp: 125, pw: 253, gs: 80, mt: 100, price: 82000, q: 'Core i9-14900K', fam: '14', oc: true, unstable: true },
+    { id: 'r5-5500', name: 'Ryzen 5 5500', b: 'AMD', sock: 'AM4', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 44, mt: 32, price: 12000, q: 'Ryzen 5 5500', fam: '5000', igpu: false },
+    { id: 'r5-5600', name: 'Ryzen 5 5600', b: 'AMD', sock: 'AM4', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 48, mt: 38, price: 15000, q: 'Ryzen 5 5600', fam: '5000', igpu: false },
+    { id: 'r5-5600x', name: 'Ryzen 5 5600X', b: 'AMD', sock: 'AM4', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 50, mt: 40, price: 18000, q: 'Ryzen 5 5600X', fam: '5000', igpu: false },
+    { id: 'r5-5600gt', name: 'Ryzen 5 5600GT', b: 'AMD', sock: 'AM4', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 47, mt: 36, price: 17000, q: 'Ryzen 5 5600GT', fam: '5000', bios: true },
+    { id: 'r7-5700x', name: 'Ryzen 7 5700X', b: 'AMD', sock: 'AM4', core: '8コア/16スレッド', tdp: 65, pw: 88, gs: 52, mt: 46, price: 23000, q: 'Ryzen 7 5700X', fam: '5000', igpu: false },
+    { id: 'r7-5700x3d', name: 'Ryzen 7 5700X3D', b: 'AMD', sock: 'AM4', core: '8コア/16スレッド', tdp: 105, pw: 142, gs: 70, mt: 48, price: 33000, q: 'Ryzen 7 5700X3D', fam: '5000', igpu: false, x3d: true, bios: true },
+    { id: 'r7-5800x', name: 'Ryzen 7 5800X', b: 'AMD', sock: 'AM4', core: '8コア/16スレッド', tdp: 105, pw: 142, gs: 54, mt: 50, price: 27000, q: 'Ryzen 7 5800X', fam: '5000', igpu: false },
+    { id: 'r7-5800xt', name: 'Ryzen 7 5800XT', b: 'AMD', sock: 'AM4', core: '8コア/16スレッド', tdp: 105, pw: 142, gs: 56, mt: 52, price: 30000, q: 'Ryzen 7 5800XT', fam: '5000', igpu: false, bios: true },
+    { id: 'r7-5800x3d', name: 'Ryzen 7 5800X3D', b: 'AMD', sock: 'AM4', core: '8コア/16スレッド', tdp: 105, pw: 142, gs: 72, mt: 50, price: 38000, q: 'Ryzen 7 5800X3D', fam: '5000', igpu: false, x3d: true },
+    { id: 'r9-5900x', name: 'Ryzen 9 5900X', b: 'AMD', sock: 'AM4', core: '12コア/24スレッド', tdp: 105, pw: 142, gs: 54, mt: 62, price: 40000, q: 'Ryzen 9 5900X', fam: '5000', igpu: false },
+    { id: 'r9-5900xt', name: 'Ryzen 9 5900XT', b: 'AMD', sock: 'AM4', core: '16コア/32スレッド', tdp: 105, pw: 142, gs: 56, mt: 76, price: 42000, q: 'Ryzen 9 5900XT', fam: '5000', igpu: false, bios: true },
+    { id: 'r9-5950x', name: 'Ryzen 9 5950X', b: 'AMD', sock: 'AM4', core: '16コア/32スレッド', tdp: 105, pw: 142, gs: 56, mt: 78, price: 55000, q: 'Ryzen 9 5950X', fam: '5000', igpu: false }
   ];
 
   /* ---------- GPU ----------
      tgp: 消費電力(W) / rec: メーカー推奨の電源容量(W) / len: 市販品のおおよその長さ(mm・製品で差あり)
      slots: 厚みの目安(スロット数) / conn: 電源コネクタ / score: 性能の目安(RTX 5090 = 100) */
   D.gpu = [
-    { id: 'none',     name: 'グラフィックボードなし(CPU内蔵)', b: '-', vram: 0,  tgp: 0,   rec: 0,    len: 0,   slots: 0,   conn: '-',      score: 3,   price: 0,      q: '' },
-    { id: 'rtx5050',  name: 'GeForce RTX 5050',        b: 'NVIDIA', vram: 8,  tgp: 130, rec: 550,  len: 240, slots: 2,   conn: '8pin',   score: 22,  price: 40000,  q: 'GeForce RTX 5050' },
-    { id: 'rtx5060',  name: 'GeForce RTX 5060',        b: 'NVIDIA', vram: 8,  tgp: 145, rec: 550,  len: 250, slots: 2,   conn: '8pin',   score: 29,  price: 55000,  q: 'GeForce RTX 5060' },
-    { id: 'rx9060xt', name: 'Radeon RX 9060 XT 16GB',  b: 'AMD',    vram: 16, tgp: 160, rec: 450,  len: 280, slots: 2.5, conn: '8pin',   score: 35,  price: 68000,  q: 'Radeon RX 9060 XT 16GB' },
-    { id: 'rtx5060ti',name: 'GeForce RTX 5060 Ti 16GB',b: 'NVIDIA', vram: 16, tgp: 180, rec: 600,  len: 270, slots: 2.5, conn: '8pin',   score: 36,  price: 78000,  q: 'GeForce RTX 5060 Ti 16GB' },
-    { id: 'rtx5070',  name: 'GeForce RTX 5070',        b: 'NVIDIA', vram: 12, tgp: 250, rec: 650,  len: 300, slots: 2.5, conn: '12V-2x6',score: 48,  price: 95000,  q: 'GeForce RTX 5070' },
-    { id: 'rx9070',   name: 'Radeon RX 9070',          b: 'AMD',    vram: 16, tgp: 220, rec: 650,  len: 310, slots: 3,   conn: '8pin×2', score: 55,  price: 105000, q: 'Radeon RX 9070' },
-    { id: 'rtx5070ti',name: 'GeForce RTX 5070 Ti',     b: 'NVIDIA', vram: 16, tgp: 300, rec: 750,  len: 320, slots: 3,   conn: '12V-2x6',score: 62,  price: 135000, q: 'GeForce RTX 5070 Ti' },
-    { id: 'rx9070xt', name: 'Radeon RX 9070 XT',       b: 'AMD',    vram: 16, tgp: 304, rec: 750,  len: 320, slots: 3,   conn: '8pin×2', score: 63,  price: 120000, q: 'Radeon RX 9070 XT' },
-    { id: 'rtx5080',  name: 'GeForce RTX 5080',        b: 'NVIDIA', vram: 16, tgp: 360, rec: 850,  len: 330, slots: 3,   conn: '12V-2x6',score: 70,  price: 190000, q: 'GeForce RTX 5080' },
-    { id: 'rtx5090',  name: 'GeForce RTX 5090',        b: 'NVIDIA', vram: 32, tgp: 575, rec: 1000, len: 340, slots: 3.5, conn: '12V-2x6',score: 100, price: 450000, q: 'GeForce RTX 5090' }
+    { id: 'none', name: 'グラフィックボードなし(CPU内蔵)', b: '-', vram: 0, tgp: 0, rec: 0, len: 0, slots: 0, conn: '-', score: 3, price: 0, q: '' },
+    { id: 'rx7600', name: 'Radeon RX 7600', b: 'AMD', vram: 8, tgp: 165, rec: 550, len: 240, slots: 2, conn: '8pin', score: 21, price: 38000, q: 'Radeon RX 7600', older: true },
+    { id: 'arc-b570', name: 'Intel Arc B570', b: 'Intel', vram: 10, tgp: 150, rec: 450, len: 270, slots: 2, conn: '8pin', score: 23, price: 30000, q: 'Intel Arc B570' },
+    { id: 'rtx4060', name: 'GeForce RTX 4060', b: 'NVIDIA', vram: 8, tgp: 115, rec: 550, len: 240, slots: 2, conn: '8pin', score: 24, price: 48000, q: 'GeForce RTX 4060', older: true },
+    { id: 'rx7600xt', name: 'Radeon RX 7600 XT', b: 'AMD', vram: 16, tgp: 190, rec: 600, len: 280, slots: 2.5, conn: '8pin', score: 25, price: 52000, q: 'Radeon RX 7600 XT', older: true },
+    { id: 'arc-b580', name: 'Intel Arc B580', b: 'Intel', vram: 12, tgp: 190, rec: 600, len: 270, slots: 2, conn: '8pin', score: 27, price: 38000, q: 'Intel Arc B580' },
+    { id: 'rtx5050', name: 'GeForce RTX 5050', b: 'NVIDIA', vram: 8, tgp: 130, rec: 550, len: 240, slots: 2, conn: '8pin', score: 22, price: 40000, q: 'GeForce RTX 5050' },
+    { id: 'rtx5060', name: 'GeForce RTX 5060', b: 'NVIDIA', vram: 8, tgp: 145, rec: 550, len: 250, slots: 2, conn: '8pin', score: 29, price: 55000, q: 'GeForce RTX 5060' },
+    { id: 'rtx4060ti', name: 'GeForce RTX 4060 Ti 8GB', b: 'NVIDIA', vram: 8, tgp: 160, rec: 550, len: 250, slots: 2.5, conn: '8pin', score: 30, price: 62000, q: 'GeForce RTX 4060 Ti 8GB', older: true },
+    { id: 'rtx4060ti16', name: 'GeForce RTX 4060 Ti 16GB', b: 'NVIDIA', vram: 16, tgp: 165, rec: 550, len: 260, slots: 2.5, conn: '8pin', score: 31, price: 78000, q: 'GeForce RTX 4060 Ti 16GB', older: true },
+    { id: 'rx9060xt8', name: 'Radeon RX 9060 XT 8GB', b: 'AMD', vram: 8, tgp: 150, rec: 450, len: 280, slots: 2.5, conn: '8pin', score: 34, price: 52000, q: 'Radeon RX 9060 XT 8GB' },
+    { id: 'rx9060xt', name: 'Radeon RX 9060 XT 16GB', b: 'AMD', vram: 16, tgp: 160, rec: 450, len: 280, slots: 2.5, conn: '8pin', score: 35, price: 68000, q: 'Radeon RX 9060 XT 16GB' },
+    { id: 'rtx5060ti8', name: 'GeForce RTX 5060 Ti 8GB', b: 'NVIDIA', vram: 8, tgp: 180, rec: 600, len: 270, slots: 2.5, conn: '8pin', score: 35, price: 66000, q: 'GeForce RTX 5060 Ti 8GB' },
+    { id: 'rtx5060ti', name: 'GeForce RTX 5060 Ti 16GB', b: 'NVIDIA', vram: 16, tgp: 180, rec: 600, len: 270, slots: 2.5, conn: '8pin', score: 36, price: 78000, q: 'GeForce RTX 5060 Ti 16GB' },
+    { id: 'rx7700xt', name: 'Radeon RX 7700 XT', b: 'AMD', vram: 12, tgp: 245, rec: 700, len: 280, slots: 2.5, conn: '8pin×2', score: 38, price: 70000, q: 'Radeon RX 7700 XT', older: true },
+    { id: 'rtx4070', name: 'GeForce RTX 4070', b: 'NVIDIA', vram: 12, tgp: 200, rec: 650, len: 270, slots: 2.5, conn: '8pin', score: 41, price: 88000, q: 'GeForce RTX 4070', older: true },
+    { id: 'rx7800xt', name: 'Radeon RX 7800 XT', b: 'AMD', vram: 16, tgp: 263, rec: 700, len: 300, slots: 2.5, conn: '8pin×2', score: 45, price: 85000, q: 'Radeon RX 7800 XT', older: true },
+    { id: 'rtx4070s', name: 'GeForce RTX 4070 SUPER', b: 'NVIDIA', vram: 12, tgp: 220, rec: 650, len: 280, slots: 2.5, conn: '8pin', score: 47, price: 100000, q: 'GeForce RTX 4070 SUPER', older: true },
+    { id: 'rtx5070', name: 'GeForce RTX 5070', b: 'NVIDIA', vram: 12, tgp: 250, rec: 650, len: 300, slots: 2.5, conn: '12V-2x6', score: 48, price: 95000, q: 'GeForce RTX 5070' },
+    { id: 'rx7900gre', name: 'Radeon RX 7900 GRE', b: 'AMD', vram: 16, tgp: 260, rec: 700, len: 290, slots: 2.5, conn: '8pin×2', score: 49, price: 95000, q: 'Radeon RX 7900 GRE', older: true },
+    { id: 'rtx4070ti', name: 'GeForce RTX 4070 Ti', b: 'NVIDIA', vram: 12, tgp: 285, rec: 700, len: 300, slots: 3, conn: '12V-2x6', score: 51, price: 115000, q: 'GeForce RTX 4070 Ti', older: true },
+    { id: 'rx7900xt', name: 'Radeon RX 7900 XT', b: 'AMD', vram: 20, tgp: 315, rec: 750, len: 320, slots: 3, conn: '8pin×2', score: 53, price: 125000, q: 'Radeon RX 7900 XT', older: true },
+    { id: 'rtx4070tis', name: 'GeForce RTX 4070 Ti SUPER', b: 'NVIDIA', vram: 16, tgp: 285, rec: 700, len: 310, slots: 3, conn: '12V-2x6', score: 55, price: 130000, q: 'GeForce RTX 4070 Ti SUPER', older: true },
+    { id: 'rx9070', name: 'Radeon RX 9070', b: 'AMD', vram: 16, tgp: 220, rec: 650, len: 310, slots: 3, conn: '8pin×2', score: 55, price: 105000, q: 'Radeon RX 9070' },
+    { id: 'rtx4080', name: 'GeForce RTX 4080', b: 'NVIDIA', vram: 16, tgp: 320, rec: 750, len: 320, slots: 3.5, conn: '12V-2x6', score: 60, price: 180000, q: 'GeForce RTX 4080', older: true },
+    { id: 'rx7900xtx', name: 'Radeon RX 7900 XTX', b: 'AMD', vram: 24, tgp: 355, rec: 800, len: 330, slots: 3.5, conn: '8pin×2', score: 60, price: 150000, q: 'Radeon RX 7900 XTX', older: true },
+    { id: 'rtx4080s', name: 'GeForce RTX 4080 SUPER', b: 'NVIDIA', vram: 16, tgp: 320, rec: 750, len: 320, slots: 3.5, conn: '12V-2x6', score: 62, price: 175000, q: 'GeForce RTX 4080 SUPER', older: true },
+    { id: 'rtx5070ti', name: 'GeForce RTX 5070 Ti', b: 'NVIDIA', vram: 16, tgp: 300, rec: 750, len: 320, slots: 3, conn: '12V-2x6', score: 62, price: 135000, q: 'GeForce RTX 5070 Ti' },
+    { id: 'rx9070xt', name: 'Radeon RX 9070 XT', b: 'AMD', vram: 16, tgp: 304, rec: 750, len: 320, slots: 3, conn: '8pin×2', score: 63, price: 120000, q: 'Radeon RX 9070 XT' },
+    { id: 'rtx5080', name: 'GeForce RTX 5080', b: 'NVIDIA', vram: 16, tgp: 360, rec: 850, len: 330, slots: 3, conn: '12V-2x6', score: 70, price: 190000, q: 'GeForce RTX 5080' },
+    { id: 'rtx4090', name: 'GeForce RTX 4090', b: 'NVIDIA', vram: 24, tgp: 450, rec: 850, len: 340, slots: 3.5, conn: '12V-2x6', score: 80, price: 330000, q: 'GeForce RTX 4090', older: true },
+    { id: 'rtx5090', name: 'GeForce RTX 5090', b: 'NVIDIA', vram: 32, tgp: 575, rec: 1000, len: 340, slots: 3.5, conn: '12V-2x6', score: 100, price: 450000, q: 'GeForce RTX 5090' }
   ];
 
   /* ---------- マザーボード（チップセット別の代表クラス） ----------
      form: ATX / mATX / ITX / m2g: 搭載されるM.2の最大世代の目安 / wifi: yes no varies */
   D.mb = [
-    { id: 'am5-a620-m',  name: 'AM5 A620 Micro-ATX',   sock: 'AM5', chip: 'A620', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, weakVrm: true, price: 12000, q: 'A620 Micro-ATX マザーボード AM5' },
-    { id: 'am5-b650-m',  name: 'AM5 B650 Micro-ATX',   sock: 'AM5', chip: 'B650', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: true,  price: 17000, q: 'B650 Micro-ATX マザーボード AM5' },
-    { id: 'am5-b850-m',  name: 'AM5 B850 Micro-ATX',   sock: 'AM5', chip: 'B850', form: 'mATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: true,  price: 22000, q: 'B850 Micro-ATX マザーボード AM5' },
-    { id: 'am5-b850-a',  name: 'AM5 B850 ATX',         sock: 'AM5', chip: 'B850', form: 'ATX',  mem: 'DDR5', m2g: 5, wifi: 'varies', oc: true,  price: 26000, q: 'B850 ATX マザーボード AM5' },
-    { id: 'am5-b850-i',  name: 'AM5 B850 Mini-ITX',    sock: 'AM5', chip: 'B850', form: 'ITX',  mem: 'DDR5', m2g: 5, wifi: 'yes',    oc: true,  price: 38000, q: 'B850 Mini-ITX マザーボード AM5' },
-    { id: 'am5-x870e-a', name: 'AM5 X870E ATX',        sock: 'AM5', chip: 'X870E',form: 'ATX',  mem: 'DDR5', m2g: 5, wifi: 'yes',    oc: true,  price: 48000, q: 'X870E ATX マザーボード AM5' },
-    { id: 'in-h810-m',   name: 'LGA1851 H810 Micro-ATX',sock: 'LGA1851', chip: 'H810', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, memOc: false, price: 15000, q: 'H810 Micro-ATX マザーボード LGA1851' },
-    { id: 'in-b860-m',   name: 'LGA1851 B860 Micro-ATX',sock: 'LGA1851', chip: 'B860', form: 'mATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: false, price: 21000, q: 'B860 Micro-ATX マザーボード LGA1851' },
-    { id: 'in-b860-a',   name: 'LGA1851 B860 ATX',     sock: 'LGA1851', chip: 'B860', form: 'ATX',  mem: 'DDR5', m2g: 5, wifi: 'varies', oc: false, price: 26000, q: 'B860 ATX マザーボード LGA1851' },
-    { id: 'in-b860-i',   name: 'LGA1851 B860 Mini-ITX',sock: 'LGA1851', chip: 'B860', form: 'ITX',  mem: 'DDR5', m2g: 5, wifi: 'yes',    oc: false, price: 36000, q: 'B860 Mini-ITX マザーボード LGA1851' },
-    { id: 'in-z890-a',   name: 'LGA1851 Z890 ATX',     sock: 'LGA1851', chip: 'Z890', form: 'ATX',  mem: 'DDR5', m2g: 5, wifi: 'yes',    oc: true,  price: 40000, q: 'Z890 ATX マザーボード LGA1851' }
+    { id: 'am5-a620-m', name: 'AM5 A620 Micro-ATX', sock: 'AM5', chip: 'A620', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, price: 12000, q: 'A620 Micro-ATX マザーボード AM5', weakVrm: true },
+    { id: 'am5-a620-a', name: 'AM5 A620 ATX', sock: 'AM5', chip: 'A620', form: 'ATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, price: 13500, q: 'A620 ATX マザーボード AM5', weakVrm: true },
+    { id: 'am5-b650-m', name: 'AM5 B650 Micro-ATX', sock: 'AM5', chip: 'B650', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: true, price: 17000, q: 'B650 Micro-ATX マザーボード AM5' },
+    { id: 'am5-b650-a', name: 'AM5 B650 ATX', sock: 'AM5', chip: 'B650', form: 'ATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: true, price: 20000, q: 'B650 ATX マザーボード AM5' },
+    { id: 'am5-b850-m', name: 'AM5 B850 Micro-ATX', sock: 'AM5', chip: 'B850', form: 'mATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: true, price: 22000, q: 'B850 Micro-ATX マザーボード AM5' },
+    { id: 'am5-b850-a', name: 'AM5 B850 ATX', sock: 'AM5', chip: 'B850', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: true, price: 26000, q: 'B850 ATX マザーボード AM5' },
+    { id: 'am5-b850-i', name: 'AM5 B850 Mini-ITX', sock: 'AM5', chip: 'B850', form: 'ITX', mem: 'DDR5', m2g: 5, wifi: 'yes', oc: true, price: 38000, q: 'B850 Mini-ITX マザーボード AM5' },
+    { id: 'am5-x870-a', name: 'AM5 X870 ATX', sock: 'AM5', chip: 'X870', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: true, price: 36000, q: 'X870 ATX マザーボード AM5' },
+    { id: 'am5-x870e-a', name: 'AM5 X870E ATX', sock: 'AM5', chip: 'X870E', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'yes', oc: true, price: 48000, q: 'X870E ATX マザーボード AM5' },
+    { id: 'in-h810-m', name: 'LGA1851 H810 Micro-ATX', sock: 'LGA1851', chip: 'H810', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, price: 15000, q: 'H810 Micro-ATX マザーボード LGA1851', memOc: false },
+    { id: 'in-b860-m', name: 'LGA1851 B860 Micro-ATX', sock: 'LGA1851', chip: 'B860', form: 'mATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: false, price: 21000, q: 'B860 Micro-ATX マザーボード LGA1851' },
+    { id: 'in-b860-a', name: 'LGA1851 B860 ATX', sock: 'LGA1851', chip: 'B860', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'varies', oc: false, price: 26000, q: 'B860 ATX マザーボード LGA1851' },
+    { id: 'in-b860-i', name: 'LGA1851 B860 Mini-ITX', sock: 'LGA1851', chip: 'B860', form: 'ITX', mem: 'DDR5', m2g: 5, wifi: 'yes', oc: false, price: 36000, q: 'B860 Mini-ITX マザーボード LGA1851' },
+    { id: 'in-z890-a', name: 'LGA1851 Z890 ATX', sock: 'LGA1851', chip: 'Z890', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'yes', oc: true, price: 40000, q: 'Z890 ATX マザーボード LGA1851' },
+    { id: 'in-h610-m-d4', name: 'LGA1700 H610 Micro-ATX (DDR4)', sock: 'LGA1700', chip: 'H610', form: 'mATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: false, price: 9500, q: 'H610 Micro-ATX マザーボード LGA1700', memOc: false },
+    { id: 'in-b760-m-d4', name: 'LGA1700 B760 Micro-ATX (DDR4)', sock: 'LGA1700', chip: 'B760', form: 'mATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: false, price: 15000, q: 'B760 Micro-ATX マザーボード LGA1700' },
+    { id: 'in-b760-a-d4', name: 'LGA1700 B760 ATX (DDR4)', sock: 'LGA1700', chip: 'B760', form: 'ATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: false, price: 18000, q: 'B760 ATX マザーボード LGA1700' },
+    { id: 'in-b760-i-d4', name: 'LGA1700 B760 Mini-ITX (DDR4)', sock: 'LGA1700', chip: 'B760', form: 'ITX', mem: 'DDR4', m2g: 4, wifi: 'yes', oc: false, price: 27000, q: 'B760 Mini-ITX マザーボード LGA1700' },
+    { id: 'in-b760-m-d5', name: 'LGA1700 B760 Micro-ATX (DDR5)', sock: 'LGA1700', chip: 'B760', form: 'mATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, price: 17000, q: 'B760 Micro-ATX マザーボード LGA1700' },
+    { id: 'in-b760-a-d5', name: 'LGA1700 B760 ATX (DDR5)', sock: 'LGA1700', chip: 'B760', form: 'ATX', mem: 'DDR5', m2g: 4, wifi: 'varies', oc: false, price: 22000, q: 'B760 ATX マザーボード LGA1700' },
+    { id: 'in-b760-i-d5', name: 'LGA1700 B760 Mini-ITX (DDR5)', sock: 'LGA1700', chip: 'B760', form: 'ITX', mem: 'DDR5', m2g: 4, wifi: 'yes', oc: false, price: 30000, q: 'B760 Mini-ITX マザーボード LGA1700' },
+    { id: 'in-z790-a-d4', name: 'LGA1700 Z790 ATX (DDR4)', sock: 'LGA1700', chip: 'Z790', form: 'ATX', mem: 'DDR4', m2g: 5, wifi: 'varies', oc: true, price: 32000, q: 'Z790 ATX マザーボード LGA1700' },
+    { id: 'in-z790-a-d5', name: 'LGA1700 Z790 ATX (DDR5)', sock: 'LGA1700', chip: 'Z790', form: 'ATX', mem: 'DDR5', m2g: 5, wifi: 'yes', oc: true, price: 38000, q: 'Z790 ATX マザーボード LGA1700' },
+    { id: 'am4-a520-m', name: 'AM4 A520 Micro-ATX', sock: 'AM4', chip: 'A520', form: 'mATX', mem: 'DDR4', m2g: 3, wifi: 'varies', oc: false, price: 7500, q: 'A520 Micro-ATX マザーボード AM4', weakVrm: true },
+    { id: 'am4-b550-m', name: 'AM4 B550 Micro-ATX', sock: 'AM4', chip: 'B550', form: 'mATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: true, price: 11000, q: 'B550 Micro-ATX マザーボード AM4' },
+    { id: 'am4-b550-a', name: 'AM4 B550 ATX', sock: 'AM4', chip: 'B550', form: 'ATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: true, price: 14000, q: 'B550 ATX マザーボード AM4' },
+    { id: 'am4-b550-i', name: 'AM4 B550 Mini-ITX', sock: 'AM4', chip: 'B550', form: 'ITX', mem: 'DDR4', m2g: 4, wifi: 'yes', oc: true, price: 22000, q: 'B550 Mini-ITX マザーボード AM4' },
+    { id: 'am4-x570-a', name: 'AM4 X570 ATX', sock: 'AM4', chip: 'X570', form: 'ATX', mem: 'DDR4', m2g: 4, wifi: 'varies', oc: true, price: 24000, q: 'X570 ATX マザーボード AM4' }
   ];
 
-  /* ---------- メモリ（今の世代はAMD・Intelとも DDR5 のみ） ---------- */
+  /* ---------- メモリ（AM5・LGA1851 は DDR5 のみ / AM4 は DDR4 のみ / LGA1700 はボードにより DDR4 か DDR5） ---------- */
   D.mem = [
-    { id: 'd5-16',    name: 'DDR5-5600 16GB(8GB×2)',  cap: 16, type: 'DDR5', price: 20000, q: 'DDR5 16GB 8GBx2 デスクトップ用メモリ' },
-    { id: 'd5-32',    name: 'DDR5-5600 32GB(16GB×2)', cap: 32, type: 'DDR5', price: 38000, q: 'DDR5 32GB 16GBx2 デスクトップ用メモリ' },
-    { id: 'd5-32f',   name: 'DDR5-6000 32GB(16GB×2)', cap: 32, type: 'DDR5', price: 41000, q: 'DDR5-6000 32GB 16GBx2 デスクトップ用メモリ' },
-    { id: 'd5-64',    name: 'DDR5-6000 64GB(32GB×2)', cap: 64, type: 'DDR5', price: 80000, q: 'DDR5-6000 64GB 32GBx2 デスクトップ用メモリ' }
+    { id: 'd4-16', name: 'DDR4-3200 16GB(8GB×2)', cap: 16, type: 'DDR4', price: 14000, q: 'DDR4 16GB 8GBx2 デスクトップ用メモリ' },
+    { id: 'd4-32', name: 'DDR4-3200 32GB(16GB×2)', cap: 32, type: 'DDR4', price: 28000, q: 'DDR4 32GB 16GBx2 デスクトップ用メモリ' },
+    { id: 'd4-64', name: 'DDR4-3200 64GB(32GB×2)', cap: 64, type: 'DDR4', price: 58000, q: 'DDR4 64GB 32GBx2 デスクトップ用メモリ' },
+    { id: 'd5-16', name: 'DDR5-5600 16GB(8GB×2)', cap: 16, type: 'DDR5', price: 20000, q: 'DDR5 16GB 8GBx2 デスクトップ用メモリ' },
+    { id: 'd5-32', name: 'DDR5-5600 32GB(16GB×2)', cap: 32, type: 'DDR5', price: 38000, q: 'DDR5 32GB 16GBx2 デスクトップ用メモリ' },
+    { id: 'd5-32f', name: 'DDR5-6000 32GB(16GB×2)', cap: 32, type: 'DDR5', price: 41000, q: 'DDR5-6000 32GB 16GBx2 デスクトップ用メモリ' },
+    { id: 'd5-48', name: 'DDR5-5600 48GB(24GB×2)', cap: 48, type: 'DDR5', price: 58000, q: 'DDR5 48GB 24GBx2 デスクトップ用メモリ' },
+    { id: 'd5-64', name: 'DDR5-6000 64GB(32GB×2)', cap: 64, type: 'DDR5', price: 80000, q: 'DDR5-6000 64GB 32GBx2 デスクトップ用メモリ' }
   ];
 
   /* ---------- ストレージ ---------- */
   D.ssd = [
-    { id: 'sata-1', name: 'SATA SSD 1TB',      cap: 1, gen: 0, type: 'SATA', price: 9000,  q: 'SATA SSD 1TB 2.5インチ' },
-    { id: 'g4-1',   name: 'NVMe Gen4 SSD 1TB', cap: 1, gen: 4, type: 'NVMe', price: 11000, q: 'NVMe M.2 SSD 1TB Gen4' },
-    { id: 'g4-2',   name: 'NVMe Gen4 SSD 2TB', cap: 2, gen: 4, type: 'NVMe', price: 20000, q: 'NVMe M.2 SSD 2TB Gen4' },
-    { id: 'g5-1',   name: 'NVMe Gen5 SSD 1TB', cap: 1, gen: 5, type: 'NVMe', price: 18000, q: 'NVMe M.2 SSD 1TB Gen5' },
-    { id: 'g5-2',   name: 'NVMe Gen5 SSD 2TB', cap: 2, gen: 5, type: 'NVMe', price: 33000, q: 'NVMe M.2 SSD 2TB Gen5' }
+    { id: 'sata-500', name: 'SATA SSD 500GB', cap: 0.5, gen: 0, type: 'SATA', price: 5500, q: 'SATA SSD 500GB 2.5インチ' },
+    { id: 'sata-1', name: 'SATA SSD 1TB', cap: 1, gen: 0, type: 'SATA', price: 9000, q: 'SATA SSD 1TB 2.5インチ' },
+    { id: 'sata-2', name: 'SATA SSD 2TB', cap: 2, gen: 0, type: 'SATA', price: 17000, q: 'SATA SSD 2TB 2.5インチ' },
+    { id: 'g3-1', name: 'NVMe Gen3 SSD 1TB', cap: 1, gen: 3, type: 'NVMe', price: 9500, q: 'NVMe M.2 SSD 1TB Gen3' },
+    { id: 'g3-2', name: 'NVMe Gen3 SSD 2TB', cap: 2, gen: 3, type: 'NVMe', price: 18000, q: 'NVMe M.2 SSD 2TB Gen3' },
+    { id: 'g4-500', name: 'NVMe Gen4 SSD 500GB', cap: 0.5, gen: 4, type: 'NVMe', price: 7000, q: 'NVMe M.2 SSD 500GB Gen4' },
+    { id: 'g4-1', name: 'NVMe Gen4 SSD 1TB', cap: 1, gen: 4, type: 'NVMe', price: 11000, q: 'NVMe M.2 SSD 1TB Gen4' },
+    { id: 'g4-2', name: 'NVMe Gen4 SSD 2TB', cap: 2, gen: 4, type: 'NVMe', price: 20000, q: 'NVMe M.2 SSD 2TB Gen4' },
+    { id: 'g4-4', name: 'NVMe Gen4 SSD 4TB', cap: 4, gen: 4, type: 'NVMe', price: 46000, q: 'NVMe M.2 SSD 4TB Gen4' },
+    { id: 'g5-1', name: 'NVMe Gen5 SSD 1TB', cap: 1, gen: 5, type: 'NVMe', price: 18000, q: 'NVMe M.2 SSD 1TB Gen5' },
+    { id: 'g5-2', name: 'NVMe Gen5 SSD 2TB', cap: 2, gen: 5, type: 'NVMe', price: 33000, q: 'NVMe M.2 SSD 2TB Gen5' },
+    { id: 'g5-4', name: 'NVMe Gen5 SSD 4TB', cap: 4, gen: 5, type: 'NVMe', price: 70000, q: 'NVMe M.2 SSD 4TB Gen5' }
   ];
 
   /* ---------- 電源 ---------- */
   D.psu = [
-    { id: 'p550',  name: '550W 80PLUS Bronze (ATX)', w: 550,  form: 'ATX', grade: 'Bronze', atx3: false, price: 6500,  q: '電源ユニット 550W 80PLUS Bronze ATX' },
-    { id: 'p650',  name: '650W 80PLUS Gold (ATX 3.x)', w: 650, form: 'ATX', grade: 'Gold',   atx3: true,  price: 9500,  q: '電源ユニット 650W 80PLUS Gold ATX3.1' },
-    { id: 'p750',  name: '750W 80PLUS Gold (ATX 3.x)', w: 750, form: 'ATX', grade: 'Gold',   atx3: true,  price: 12000, q: '電源ユニット 750W 80PLUS Gold ATX3.1' },
-    { id: 'p850',  name: '850W 80PLUS Gold (ATX 3.x)', w: 850, form: 'ATX', grade: 'Gold',   atx3: true,  price: 15000, q: '電源ユニット 850W 80PLUS Gold ATX3.1' },
-    { id: 'p1000', name: '1000W 80PLUS Gold (ATX 3.x)',w: 1000,form: 'ATX', grade: 'Gold',   atx3: true,  price: 22000, q: '電源ユニット 1000W 80PLUS Gold ATX3.1' },
+    { id: 'p550', name: '550W 80PLUS Bronze (ATX)', w: 550, form: 'ATX', grade: 'Bronze', atx3: false, price: 6500, q: '電源ユニット 550W 80PLUS Bronze ATX' },
+    { id: 'p650b', name: '650W 80PLUS Bronze (ATX)', w: 650, form: 'ATX', grade: 'Bronze', atx3: false, price: 7500, q: '電源ユニット 650W 80PLUS Bronze ATX' },
+    { id: 'p650', name: '650W 80PLUS Gold (ATX 3.x)', w: 650, form: 'ATX', grade: 'Gold', atx3: true, price: 9500, q: '電源ユニット 650W 80PLUS Gold ATX3.1' },
+    { id: 'p750g2', name: '750W 80PLUS Gold (ATX 2.x・12V-2x6なし)', w: 750, form: 'ATX', grade: 'Gold', atx3: false, price: 11000, q: '電源ユニット 750W 80PLUS Gold ATX' },
+    { id: 'p750', name: '750W 80PLUS Gold (ATX 3.x)', w: 750, form: 'ATX', grade: 'Gold', atx3: true, price: 12000, q: '電源ユニット 750W 80PLUS Gold ATX3.1' },
+    { id: 'p850', name: '850W 80PLUS Gold (ATX 3.x)', w: 850, form: 'ATX', grade: 'Gold', atx3: true, price: 15000, q: '電源ユニット 850W 80PLUS Gold ATX3.1' },
+    { id: 'p850p', name: '850W 80PLUS Platinum (ATX 3.x)', w: 850, form: 'ATX', grade: 'Platinum', atx3: true, price: 21000, q: '電源ユニット 850W 80PLUS Platinum ATX3.1' },
+    { id: 'p1000', name: '1000W 80PLUS Gold (ATX 3.x)', w: 1000, form: 'ATX', grade: 'Gold', atx3: true, price: 22000, q: '電源ユニット 1000W 80PLUS Gold ATX3.1' },
+    { id: 'p1000p', name: '1000W 80PLUS Platinum (ATX 3.x)', w: 1000, form: 'ATX', grade: 'Platinum', atx3: true, price: 28000, q: '電源ユニット 1000W 80PLUS Platinum ATX3.1' },
     { id: 'p1200', name: '1200W 80PLUS Platinum (ATX 3.x)', w: 1200, form: 'ATX', grade: 'Platinum', atx3: true, price: 32000, q: '電源ユニット 1200W 80PLUS Platinum ATX3.1' },
-    { id: 'sfx750',name: '750W 80PLUS Gold (SFX・小型ケース用)', w: 750, form: 'SFX', grade: 'Gold', atx3: true, price: 20000, q: '電源ユニット SFX 750W 80PLUS Gold ATX3.1' }
+    { id: 'p1300', name: '1300W 80PLUS Platinum (ATX 3.x)', w: 1300, form: 'ATX', grade: 'Platinum', atx3: true, price: 38000, q: '電源ユニット 1300W 80PLUS Platinum ATX3.1' },
+    { id: 'p1600', name: '1600W 80PLUS Titanium (ATX 3.x)', w: 1600, form: 'ATX', grade: 'Titanium', atx3: true, price: 62000, q: '電源ユニット 1600W 80PLUS Titanium ATX3.1' },
+    { id: 'sfx650', name: '650W 80PLUS Gold (SFX・小型ケース用)', w: 650, form: 'SFX', grade: 'Gold', atx3: true, price: 17000, q: '電源ユニット SFX 650W 80PLUS Gold ATX3.1' },
+    { id: 'sfx750', name: '750W 80PLUS Gold (SFX・小型ケース用)', w: 750, form: 'SFX', grade: 'Gold', atx3: true, price: 20000, q: '電源ユニット SFX 750W 80PLUS Gold ATX3.1' },
+    { id: 'sfx850', name: '850W 80PLUS Gold (SFX・小型ケース用)', w: 850, form: 'SFX', grade: 'Gold', atx3: true, price: 24000, q: '電源ユニット SFX 850W 80PLUS Gold ATX3.1' },
+    { id: 'sfx1000', name: '1000W 80PLUS Platinum (SFX・小型ケース用)', w: 1000, form: 'SFX', grade: 'Platinum', atx3: true, price: 32000, q: '電源ユニット SFX 1000W 80PLUS Platinum ATX3.1' }
   ];
 
   /* ---------- ケース（代表クラス。実際の製品は寸法を必ず確認） ----------
      gpuMax: 入るGPUの長さ(mm) / coolerMax: 入る空冷クーラーの高さ(mm) / rad: 入る水冷ラジエーター(mm) */
   D.case = [
-    { id: 'c-mid',   name: 'ミドルタワー(標準)',        size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 380, coolerMax: 160, rad: [240, 360], psu: ['ATX'], gpuSlots: 4,   price: 10000, q: 'PCケース ミドルタワー ATX' },
-    { id: 'c-quiet', name: 'ミドルタワー(静音重視)',    size: 'ミドル', noise: '静音', form: ['ATX', 'mATX', 'ITX'], gpuMax: 370, coolerMax: 165, rad: [240, 360], psu: ['ATX'], gpuSlots: 4,   price: 14000, q: 'PCケース 静音 ミドルタワー' },
-    { id: 'c-air',   name: 'ミドルタワー(エアフロー重視)', size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 400, coolerMax: 170, rad: [240, 360], psu: ['ATX'], gpuSlots: 4,   price: 11000, q: 'PCケース エアフロー メッシュ ミドルタワー' },
-    { id: 'c-matx',  name: 'コンパクト(Micro-ATX)',      size: 'ミニ',   noise: '標準', form: ['mATX', 'ITX'],        gpuMax: 330, coolerMax: 155, rad: [240],      psu: ['ATX'], gpuSlots: 3,   price: 8500,  q: 'PCケース Micro-ATX コンパクト' },
-    { id: 'c-itx',   name: 'Mini-ITX 小型',              size: 'ミニ',   noise: '標準', form: ['ITX'],                gpuMax: 310, coolerMax: 70,  rad: [],         psu: ['SFX'], gpuSlots: 2.5, price: 15000, q: 'PCケース Mini-ITX 小型 SFX電源対応' },
-    { id: 'c-full',  name: 'フルタワー(大型)',           size: '大型',   noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 450, coolerMax: 185, rad: [240, 360, 420], psu: ['ATX'], gpuSlots: 5, price: 22000, q: 'PCケース フルタワー 大型' }
+    { id: 'c-budget', name: 'ミドルタワー(低価格)', size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 330, coolerMax: 150, rad: [240], psu: ['ATX'], gpuSlots: 3.5, price: 5500, q: 'PCケース ミドルタワー 低価格 ATX' },
+    { id: 'c-mid-s', name: 'ミドルタワー(小さめ)', size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 340, coolerMax: 160, rad: [240, 280], psu: ['ATX'], gpuSlots: 3.5, price: 8500, q: 'PCケース ミニタワー ATX 小型' },
+    { id: 'c-mid', name: 'ミドルタワー(標準)', size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 380, coolerMax: 160, rad: [240, 280, 360], psu: ['ATX'], gpuSlots: 4, price: 10000, q: 'PCケース ミドルタワー ATX' },
+    { id: 'c-air', name: 'ミドルタワー(エアフロー重視)', size: 'ミドル', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 400, coolerMax: 170, rad: [240, 280, 360], psu: ['ATX'], gpuSlots: 4, price: 11000, q: 'PCケース エアフロー メッシュ ミドルタワー' },
+    { id: 'c-quiet', name: 'ミドルタワー(静音重視)', size: 'ミドル', noise: '静音', form: ['ATX', 'mATX', 'ITX'], gpuMax: 370, coolerMax: 165, rad: [240, 280, 360], psu: ['ATX'], gpuSlots: 4, price: 14000, q: 'PCケース 静音 ミドルタワー' },
+    { id: 'c-matx', name: 'コンパクト(Micro-ATX)', size: 'ミニ', noise: '標準', form: ['mATX', 'ITX'], gpuMax: 330, coolerMax: 155, rad: [240, 280], psu: ['ATX'], gpuSlots: 3, price: 8500, q: 'PCケース Micro-ATX コンパクト' },
+    { id: 'c-matx-air', name: 'Micro-ATX(メッシュ・冷却重視)', size: 'ミニ', noise: '標準', form: ['mATX', 'ITX'], gpuMax: 350, coolerMax: 160, rad: [240, 280], psu: ['ATX'], gpuSlots: 3.5, price: 10500, q: 'PCケース Micro-ATX メッシュ エアフロー' },
+    { id: 'c-matx-sfx', name: 'Micro-ATX 小型(SFX電源)', size: 'ミニ', noise: '標準', form: ['mATX', 'ITX'], gpuMax: 320, coolerMax: 150, rad: [240], psu: ['SFX'], gpuSlots: 3, price: 13000, q: 'PCケース Micro-ATX 小型 SFX電源対応' },
+    { id: 'c-itx-l', name: 'Mini-ITX 中型(大きめGPU可)', size: 'ミニ', noise: '標準', form: ['ITX'], gpuMax: 330, coolerMax: 155, rad: [120, 240, 280], psu: ['SFX'], gpuSlots: 3, price: 16000, q: 'PCケース Mini-ITX 中型 SFX電源対応 簡易水冷' },
+    { id: 'c-itx', name: 'Mini-ITX 小型', size: 'ミニ', noise: '標準', form: ['ITX'], gpuMax: 310, coolerMax: 70, rad: [], psu: ['SFX'], gpuSlots: 2.5, price: 15000, q: 'PCケース Mini-ITX 小型 SFX電源対応' },
+    { id: 'c-full', name: 'フルタワー(大型)', size: '大型', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 450, coolerMax: 185, rad: [240, 280, 360, 420], psu: ['ATX'], gpuSlots: 5, price: 22000, q: 'PCケース フルタワー 大型' },
+    { id: 'c-full-dual', name: 'デュアルチャンバー(大型・ガラス)', size: '大型', noise: '標準', form: ['ATX', 'mATX', 'ITX'], gpuMax: 420, coolerMax: 170, rad: [240, 280, 360], psu: ['ATX'], gpuSlots: 4.5, price: 19000, q: 'PCケース デュアルチャンバー 大型 ガラス' }
   ];
 
   /* ---------- CPUクーラー ---------- */
   D.cooler = [
-    { id: 'k-low',   name: '低背 空冷クーラー(〜47mm)', kind: '空冷', h: 47,  rad: 0,   tdpMax: 95,  noise: 'やや大きい', sock: ['AM5', 'LGA1851'], price: 3500,  q: 'CPUクーラー 低背 ロープロファイル AM5 LGA1700' },
-    { id: 'k-air-s', name: '空冷 120mmタワー',          kind: '空冷', h: 155, rad: 0,   tdpMax: 150, noise: '標準',       sock: ['AM5', 'LGA1851'], price: 4500,  q: 'CPUクーラー 空冷 120mm サイドフロー' },
-    { id: 'k-air-l', name: '空冷 大型デュアルタワー',   kind: '空冷', h: 165, rad: 0,   tdpMax: 250, noise: '静か',       sock: ['AM5', 'LGA1851'], price: 7500,  q: 'CPUクーラー 空冷 デュアルタワー 大型' },
-    { id: 'k-aio240',name: '簡易水冷 240mm',            kind: '水冷', h: 0,   rad: 240, tdpMax: 250, noise: '標準',       sock: ['AM5', 'LGA1851'], price: 12000, q: '簡易水冷 CPUクーラー 240mm' },
-    { id: 'k-aio360',name: '簡易水冷 360mm',            kind: '水冷', h: 0,   rad: 360, tdpMax: 350, noise: '静か',       sock: ['AM5', 'LGA1851'], price: 17000, q: '簡易水冷 CPUクーラー 360mm' }
+    { id: 'k-low', name: '低背 空冷クーラー(〜47mm)', kind: '空冷', h: 47, rad: 0, tdpMax: 95, noise: 'やや大きい', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 3500, q: 'CPUクーラー 低背 ロープロファイル AM5 LGA1700' },
+    { id: 'k-air-m', name: '空冷 スリムタワー(〜120mm)', kind: '空冷', h: 120, rad: 0, tdpMax: 120, noise: '標準', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 3000, q: 'CPUクーラー 空冷 シングルタワー 120mm薄型' },
+    { id: 'k-air-s', name: '空冷 120mmタワー', kind: '空冷', h: 155, rad: 0, tdpMax: 150, noise: '標準', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 4500, q: 'CPUクーラー 空冷 120mm サイドフロー' },
+    { id: 'k-air-l', name: '空冷 大型デュアルタワー', kind: '空冷', h: 165, rad: 0, tdpMax: 260, noise: '静か', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 7500, q: 'CPUクーラー 空冷 デュアルタワー 大型' },
+    { id: 'k-aio120', name: '簡易水冷 120mm', kind: '水冷', h: 0, rad: 120, tdpMax: 150, noise: '標準', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 9000, q: '簡易水冷 CPUクーラー 120mm' },
+    { id: 'k-aio240', name: '簡易水冷 240mm', kind: '水冷', h: 0, rad: 240, tdpMax: 260, noise: '標準', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 12000, q: '簡易水冷 CPUクーラー 240mm' },
+    { id: 'k-aio280', name: '簡易水冷 280mm', kind: '水冷', h: 0, rad: 280, tdpMax: 300, noise: '標準', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 14000, q: '簡易水冷 CPUクーラー 280mm' },
+    { id: 'k-aio360', name: '簡易水冷 360mm', kind: '水冷', h: 0, rad: 360, tdpMax: 350, noise: '静か', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 17000, q: '簡易水冷 CPUクーラー 360mm' },
+    { id: 'k-aio420', name: '簡易水冷 420mm', kind: '水冷', h: 0, rad: 420, tdpMax: 380, noise: '静か', sock: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], price: 22000, q: '簡易水冷 CPUクーラー 420mm' }
   ];
 
   D.os = [
@@ -125,22 +238,41 @@ window.PCR_DATA = (function () {
     { id: 'palworld',  name: 'Palworld (パルワールド)',        genre: 'オープンワールド', g: { 1080: 260, 1440: 200, 2160: 115 }, c: 190, k: 0.8, mem: 16 },
     { id: 'ffxiv',     name: 'FF XIV (最高品質)',              genre: 'MMO',       g: { 1080: 420, 1440: 330, 2160: 190 }, c: 260, k: 0.7,  mem: 16 },
     { id: 'cyberpunk', name: 'Cyberpunk 2077 (RTなし・最高)',  genre: '重量級AAA', g: { 1080: 300, 1440: 235, 2160: 125 }, c: 220, k: 0.9,  mem: 16 },
-    { id: 'mhwilds',   name: 'Monster Hunter Wilds (高設定)',  genre: '重量級AAA', g: { 1080: 150, 1440: 115, 2160: 62 },  c: 110, k: 0.9,  mem: 32 }
+    { id: 'mhwilds',   name: 'Monster Hunter Wilds (高設定)',  genre: '重量級AAA', g: { 1080: 150, 1440: 115, 2160: 62 },  c: 110, k: 0.9,  mem: 32 },
+    /* ---- 追加分（fpsは計算モデルによる目安。実測ではありません） ---- */
+    { id: 'asa',       name: 'ARK: Survival Ascended (高設定)', genre: '重量級AAA', g: { 1080: 85, 1440: 62, 2160: 32 },   c: 95,  k: 1.0,  mem: 32 },
+    { id: 'ase',       name: 'ARK: Survival Evolved (高設定)',  genre: 'サバイバル', g: { 1080: 240, 1440: 170, 2160: 90 }, c: 130, k: 0.8,  mem: 16 },
+    { id: 'minecraft', name: 'Minecraft Java版 (MODなし)',     genre: 'サンドボックス', g: { 1080: 700, 1440: 600, 2160: 420 }, c: 420, k: 0.45, mem: 8 },
+    { id: 'mcshader',  name: 'Minecraft Java版 (重いシェーダー)', genre: 'サンドボックス', g: { 1080: 260, 1440: 170, 2160: 80 }, c: 300, k: 0.9, mem: 16 },
+    { id: 'valheim',   name: 'Valheim (ヴァルヘイム)',         genre: 'サバイバル', g: { 1080: 260, 1440: 190, 2160: 100 }, c: 180, k: 0.75, mem: 16 },
+    { id: 'rust',      name: 'Rust',                           genre: 'サバイバル', g: { 1080: 220, 1440: 160, 2160: 90 },  c: 150, k: 0.8,  mem: 16 },
+    { id: '7dtd',      name: '7 Days to Die',                  genre: 'サバイバル', g: { 1080: 280, 1440: 200, 2160: 100 }, c: 170, k: 0.75, mem: 16 },
+    { id: 'eldenring', name: 'ELDEN RING (60fps上限)',         genre: 'アクションRPG', g: { 1080: 170, 1440: 120, 2160: 62 }, c: 110, k: 0.85, mem: 16, cap: 60 },
+    { id: 'bg3',       name: "Baldur's Gate 3 (高設定)",       genre: 'RPG',       g: { 1080: 190, 1440: 140, 2160: 75 },  c: 120, k: 0.85, mem: 16 },
+    { id: 'wukong',    name: 'Black Myth: Wukong (RTなし・高)', genre: '重量級AAA', g: { 1080: 120, 1440: 85, 2160: 45 },   c: 100, k: 1.0,  mem: 16 },
+    { id: 'ow2',       name: 'Overwatch 2',                    genre: 'FPS',       g: { 1080: 420, 1440: 330, 2160: 180 }, c: 360, k: 0.6,  mem: 16 },
+    { id: 'rivals',    name: 'Marvel Rivals (高設定)',         genre: 'FPS',       g: { 1080: 230, 1440: 170, 2160: 90 },  c: 170, k: 0.85, mem: 16 },
+    { id: 'bf6',       name: 'Battlefield 6 (高設定)',         genre: 'FPS',       g: { 1080: 230, 1440: 170, 2160: 90 },  c: 170, k: 0.85, mem: 16 },
+    { id: 'warzone',   name: 'Call of Duty: Warzone',          genre: 'バトロワ',  g: { 1080: 260, 1440: 190, 2160: 100 }, c: 200, k: 0.85, mem: 16 },
+    { id: 'pubg',      name: 'PUBG: BATTLEGROUNDS',            genre: 'バトロワ',  g: { 1080: 300, 1440: 230, 2160: 125 }, c: 200, k: 0.8,  mem: 16 },
+    { id: 'helldivers', name: 'HELLDIVERS 2 (高設定)',         genre: 'シューター', g: { 1080: 170, 1440: 125, 2160: 68 }, c: 130, k: 0.9,  mem: 16 },
+    { id: 'lol',       name: 'League of Legends',              genre: 'eスポーツ', g: { 1080: 900, 1440: 800, 2160: 600 }, c: 600, k: 0.5,  mem: 8 },
+    { id: 'gtav',      name: 'Grand Theft Auto V',             genre: 'オープンワールド', g: { 1080: 420, 1440: 340, 2160: 190 }, c: 250, k: 0.65, mem: 16 }
   ];
 
   /* ---------- 今使っているPC（アップグレード診断用）----------
      plat: 世代の区分 / path: 'cpu'=CPUだけ交換できる / 'board'=マザボ・メモリごと交換が必要 */
   D.oldCpu = [
-    { id: 'o-i5-10400', name: 'Core i5-10400 (第10世代)',  gs: 38, mt: 30, pw: 130, plat: 'LGA1200 / DDR4', path: 'board' },
-    { id: 'o-r5-3600',  name: 'Ryzen 5 3600',              gs: 38, mt: 34, pw: 90,  plat: 'AM4 / DDR4',     path: 'am4' },
-    { id: 'o-r5-5600',  name: 'Ryzen 5 5600',              gs: 48, mt: 42, pw: 90,  plat: 'AM4 / DDR4',     path: 'am4' },
-    { id: 'o-r7-5700x3d',name:'Ryzen 7 5700X3D',           gs: 70, mt: 55, pw: 110, plat: 'AM4 / DDR4',     path: 'board' },
-    { id: 'o-i5-12400', name: 'Core i5-12400F (第12世代)', gs: 52, mt: 45, pw: 120, plat: 'LGA1700 / DDR4または5', path: 'board' },
-    { id: 'o-i5-13400', name: 'Core i5-13400F (第13世代)', gs: 56, mt: 55, pw: 150, plat: 'LGA1700 / DDR4または5', path: 'board' },
-    { id: 'o-i7-13700', name: 'Core i7-13700K (第13世代)', gs: 72, mt: 85, pw: 250, plat: 'LGA1700 / DDR4または5', path: 'board' },
-    { id: 'o-i7-14700', name: 'Core i7-14700K (第14世代)', gs: 76, mt: 95, pw: 253, plat: 'LGA1700 / DDR4または5', path: 'board' },
-    { id: 'o-r5-7600',  name: 'Ryzen 5 7600',              gs: 62, mt: 45, pw: 90,  plat: 'AM5 / DDR5',     path: 'cpu' },
-    { id: 'o-r7-7800x3d',name:'Ryzen 7 7800X3D',           gs: 92, mt: 55, pw: 120, plat: 'AM5 / DDR5',     path: 'cpu' }
+    { id: 'o-i5-10400', sock: 'LGA1200', name: 'Core i5-10400 (第10世代)',  gs: 38, mt: 30, pw: 130, plat: 'LGA1200 / DDR4', path: 'board' },
+    { id: 'o-r5-3600', sock: 'AM4',  name: 'Ryzen 5 3600',              gs: 38, mt: 34, pw: 90,  plat: 'AM4 / DDR4',     path: 'am4' },
+    { id: 'o-r5-5600', sock: 'AM4',  name: 'Ryzen 5 5600',              gs: 48, mt: 42, pw: 90,  plat: 'AM4 / DDR4',     path: 'am4' },
+    { id: 'o-r7-5700x3d', sock: 'AM4',name:'Ryzen 7 5700X3D',           gs: 70, mt: 55, pw: 110, plat: 'AM4 / DDR4',     path: 'board' },
+    { id: 'o-i5-12400', sock: 'LGA1700', name: 'Core i5-12400F (第12世代)', gs: 52, mt: 45, pw: 120, plat: 'LGA1700 / DDR4または5', path: 'board' },
+    { id: 'o-i5-13400', sock: 'LGA1700', name: 'Core i5-13400F (第13世代)', gs: 56, mt: 55, pw: 150, plat: 'LGA1700 / DDR4または5', path: 'board' },
+    { id: 'o-i7-13700', sock: 'LGA1700', name: 'Core i7-13700K (第13世代)', gs: 72, mt: 85, pw: 250, plat: 'LGA1700 / DDR4または5', path: 'board' },
+    { id: 'o-i7-14700', sock: 'LGA1700', name: 'Core i7-14700K (第14世代)', gs: 76, mt: 95, pw: 253, plat: 'LGA1700 / DDR4または5', path: 'board' },
+    { id: 'o-r5-7600', sock: 'AM5',  name: 'Ryzen 5 7600',              gs: 62, mt: 45, pw: 90,  plat: 'AM5 / DDR5',     path: 'cpu' },
+    { id: 'o-r7-7800x3d', sock: 'AM5',name:'Ryzen 7 7800X3D',           gs: 92, mt: 55, pw: 120, plat: 'AM5 / DDR5',     path: 'cpu' }
   ];
   D.oldGpu = [
     { id: 'g-1060',   name: 'GeForce GTX 1060',        score: 8,  tgp: 120, vram: 6 },
