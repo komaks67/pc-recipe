@@ -115,7 +115,7 @@ window.PCR_UI = (function () {
   };
   U.rakutenUrl = function (q) {
     const base = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(q) + '/';
-    return CFG.affiliate.rakutenId ? 'https://hb.afl.rakuten.co.jp/hgc/' + CFG.affiliate.rakutenId + '/?pc=' + encodeURIComponent(base) : base;
+    return CFG.affiliate.rakutenId ? 'https://hb.afl.rakuten.co.jp/ichiba/' + CFG.affiliate.rakutenId + '/?pc=' + encodeURIComponent(base) : base;
   };
   U.links = function (q) {
     if (!q) return '';

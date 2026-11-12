@@ -22,7 +22,7 @@ window.PCR_CONFIG = {
     /* AmazonアソシエイトのトラッキングID（例: pcrecipe-22）。空のままだと普通のリンクになります */
     amazonTag: '',
     /* 楽天アフィリエイトのID（空のままだと普通のリンク） */
-    rakutenId: '',
+    rakutenId: '596b99d6.84cad32d.596b99d7.476d5a69',
 
     /* BTOメーカーのリンク。ASP（A8.netなど）で提携が通ったら、
        url を ASP が発行した「広告リンクのURL」に差し替えてください。 */
