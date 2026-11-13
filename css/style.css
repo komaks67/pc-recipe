@@ -301,11 +301,11 @@ body.noscroll { overflow: hidden; }
 .m-c:hover, .m-c.on { outline: 3px solid var(--ink); outline-offset: 1px; }
 /* 状態の色（記号と文字でも区別できるようにしている） */
 .m-ok { background: #1f7a3a; color: #fff; }
-.m-gpu { background: #c9d4de; color: #1f2933; }
+.m-gpu { background: #a7e3b5; color: #0c3b1b; }
 .m-warn { background: #fab219; color: #0b0b0b; }
 .m-ng { background: #d03b3b; color: #fff; }
 [data-theme="dark"] .m-ok { background: #15803d; color: #fff; }
-[data-theme="dark"] .m-gpu { background: #3a4755; color: #fff; }
+[data-theme="dark"] .m-gpu { background: #86b896; color: #0c2414; }
 .m-legend { display: flex; flex-wrap: wrap; gap: 8px; }
 .m-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700; }
 .m-key b { font-size: .95rem; }
