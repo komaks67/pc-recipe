@@ -270,3 +270,19 @@ body.noscroll { overflow: hidden; }
 
 .ctl summary { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; min-height: 28px; }
 .ctl-now { font-size: .82rem; }
+
+/* ---------- ホーム（目的から選ぶ） ---------- */
+.home-hero h1 { font-size: clamp(1.6rem, 5vw, 2.5rem); }
+.goals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.goal { display: flex; align-items: center; gap: 14px; min-height: 84px; padding: 14px 16px; background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius); color: var(--ink); box-shadow: var(--shadow); transition: transform .15s, border-color .15s; }
+.goal:hover { text-decoration: none; border-color: var(--accent2); transform: translateY(-2px); }
+.goal .g-ico { font-size: 1.6rem; width: 52px; height: 52px; border-radius: 16px; background: var(--accent-soft); display: grid; place-items: center; flex: none; }
+.goal .g-tx { flex: 1; display: flex; flex-direction: column; line-height: 1.45; }
+.goal .g-tx b { font-size: 1.02rem; }
+.goal .g-tx span { font-size: .84rem; color: var(--muted); margin-top: 2px; }
+.goal .g-go { font-size: 1.6rem; color: var(--accent2); flex: none; }
+.goal.main { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.goal.main .g-tx span { color: var(--accent-ink); opacity: .9; }
+.goal.main .g-ico { background: rgba(255, 255, 255, .2); }
+.goal.main .g-go { color: var(--accent-ink); }
+@media (max-width: 720px) { .goals { grid-template-columns: 1fr; } .home-hero { padding: 24px 20px; } }

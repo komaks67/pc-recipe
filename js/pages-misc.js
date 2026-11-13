@@ -7,23 +7,27 @@
 
   /* ---------- ホーム ---------- */
   U.route('/', '', function (el) {
+    const saved = (U.store.get('pcr.saved.v1', []) || []).length;
+    const last = U.store.get('pcr.last.build', null);
+    const goal = (href, ico, t, d, main) => '<a class="goal' + (main ? ' main' : '') + '" href="' + href + '"><span class="g-ico">' + ico + '</span><span class="g-tx"><b>' + t + '</b><span>' + d + '</span></span><span class="g-go" aria-hidden="true">›</span></a>';
     el.innerHTML =
-      '<section class="hero"><h1>はじめてでも迷わない、<br>PCパーツの“レシピ”づくり。</h1>' +
-      '<p class="lead tipify">用途と予算を答えるだけで、CPU・GPU・メモリの組み合わせを提案。パーツ同士が合うか、電源は足りるかも、その場でチェックできます。BTOでも自作でもOKです。</p>' +
-      '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる</a><a class="btn sub" href="#/guide/bto-or-diy">BTOと自作の違いを知る</a></div></section>' +
-      '<div class="grid g2 sp2"><a class="card mode" href="#/bto"><div class="ico">🖥️</div><h2>BTOモード</h2><p class="muted">ショップで注文する人向け。CPU・GPU・メモリ・SSDを選ぶと、電源の目安やfps、メーカー比較までまとめて確認。</p><b>BTOパソコンを選ぶ →</b></a>' +
-      '<a class="card mode" href="#/build"><div class="ico">🔧</div><h2>自作モード</h2><p class="muted">パーツを自分で選んで組む人向け。ソケット・メモリ規格・ケースに入るかなど、合わない組み合わせはすぐ警告。</p><b>パーツを組む →</b></a></div>' +
-      '<h2 class="sp2">できること</h2><div class="grid g3">' +
-      [['🧭', '用途・予算診断', 'ゲーム・配信・動画編集・事務から、最適な構成を3プラン提案します。', '#/wizard'],
-       ['✅', '互換性・電源チェック', 'CPUとマザボ、GPUの長さ、電源容量、冷却力などを自動で判定します。', '#/build'],
-       ['🎮', 'ゲーム別fpsの目安', 'Apex・VALORANT・Palworldなど、構成ごとの目安fpsを表示します。', '#/games'],
-       ['🔁', 'パーツ変更シミュレーター', 'ひとつ上げると、いくら増えて何fps伸びるかが一目でわかります。', '#/build'],
-       ['🖥', 'サーバー用PC診断', 'ARK・マイクラ・パルワールドなどを自宅で動かす構成と、24時間の電気代を提案します。', '#/server'],
-       ['💻', '今のPCから診断', 'いま使っているPCのパーツを読み取り、買い替え候補と互換性を表示します。', '#/mypc'],
-       ['🔋', '今のPCの診断', '今のパーツを選ぶだけで、どこを替えると効果が大きいか診断します。', '#/upgrade'],
-       ['📘', '用語集・読みもの', '分からない言葉はカーソルを合わせれば解説。組み立て手順もあります。', '#/guide']]
-        .map(f => '<a class="card flat card-link feat" href="' + f[3] + '"><span class="ico">' + f[0] + '</span><span><b>' + f[1] + '</b><br><span class="muted">' + f[2] + '</span></span></a>').join('') + '</div>' +
-      '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。</li><li>データの確認日: ' + esc(CFG.dataDate) + '。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
+      '<section class="hero home-hero"><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
+      '<p class="lead tipify">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。パーツ同士が合うか、電源は足りるか、ゲームが何fpsで動くかも、その場でチェックできます。</p>' +
+      '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる（約1分）</a></div></section>' +
+      '<h2 class="sp2">何をしたいですか？</h2>' +
+      '<div class="goals">' +
+        goal('#/wizard', '🧭', 'おすすめのPCを知りたい', '用途と予算を答えるだけ。3つのプランを提案します', true) +
+        goal('#/compare', '⚖️', 'BTOパソコンを比べたい', '6社・' + ((window.PCR_BTO_MODELS || []).length) + '機種を、同じ中身の自作と比べます') +
+        goal('#/build', '🔧', '自分でパーツを選んで組みたい', '合わない組み合わせは、すぐ教えます') +
+        goal('#/mypc', '💻', '今のPCを強化したい', '今のパーツを読み取って、替える候補と費用を出します') +
+        goal('#/server', '🖥', 'ゲームのサーバーを建てたい', 'ARK・マイクラ・パルワールドなど。24時間の電気代も') +
+        goal('#/games', '🎮', 'ゲームが何fpsで動くか知りたい', D.games.length + '本のゲームを、グラボごとに比べます') +
+      '</div>' +
+      (last || saved ? '<div class="card flat sp2 resume"><b>前回の続き</b><div class="row sp">' + (last ? '<a class="btn sub sm" href="#/build?' + U.idsToQuery(last) + '">🔧 前回の自作構成を開く</a>' : '') + (saved ? '<a class="btn sub sm" href="#/saved">⭐ 保存した構成（' + saved + '件）</a>' : '') + '</div></div>' : '') +
+      '<h2 class="sp2">はじめての人へ</h2><div class="grid g3">' +
+        [['guide/bto-or-diy.html', '🤔', 'BTOと自作、どっちがいい？'], ['guide/checklist.html', '✅', 'BTO購入チェックリスト'], ['guide/glossary.html', '📖', 'むずかしい言葉の用語集']]
+          .map(a => '<a class="card flat card-link feat" href="' + a[0] + '"><span class="ico">' + a[1] + '</span><span><b>' + a[2] + '</b></span></a>').join('') + '</div>' +
+      '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>価格は<b>' + esc(D.priceDate || CFG.dataDate) + '</b>時点の目安です。購入前に必ずお店で確認してください。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
   });
 
   U.route('/404', 'ページが見つかりません', function (el) {
