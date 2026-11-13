@@ -305,8 +305,8 @@ window.PCR_ENGINE = (function () {
     (b.price < a.price || b.score > a.score || b.tgp < a.tgp || b.vram > a.vram);
   E.autoBuild = function (o) {
     const officeOnly = !o.game && (!o.edit || o.edit === 'none') && !o.stream;
-    const gpus = prune(officeOnly ? D.gpu.filter(g => g.id === 'none') : D.gpu.filter(g => g.id !== 'none'), gpuBetter);
-    const cpus = prune(D.cpu.filter(c => !c.legacy), cpuBetter);
+    const gpus = prune(officeOnly ? D.gpu.filter(g => g.id === 'none') : D.gpu.filter(g => g.id !== 'none' && D.suggestable(g)), gpuBetter);
+    const cpus = prune(D.cpu.filter(D.suggestable), cpuBetter);
     let caps = [32];
     if (officeOnly) caps = [o.budget >= 150000 ? 32 : 16];
     else if (o.edit === '4k' && o.budget >= 280000) caps = [64];
@@ -349,7 +349,7 @@ window.PCR_ENGINE = (function () {
     const res = { now: now, oc: oc, og: og, gpuOptions: [], cpuOptions: [], advice: [], games: games };
 
     // GPU交換案
-    D.gpu.filter(g => g.id !== 'none' && g.score >= og.score * 1.3).forEach(g => {
+    D.gpu.filter(g => g.id !== 'none' && D.suggestable(g) && g.score >= og.score * 1.3).forEach(g => {
       const r = run(oc.gs, g.score, inp.memGB);
       const need = Math.max(g.rec, Math.ceil((oc.pw + g.tgp + 80) * 1.25 / 50) * 50);
       let extra = 0, psuNote = '';
@@ -362,7 +362,7 @@ window.PCR_ENGINE = (function () {
     res.gpuOptions.sort((a, b) => a.cost - b.cost);
 
     // CPU交換案
-    D.cpu.filter(c => !c.legacy && c.gs >= oc.gs * 1.15).forEach(c => {
+    D.cpu.filter(c => D.suggestable(c) && c.gs >= oc.gs * 1.15).forEach(c => {
       const r = run(c.gs, og.score, inp.memGB);
       let cost = c.price, note = '';
       if (oc.sock === c.sock) note = 'CPUだけの交換でOK（BIOS更新が必要な場合あり）';

@@ -2,7 +2,7 @@
    PC Recipe パーツデータ
    - 仕様（ソケット・消費電力・規格など）は公式情報をもとにした値
    - gs / mt / score は「相対的な性能の目安」（公式の数値ではありません）
-   - price は仮の目安値です（config.js の priceIsPlaceholder を参照）
+   - price は data.js では初期値。実際の表示価格は js/prices.js（tools/parts-prices.csv から作成）で上書きされます
    - 確認日: config.js の dataDate
    パーツを足したいときは、各配列に1行足すだけで画面に反映されます。
    ============================================================ */
@@ -570,12 +570,20 @@ window.PCR_DATA = (function () {
   if (window.PCR_PRICES) {
     D.priceDate = window.PCR_PRICES.__date || null;
     Object.keys(window.PCR_PRICES).forEach(function (k) {
-      if (k === '__date' || !D.by[k]) return;
+      if (k.indexOf('__') === 0 || !D.by[k]) return;
       Object.keys(window.PCR_PRICES[k]).forEach(function (id) {
         if (D.by[k][id] && typeof window.PCR_PRICES[k][id] === 'number') D.by[k][id].price = window.PCR_PRICES[k][id];
       });
     });
+    /* 価格を確認できていないCPU・グラボ（在庫が少ない・販売終了など）。おまかせ提案には使わない */
+    const un = window.PCR_PRICES.__unverified || {};
+    Object.keys(un).forEach(function (k) {
+      (un[k] || []).forEach(function (id) { if (D.by[k] && D.by[k][id]) D.by[k][id].priceUnverified = true; });
+    });
+    D.priceChecked = window.PCR_PRICES.__checked || {};
   }
+  /* おまかせ提案・交換の提案に出してよいパーツか（旧世代と、価格を確認できていないものは出さない） */
+  D.suggestable = function (p) { return !p.legacy && !p.priceUnverified; };
 
   return D;
 })();

@@ -214,6 +214,7 @@ window.PCR_UI = (function () {
     main.innerHTML = '';
     try { r.fn(main, q, arg); } catch (e) { console.error(e); main.innerHTML = '<div class="card"><h2>表示でエラーが起きました</h2><p>ページを読み込み直してください。</p></div>'; }
     U.tipify(main);
+    if (window.PCR_TRACK) window.PCR_TRACK();
     if (!U.keepScroll) window.scrollTo(0, 0);
     U.keepScroll = false;
   }
