@@ -19,7 +19,7 @@ window.PCR_CONFIG = {
   siteUrl: 'https://komaks67.github.io/pc-recipe/',
 
   /* お問い合わせ・誤りの報告フォームのURL（Googleフォーム等）。空のままだと表示されません */
-  contactUrl: '',
+  contactUrl: 'https://forms.gle/bYmnNZuCt7F6BkZd9',
 
   /* Google アナリティクス 4 の測定ID（例: G-XXXXXXXXXX）。空のままだとアクセス解析は動きません */
   gaMeasurementId: 'G-LZ2CY4LXWD',
