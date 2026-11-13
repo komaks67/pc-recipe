@@ -234,12 +234,12 @@
       if (sel.mem) {
         const types = ST.memType ? [ST.memType] : ['DDR4', 'DDR5'];
         const rows = [];
-        types.forEach(t => [32, 64].forEach(cap => { if (cap <= ST.memGB) return; const m = D.mem.filter(x => x.type === t && x.cap === cap).sort((a, b) => a.price - b.price)[0]; if (m) rows.push(m); }));
+        types.forEach(t => [32, 64].forEach(cap => { if (cap <= ST.memGB) return; const m = D.mem.filter(x => !x.real && x.type === t && x.cap === cap).sort((a, b) => a.price - b.price)[0]; if (m) rows.push(m); }));
         h += '<div class="card sp"><h3>メモリを替える・増やすなら</h3>' + (ST.memGB >= 32 ? '<p>' + ST.memGB + 'GBあるので、ほとんどのゲームで足ります。</p>' : '') + (rows.length ? '<div class="tbl-wrap"><table class="t"><thead><tr><th>候補</th><th>費用の目安</th></tr></thead><tbody>' + rows.map(m => '<tr><td><b>' + esc(m.name) + '</b><br><span class="neg" style="font-size:.82rem">! マザーボードの規格（' + m.type + '）とスロットの空きを確認</span></td><td>' + yen(m.price) + '</td></tr>').join('') + '</tbody></table></div><p class="muted sp">いまのメモリを外して入れ替える前提の金額です。同じ規格のメモリを足せる場合もあります。</p>' : '<p>候補がありません。</p>') + (ST.memType ? '' : '<p class="muted">メモリの規格が分からないため、DDR4とDDR5の両方を表示しています。</p>') + '</div>';
       }
       if (sel.psu) {
         const topGpu = r.gpuOptions.slice(0, 3).reduce((m, o) => Math.max(m, Math.ceil((cpu.pw + o.gpu.tgp + 80) * 1.25 / 50) * 50), Math.ceil((cpu.pw + (gpu.tgp || 0) + 80) * 1.25 / 50) * 50);
-        const ps = D.psu.filter(p => p.form === 'ATX' && p.w >= topGpu).sort((a, b) => a.price - b.price).slice(0, 3);
+        const ps = D.psu.filter(p => !p.real && p.form === 'ATX' && p.w >= topGpu).sort((a, b) => a.price - b.price).slice(0, 3);
         h += '<div class="card sp"><h3>電源を替えるなら</h3><p>今のCPU・GPUと、上位のGPU候補までを考えると、<b>' + topGpu + 'W以上</b>がおすすめです（今 ' + ST.psuW + 'W）。</p>' + (ps.length ? '<div class="tbl-wrap"><table class="t"><thead><tr><th>候補</th><th>費用の目安</th></tr></thead><tbody>' + ps.map(p => '<tr><td><b>' + esc(p.name) + '</b><br><span class="neg" style="font-size:.82rem">! ケースの電源の規格（ATXかSFX）を確認</span></td><td>' + yen(p.price) + '</td></tr>').join('') + '</tbody></table></div>' : '') + '</div>';
       }
       h += '<p class="muted sp">価格・fpsは目安です。ケースの大きさ、マザーボードの規格、電源のケーブルは、購入前に必ず製品ページで確認してください。</p>';

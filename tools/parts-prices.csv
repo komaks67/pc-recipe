@@ -103,129 +103,6 @@ cpu,r5-5600g,Ryzen 5 5600G,20000,,目安(未確認)
 cpu,r7-5700,Ryzen 7 5700,21000,,目安(未確認)
 cpu,r7-5700g,Ryzen 7 5700G,28000,,目安(未確認)
 cpu,r5-3600,Ryzen 5 3600,14000,,目安(未確認)
-cpu,r5-8400f,Ryzen 5 8400F,21000,,目安(未確認)
-cpu,r5-8500g,Ryzen 5 8500G,25500,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-cpu,r5-8600g,Ryzen 5 8600G,33130,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-cpu,r7-8700g,Ryzen 7 8700G,53780,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-gpu,none,グラフィックボードなし(CPU内蔵),0,2026-11-13,-
-gpu,rx7600,Radeon RX 7600,38000,,目安(未確認)
-gpu,arc-b570,Intel Arc B570,39800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx4060,GeForce RTX 4060,48000,,目安(未確認)
-gpu,rx7600xt,Radeon RX 7600 XT,52000,,目安(未確認)
-gpu,arc-b580,Intel Arc B580,65627,2026-10-28,gpuprix 国内ショップ最安値
-gpu,rtx5050,GeForce RTX 5050,59800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx5060,GeForce RTX 5060,82800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx4060ti,GeForce RTX 4060 Ti 8GB,62000,,目安(未確認)
-gpu,rtx4060ti16,GeForce RTX 4060 Ti 16GB,78000,,目安(未確認)
-gpu,rx9060xt8,Radeon RX 9060 XT 8GB,87800,2026-11-13,AKIBA PC Hotline! 店頭価格(パソコン工房)
-gpu,rx9060xt,Radeon RX 9060 XT 16GB,96800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx5060ti8,GeForce RTX 5060 Ti 8GB,94780,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx5060ti,GeForce RTX 5060 Ti 16GB,144980,2026-11-13,ドスパラ通販の販売価格
-gpu,rx7700xt,Radeon RX 7700 XT,70000,,目安(未確認)
-gpu,rtx4070,GeForce RTX 4070,88000,,目安(未確認)
-gpu,rx7800xt,Radeon RX 7800 XT,85000,,目安(未確認)
-gpu,rtx4070s,GeForce RTX 4070 SUPER,100000,,目安(未確認)
-gpu,rtx5070,GeForce RTX 5070,149800,2026-11-13,ドスパラ通販の販売価格
-gpu,rx7900gre,Radeon RX 7900 GRE,95000,,目安(未確認)
-gpu,rtx4070ti,GeForce RTX 4070 Ti,115000,,目安(未確認)
-gpu,rx7900xt,Radeon RX 7900 XT,125000,,目安(未確認)
-gpu,rtx4070tis,GeForce RTX 4070 Ti SUPER,130000,,目安(未確認)
-gpu,rx9070,Radeon RX 9070,121114,2026-10-28,gpuprix 国内ショップ最安値
-gpu,rtx4080,GeForce RTX 4080,180000,,目安(未確認)
-gpu,rx7900xtx,Radeon RX 7900 XTX,150000,,目安(未確認)
-gpu,rtx4080s,GeForce RTX 4080 SUPER,175000,,目安(未確認)
-gpu,rtx5070ti,GeForce RTX 5070 Ti,229800,2026-11-13,ドスパラ通販の販売価格
-gpu,rx9070xt,Radeon RX 9070 XT,154800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx5080,GeForce RTX 5080,299800,2026-11-13,ドスパラ通販の販売価格
-gpu,rtx4090,GeForce RTX 4090,330000,,目安(未確認)
-gpu,rtx5090,GeForce RTX 5090,1048000,2026-11-13,ドスパラ通販の販売価格
-mb,am5-a620-m,AM5 A620 Micro-ATX,12000,class,クラスの代表的な価格(目安)
-mb,am5-a620-a,AM5 A620 ATX,13500,class,クラスの代表的な価格(目安)
-mb,am5-b650-m,AM5 B650 Micro-ATX,17000,class,クラスの代表的な価格(目安)
-mb,am5-b650-a,AM5 B650 ATX,20000,class,クラスの代表的な価格(目安)
-mb,am5-b850-m,AM5 B850 Micro-ATX,22000,class,クラスの代表的な価格(目安)
-mb,am5-b850-a,AM5 B850 ATX,26000,class,クラスの代表的な価格(目安)
-mb,am5-b850-i,AM5 B850 Mini-ITX,38000,class,クラスの代表的な価格(目安)
-mb,am5-x870-a,AM5 X870 ATX,36000,class,クラスの代表的な価格(目安)
-mb,am5-x870e-a,AM5 X870E ATX,48000,class,クラスの代表的な価格(目安)
-mb,in-h810-m,LGA1851 H810 Micro-ATX,15000,class,クラスの代表的な価格(目安)
-mb,in-b860-m,LGA1851 B860 Micro-ATX,21000,class,クラスの代表的な価格(目安)
-mb,in-b860-a,LGA1851 B860 ATX,26000,class,クラスの代表的な価格(目安)
-mb,in-b860-i,LGA1851 B860 Mini-ITX,36000,class,クラスの代表的な価格(目安)
-mb,in-z890-a,LGA1851 Z890 ATX,40000,class,クラスの代表的な価格(目安)
-mb,in-h610-m-d4,LGA1700 H610 Micro-ATX (DDR4),9500,class,クラスの代表的な価格(目安)
-mb,in-b760-m-d4,LGA1700 B760 Micro-ATX (DDR4),15000,class,クラスの代表的な価格(目安)
-mb,in-b760-a-d4,LGA1700 B760 ATX (DDR4),18000,class,クラスの代表的な価格(目安)
-mb,in-b760-i-d4,LGA1700 B760 Mini-ITX (DDR4),27000,class,クラスの代表的な価格(目安)
-mb,in-b760-m-d5,LGA1700 B760 Micro-ATX (DDR5),17000,class,クラスの代表的な価格(目安)
-mb,in-b760-a-d5,LGA1700 B760 ATX (DDR5),22000,class,クラスの代表的な価格(目安)
-mb,in-b760-i-d5,LGA1700 B760 Mini-ITX (DDR5),30000,class,クラスの代表的な価格(目安)
-mb,in-z790-a-d4,LGA1700 Z790 ATX (DDR4),32000,class,クラスの代表的な価格(目安)
-mb,in-z790-a-d5,LGA1700 Z790 ATX (DDR5),38000,class,クラスの代表的な価格(目安)
-mb,am4-a520-m,AM4 A520 Micro-ATX,7500,class,クラスの代表的な価格(目安)
-mb,am4-b550-m,AM4 B550 Micro-ATX,11000,class,クラスの代表的な価格(目安)
-mb,am4-b550-a,AM4 B550 ATX,14000,class,クラスの代表的な価格(目安)
-mb,am4-b550-i,AM4 B550 Mini-ITX,22000,class,クラスの代表的な価格(目安)
-mb,am4-x570-a,AM4 X570 ATX,24000,class,クラスの代表的な価格(目安)
-mem,d4-16,DDR4-3200 16GB(8GB×2),12980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d4-32,DDR4-3200 32GB(16GB×2),29990,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d4-64,DDR4-3200 64GB(32GB×2),84980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d5-16,DDR5-5600 16GB(8GB×2),34980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d5-32,DDR5-5600 32GB(16GB×2),59980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d5-32f,DDR5-6000 32GB(16GB×2),72979,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d5-48,DDR5-5600 48GB(24GB×2),111980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-mem,d5-64,DDR5-6000 64GB(32GB×2),139980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,sata-500,SATA SSD 500GB,10980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,sata-1,SATA SSD 1TB,19800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,sata-2,SATA SSD 2TB,35980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g3-1,NVMe Gen3 SSD 1TB,21990,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g3-2,NVMe Gen3 SSD 2TB,48400,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g4-500,NVMe Gen4 SSD 500GB,14980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g4-1,NVMe Gen4 SSD 1TB,24980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g4-2,NVMe Gen4 SSD 2TB,47980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g4-4,NVMe Gen4 SSD 4TB,78980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g5-1,NVMe Gen5 SSD 1TB,33800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g5-2,NVMe Gen5 SSD 2TB,52800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-ssd,g5-4,NVMe Gen5 SSD 4TB,92980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
-psu,p550,550W 80PLUS Bronze (ATX),6500,class,クラスの代表的な価格(目安)
-psu,p650b,650W 80PLUS Bronze (ATX),6280,2026-11-13,ドスパラ通販の販売価格
-psu,p650,650W 80PLUS Gold (ATX 3.x),9500,class,クラスの代表的な価格(目安)
-psu,p750g2,750W 80PLUS Gold (ATX 2.x・12V-2x6なし),11000,class,クラスの代表的な価格(目安)
-psu,p750,750W 80PLUS Gold (ATX 3.x),12500,2026-11-13,ドスパラ通販の販売価格
-psu,p850,850W 80PLUS Gold (ATX 3.x),11480,2026-11-13,ドスパラ通販の販売価格
-psu,p850p,850W 80PLUS Platinum (ATX 3.x),21000,class,クラスの代表的な価格(目安)
-psu,p1000,1000W 80PLUS Gold (ATX 3.x),15780,2026-11-13,ドスパラ通販の販売価格
-psu,p1000p,1000W 80PLUS Platinum (ATX 3.x),28000,class,クラスの代表的な価格(目安)
-psu,p1200,1200W 80PLUS Platinum (ATX 3.x),32000,class,クラスの代表的な価格(目安)
-psu,p1300,1300W 80PLUS Platinum (ATX 3.x),38000,class,クラスの代表的な価格(目安)
-psu,p1600,1600W 80PLUS Titanium (ATX 3.x),62000,class,クラスの代表的な価格(目安)
-psu,sfx650,650W 80PLUS Gold (SFX・小型ケース用),17000,class,クラスの代表的な価格(目安)
-psu,sfx750,750W 80PLUS Gold (SFX・小型ケース用),20000,class,クラスの代表的な価格(目安)
-psu,sfx850,850W 80PLUS Gold (SFX・小型ケース用),24000,class,クラスの代表的な価格(目安)
-psu,sfx1000,1000W 80PLUS Platinum (SFX・小型ケース用),32000,class,クラスの代表的な価格(目安)
-case,c-budget,ミドルタワー(低価格),5500,class,クラスの代表的な価格(目安)
-case,c-mid-s,ミドルタワー(小さめ),8500,class,クラスの代表的な価格(目安)
-case,c-mid,ミドルタワー(標準),10000,class,クラスの代表的な価格(目安)
-case,c-air,ミドルタワー(エアフロー重視),11000,class,クラスの代表的な価格(目安)
-case,c-quiet,ミドルタワー(静音重視),14000,class,クラスの代表的な価格(目安)
-case,c-matx,コンパクト(Micro-ATX),8500,class,クラスの代表的な価格(目安)
-case,c-matx-air,Micro-ATX(メッシュ・冷却重視),10500,class,クラスの代表的な価格(目安)
-case,c-matx-sfx,Micro-ATX 小型(SFX電源),13000,class,クラスの代表的な価格(目安)
-case,c-itx-l,Mini-ITX 中型(大きめGPU可),16000,class,クラスの代表的な価格(目安)
-case,c-itx,Mini-ITX 小型,15000,class,クラスの代表的な価格(目安)
-case,c-full,フルタワー(大型),22000,class,クラスの代表的な価格(目安)
-case,c-full-dual,デュアルチャンバー(大型・ガラス),19000,class,クラスの代表的な価格(目安)
-cooler,k-low,低背 空冷クーラー(〜47mm),3500,class,クラスの代表的な価格(目安)
-cooler,k-air-m,空冷 スリムタワー(〜120mm),3000,class,クラスの代表的な価格(目安)
-cooler,k-air-s,空冷 120mmタワー,4500,class,クラスの代表的な価格(目安)
-cooler,k-air-l,空冷 大型デュアルタワー,7500,class,クラスの代表的な価格(目安)
-cooler,k-aio120,簡易水冷 120mm,9000,class,クラスの代表的な価格(目安)
-cooler,k-aio240,簡易水冷 240mm,12000,class,クラスの代表的な価格(目安)
-cooler,k-aio280,簡易水冷 280mm,14000,class,クラスの代表的な価格(目安)
-cooler,k-aio360,簡易水冷 360mm,17000,class,クラスの代表的な価格(目安)
-cooler,k-aio420,簡易水冷 420mm,22000,class,クラスの代表的な価格(目安)
-os,win11,Windows 11 Home,19280,2026-05,Microsoft 参考価格(パッケージ版)
-os,none,OSなし(手持ちのライセンスを使う),0,2026-11-13,-
 cpu,i3-10100,Core i3-10100,11000,,目安(未確認)
 cpu,i5-10400f,Core i5-10400F,10000,,目安(未確認)
 cpu,i5-10400,Core i5-10400,13000,,目安(未確認)
@@ -255,6 +132,65 @@ cpu,r5-3400g,Ryzen 5 3400G,10600,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/
 cpu,r5-3600x,Ryzen 5 3600X,12000,,目安(未確認)
 cpu,r7-3700x,Ryzen 7 3700X,16000,,目安(未確認)
 cpu,r9-3900x,Ryzen 9 3900X,24000,,目安(未確認)
+cpu,r5-8400f,Ryzen 5 8400F,21000,,目安(未確認)
+cpu,r5-8500g,Ryzen 5 8500G,25500,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+cpu,r5-8600g,Ryzen 5 8600G,33130,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+cpu,r7-8700g,Ryzen 7 8700G,53780,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+gpu,none,グラフィックボードなし(CPU内蔵),0,2026-11-13,-
+gpu,rx7600,Radeon RX 7600,40900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,arc-b570,Intel Arc B570,39800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx4060,GeForce RTX 4060,54900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx7600xt,Radeon RX 7600 XT,52000,,目安(未確認)
+gpu,arc-b580,Intel Arc B580,65627,2026-10-28,gpuprix 国内ショップ最安値
+gpu,rtx5050,GeForce RTX 5050,59800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx5060,GeForce RTX 5060,82800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx4060ti,GeForce RTX 4060 Ti 8GB,62900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx4060ti16,GeForce RTX 4060 Ti 16GB,78000,,目安(未確認)
+gpu,rx9060xt8,Radeon RX 9060 XT 8GB,87800,2026-11-13,AKIBA PC Hotline! 店頭価格(パソコン工房)
+gpu,rx9060xt,Radeon RX 9060 XT 16GB,96800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx5060ti8,GeForce RTX 5060 Ti 8GB,94780,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx5060ti,GeForce RTX 5060 Ti 16GB,144980,2026-11-13,ドスパラ通販の販売価格
+gpu,rx7700xt,Radeon RX 7700 XT,51900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx4070,GeForce RTX 4070,119900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx7800xt,Radeon RX 7800 XT,86900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx4070s,GeForce RTX 4070 SUPER,117900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx5070,GeForce RTX 5070,149800,2026-11-13,ドスパラ通販の販売価格
+gpu,rx7900gre,Radeon RX 7900 GRE,95000,,目安(未確認)
+gpu,rtx4070ti,GeForce RTX 4070 Ti,117900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx7900xt,Radeon RX 7900 XT,125000,,目安(未確認)
+gpu,rtx4070tis,GeForce RTX 4070 Ti SUPER,130000,,目安(未確認)
+gpu,rx9070,Radeon RX 9070,121114,2026-10-28,gpuprix 国内ショップ最安値
+gpu,rtx4080,GeForce RTX 4080,175900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx7900xtx,Radeon RX 7900 XTX,150000,,目安(未確認)
+gpu,rtx4080s,GeForce RTX 4080 SUPER,175000,,目安(未確認)
+gpu,rtx5070ti,GeForce RTX 5070 Ti,229800,2026-11-13,ドスパラ通販の販売価格
+gpu,rx9070xt,Radeon RX 9070 XT,154800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx5080,GeForce RTX 5080,299800,2026-11-13,ドスパラ通販の販売価格
+gpu,rtx4090,GeForce RTX 4090,330000,,目安(未確認)
+gpu,rtx5090,GeForce RTX 5090,1048000,2026-11-13,ドスパラ通販の販売価格
+gpu,gtx1650,GeForce GTX 1650,11900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,gtx1070,GeForce GTX 1070,14900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,gtx1660s,GeForce GTX 1660 SUPER,15360,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx2060,GeForce RTX 2060,24900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx2060s,GeForce RTX 2060 SUPER,25900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx2070,GeForce RTX 2070,28000,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx2070s,GeForce RTX 2070 SUPER,31900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx2080s,GeForce RTX 2080 SUPER,31900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3050,GeForce RTX 3050 8GB,28900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3060,GeForce RTX 3060 12GB,47900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3060ti,GeForce RTX 3060 Ti,36900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3070,GeForce RTX 3070,39900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3070ti,GeForce RTX 3070 Ti,50900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3080,GeForce RTX 3080 10GB,56900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rtx3080ti,GeForce RTX 3080 Ti,81900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx6600,Radeon RX 6600,29900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx6600xt,Radeon RX 6600 XT,31900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx6650xt,Radeon RX 6650 XT,32900,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+gpu,rx6700xt,Radeon RX 6700 XT,43901,2026-11-13,ドスパラ中古の販売価格（最安の目安）
+mb,am4-b450-i,AM4 B450 Mini-ITX,14000,class,クラスの代表的な価格(目安)
+mb,in-b560-i,LGA1200 B560 Mini-ITX,17000,class,クラスの代表的な価格(目安)
+mb,in-b365-i,LGA1151 B365 Mini-ITX,12000,class,クラスの代表的な価格(目安)
+mb,in-b250-i,LGA1151(第6・7世代用) B250 Mini-ITX,10000,class,クラスの代表的な価格(目安)
 mb,am4-b450-m,AM4 B450 Micro-ATX,8000,class,クラスの代表的な価格(目安)
 mb,am4-b450-a,AM4 B450 ATX,10000,class,クラスの代表的な価格(目安)
 mb,in-h510-m,LGA1200 H510 Micro-ATX,9000,class,クラスの代表的な価格(目安)
@@ -265,7 +201,160 @@ mb,in-b365-m,LGA1151 B365 Micro-ATX,7000,class,クラスの代表的な価格(�
 mb,in-z390-a,LGA1151 Z390 ATX,12000,class,クラスの代表的な価格(目安)
 mb,in-b250-m,LGA1151(第6・7世代用) B250 Micro-ATX,6000,class,クラスの代表的な価格(目安)
 mb,in-z270-a,LGA1151(第6・7世代用) Z270 ATX,9000,class,クラスの代表的な価格(目安)
-mb,am4-b450-i,AM4 B450 Mini-ITX,14000,class,クラスの代表的な価格(目安)
-mb,in-b560-i,LGA1200 B560 Mini-ITX,17000,class,クラスの代表的な価格(目安)
-mb,in-b365-i,LGA1151 B365 Mini-ITX,12000,class,クラスの代表的な価格(目安)
-mb,in-b250-i,LGA1151(第6・7世代用) B250 Mini-ITX,10000,class,クラスの代表的な価格(目安)
+mb,am5-a620-m,AM5 A620 Micro-ATX,12000,class,クラスの代表的な価格(目安)
+mb,am5-a620-a,AM5 A620 ATX,13500,class,クラスの代表的な価格(目安)
+mb,am5-b650-m,AM5 B650 Micro-ATX,17000,class,クラスの代表的な価格(目安)
+mb,am5-b650-a,AM5 B650 ATX,20000,class,クラスの代表的な価格(目安)
+mb,am5-b850-m,AM5 B850 Micro-ATX,22000,class,クラスの代表的な価格(目安)
+mb,am5-b850-a,AM5 B850 ATX,26000,class,クラスの代表的な価格(目安)
+mb,am5-b850-i,AM5 B850 Mini-ITX,38000,class,クラスの代表的な価格(目安)
+mb,am5-x870-a,AM5 X870 ATX,36000,class,クラスの代表的な価格(目安)
+mb,am5-x870e-a,AM5 X870E ATX,48000,class,クラスの代表的な価格(目安)
+mb,in-h810-m,LGA1851 H810 Micro-ATX,15000,class,クラスの代表的な価格(目安)
+mb,in-b860-m,LGA1851 B860 Micro-ATX,21000,class,クラスの代表的な価格(目安)
+mb,in-b860-a,LGA1851 B860 ATX,26000,class,クラスの代表的な価格(目安)
+mb,in-b860-i,LGA1851 B860 Mini-ITX,36000,class,クラスの代表的な価格(目安)
+mb,in-z890-a,LGA1851 Z890 ATX,40000,class,クラスの代表的な価格(目安)
+mb,in-h610-m-d4,LGA1700 H610 Micro-ATX (DDR4),9500,class,クラスの代表的な価格(目安)
+mb,in-b760-m-d4,LGA1700 B760 Micro-ATX (DDR4),15000,class,クラスの代表的な価格(目安)
+mb,in-b760-a-d4,LGA1700 B760 ATX (DDR4),18000,class,クラスの代表的な価格(目安)
+mb,in-b760-i-d4,LGA1700 B760 Mini-ITX (DDR4),27000,class,クラスの代表的な価格(目安)
+mb,in-b760-m-d5,LGA1700 B760 Micro-ATX (DDR5),17000,class,クラスの代表的な価格(目安)
+mb,in-b760-a-d5,LGA1700 B760 ATX (DDR5),22000,class,クラスの代表的な価格(目安)
+mb,in-b760-i-d5,LGA1700 B760 Mini-ITX (DDR5),30000,class,クラスの代表的な価格(目安)
+mb,in-z790-a-d4,LGA1700 Z790 ATX (DDR4),32000,class,クラスの代表的な価格(目安)
+mb,in-z790-a-d5,LGA1700 Z790 ATX (DDR5),38000,class,クラスの代表的な価格(目安)
+mb,am4-a520-m,AM4 A520 Micro-ATX,7500,class,クラスの代表的な価格(目安)
+mb,am4-b550-m,AM4 B550 Micro-ATX,11000,class,クラスの代表的な価格(目安)
+mb,am4-b550-a,AM4 B550 ATX,14000,class,クラスの代表的な価格(目安)
+mb,am4-b550-i,AM4 B550 Mini-ITX,22000,class,クラスの代表的な価格(目安)
+mb,am4-x570-a,AM4 X570 ATX,24000,class,クラスの代表的な価格(目安)
+mb,rm-00,ASRock A520M-HDV (A520 AM4 MicroATX),5380,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-01,ASUS PRIME B550M-A (B550 AM4 MicroATX),8480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-02,ASRock B550 Rock WiFi (B550 AM4 ATX),15800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-03,ASRock H610M-H2/M.2 D5 (H610 1700 MicroATX),8980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-04,ASRock B760M-HDV/M.2 D4 (B760 1700 MicroATX),10480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-05,ASRock B760M Pro RS WiFi White (B760 1700 MicroATX),9800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-06,ASRock B760 Pro RS WiFi (B760 1700 ATX),12800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-07,ASRock B850M Pro RS WiFi White (B850 AM5 MicroATX),18980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-08,GIGABYTE B850 GAMING X WIFI6E (B850 AM5 ATX),24800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-09,ASUS TUF GAMING B850-PLUS WIFI (B850 AM5 ATX),39560,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-10,ASRock X870 Pro-A WiFi (X870 AM5 ATX),25980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-11,ASRock B860M Pro RS WiFi (B860 1851 MicroATX),17800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-12,ASUS PRIME B860-PLUS WIFI-CSM (B860 1851 ATX),26800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mb,rm-13,GIGABYTE Z890 AORUS ELITE WIFI7 PLUS (Z890 1851 ATX),29800,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,d4-16,DDR4-3200 16GB(8GB×2),12980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d4-32,DDR4-3200 32GB(16GB×2),29990,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d4-64,DDR4-3200 64GB(32GB×2),84980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d5-16,DDR5-5600 16GB(8GB×2),34980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d5-32,DDR5-5600 32GB(16GB×2),59980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d5-32f,DDR5-6000 32GB(16GB×2),72979,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d5-48,DDR5-5600 48GB(24GB×2),111980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,d5-64,DDR5-6000 64GB(32GB×2),139980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+mem,rr-00,Corsair CMK16GX4M2E3200C16 (DDR4 PC4-25600 8GB 2枚組),26980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-01,CFD W4U3200CS-16G (DDR4 PC4-25600 16GB 2枚組),34980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-02,ADATA AX5U5600C468G-DTLABBK (DDR5 PC5-44800 8GB 2枚組),34980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-03,CFD W5U5600CS-16G (DDR5 PC5-44800 16GB 2枚組),74980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-04,Corsair CMK32GX5M2B5600C40 (DDR5 PC5-44800 16GB 2枚組),81980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-05,Corsair CMH32GX5M2B6000C38 (DDR5 PC5-48000 16GB 2枚組),81980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+mem,rr-06,ADATA AX5U6000C3032G-DCLARWH-DP (DDR5 PC5-48000 32GB 2枚組),149980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,sata-500,SATA SSD 500GB,10980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,sata-1,SATA SSD 1TB,19800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,sata-2,SATA SSD 2TB,35980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g3-1,NVMe Gen3 SSD 1TB,21990,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g3-2,NVMe Gen3 SSD 2TB,48400,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g4-500,NVMe Gen4 SSD 500GB,14980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g4-1,NVMe Gen4 SSD 1TB,24980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g4-2,NVMe Gen4 SSD 2TB,47980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g4-4,NVMe Gen4 SSD 4TB,78980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g5-1,NVMe Gen5 SSD 1TB,33800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g5-2,NVMe Gen5 SSD 2TB,52800,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,g5-4,NVMe Gen5 SSD 4TB,92980,2026-11-07,AKIBA PC Hotline! 11月前半のCPU/メモリ/SSD価格(最安値)
+ssd,rs-00,ADATA ASU650SS-1TT-R (1TB),19980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-01,Biwin NV3500 BNV350001TB-RGX (M.2 2280 Gen3 1TB),23780,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-02,LEXAR NM790 LNM790X001T-RNNNG (M.2 2280 Gen4 1TB),28980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-03,Biwin M350 BM350NN01TB-RGX (M.2 2280 Gen4 1TB),27980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-04,ADATA SLEG-860-1000GCS-DP (M.2 2280 1TB),28980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-05,Biwin M350 BM350NN02TB-RGX (M.2 2280 Gen4 2TB),55680,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-06,Kingston NV3 PCIe 4.0 NVMe SSD SNV3S/2000G (M.2 2280 Gen4 2TB),55980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-07,LEXAR NM990 LNM990X002T-RNNNG (M.2 2280 Gen5 2TB),53980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-08,KIOXIA EXCERIA PLUS G4 SSD-CK2.0N5PLG4J (M.2 2280 2TB),69980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+ssd,rs-09,LEXAR NM1090 PRO LNM109P004T-RNNNG (M.2 2280 Gen5 4TB),92980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,p550,550W 80PLUS Bronze (ATX),6500,class,クラスの代表的な価格(目安)
+psu,p650b,650W 80PLUS Bronze (ATX),6280,2026-11-13,ドスパラ通販の販売価格
+psu,p650,650W 80PLUS Gold (ATX 3.x),9500,class,クラスの代表的な価格(目安)
+psu,p750g2,750W 80PLUS Gold (ATX 2.x・12V-2x6なし),11000,class,クラスの代表的な価格(目安)
+psu,p750,750W 80PLUS Gold (ATX 3.x),12500,2026-11-13,ドスパラ通販の販売価格
+psu,p850,850W 80PLUS Gold (ATX 3.x),11480,2026-11-13,ドスパラ通販の販売価格
+psu,p850p,850W 80PLUS Platinum (ATX 3.x),21000,class,クラスの代表的な価格(目安)
+psu,p1000,1000W 80PLUS Gold (ATX 3.x),15780,2026-11-13,ドスパラ通販の販売価格
+psu,p1000p,1000W 80PLUS Platinum (ATX 3.x),28000,class,クラスの代表的な価格(目安)
+psu,p1200,1200W 80PLUS Platinum (ATX 3.x),32000,class,クラスの代表的な価格(目安)
+psu,p1300,1300W 80PLUS Platinum (ATX 3.x),38000,class,クラスの代表的な価格(目安)
+psu,p1600,1600W 80PLUS Titanium (ATX 3.x),62000,class,クラスの代表的な価格(目安)
+psu,sfx650,650W 80PLUS Gold (SFX・小型ケース用),17000,class,クラスの代表的な価格(目安)
+psu,sfx750,750W 80PLUS Gold (SFX・小型ケース用),20000,class,クラスの代表的な価格(目安)
+psu,sfx850,850W 80PLUS Gold (SFX・小型ケース用),24000,class,クラスの代表的な価格(目安)
+psu,sfx1000,1000W 80PLUS Platinum (SFX・小型ケース用),32000,class,クラスの代表的な価格(目安)
+psu,rp-00,玄人志向 KRPW-BD650W/85+ (650W),5480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-01,Corsair CX750 2023 CP-9020279-JP (750W),7500,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-02,Corsair RM750e 2025 CP-9020295-JP (750W),12500,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-03,MSI MAG A750GL PCIE5 (750W),13480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-04,ドスパラセレクト 850W-GOLD-ATX31-WH (850W ホワイト),14980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-05,NZXT C850 Gold ATX 3.1 PA-8G2BB-JP (850W ブラック),11480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-06,Corsair RM850e 2025 CP-9020296-JP (850W),14850,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-07,Corsair RM850x 2024 Cybenetics Gold ATX3.1 CP-9020270-JP (850W),18990,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-08,MSI MAG A850GL PCIE5 WHITE (850W),15980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-09,Corsair RM1000e 2025 CP-9020297-JP (1000W),19850,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-10,SUPER FLOWER LEADEX III GOLD 1000W ATX 3.1 SF-1000F14GE (1000W),19780,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-11,Antec NE1000 PLATINUM ATX 3.1 (ATX 1000W),21346,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-12,Thermaltake TOUGHPOWER GT/1200W ATX 3.1 PS-TPT-1200FNFAGJ-3 (1200W ブラック),18980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+psu,rp-13,Corsair SF850 Platinum ATX3.1 CP-9020256-JP (850W),26071,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,c-budget,ミドルタワー(低価格),5500,class,クラスの代表的な価格(目安)
+case,c-mid-s,ミドルタワー(小さめ),8500,class,クラスの代表的な価格(目安)
+case,c-mid,ミドルタワー(標準),10000,class,クラスの代表的な価格(目安)
+case,c-air,ミドルタワー(エアフロー重視),11000,class,クラスの代表的な価格(目安)
+case,c-quiet,ミドルタワー(静音重視),14000,class,クラスの代表的な価格(目安)
+case,c-matx,コンパクト(Micro-ATX),8500,class,クラスの代表的な価格(目安)
+case,c-matx-air,Micro-ATX(メッシュ・冷却重視),10500,class,クラスの代表的な価格(目安)
+case,c-matx-sfx,Micro-ATX 小型(SFX電源),13000,class,クラスの代表的な価格(目安)
+case,c-itx-l,Mini-ITX 中型(大きめGPU可),16000,class,クラスの代表的な価格(目安)
+case,c-itx,Mini-ITX 小型,15000,class,クラスの代表的な価格(目安)
+case,c-full,フルタワー(大型),22000,class,クラスの代表的な価格(目安)
+case,c-full-dual,デュアルチャンバー(大型・ガラス),19000,class,クラスの代表的な価格(目安)
+case,rc-00,Fractal Design Pop Air Black TG Clear Tint FD-C-POA1A-02 (ATX),13180,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-01,NZXT H6 Flow RGB MINT CC-H61RG-SA (ATX ガラス),16480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-02,Corsair FRAME 4000D RS ARGB Black CC-9011296-WW (E-ATX ガラス ブラック),18280,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-03,MONTECH HS01 PRO Black (ATX ガラス ブラック),9980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-04,MONTECH XR (W-DP) (ATX ガラス ホワイト),6980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-05,NZXT H3 FLOW CC-H31FW-01 (MicroATX ガラス ホワイト),7739,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-06,Lian-Li A3-mATX Black (MicroATX),10073,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-07,Lian-Li O11 VISION COMPACT BK (E-ATX ガラス ブラック),14980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-08,Lian-Li LANCOOL 217 INF LAN217INFX (E-ATX ガラス ブラック),19780,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-09,JONSBO C6-ITX-BK (Mini-ITX ブラック),6480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-10,Fractal Design Focus 2 Black TG Clear Tint FD-C-FOC2A-01 (ATX ガラス ブラック),10468,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+case,rc-11,CoolerMaster MasterBox MB600L V2 MB600L2-KN5N-S00 (ATX ブラック),7075,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,k-low,低背 空冷クーラー(〜47mm),3500,class,クラスの代表的な価格(目安)
+cooler,k-air-m,空冷 スリムタワー(〜120mm),3000,class,クラスの代表的な価格(目安)
+cooler,k-air-s,空冷 120mmタワー,4500,class,クラスの代表的な価格(目安)
+cooler,k-air-l,空冷 大型デュアルタワー,7500,class,クラスの代表的な価格(目安)
+cooler,k-aio120,簡易水冷 120mm,9000,class,クラスの代表的な価格(目安)
+cooler,k-aio240,簡易水冷 240mm,12000,class,クラスの代表的な価格(目安)
+cooler,k-aio280,簡易水冷 280mm,14000,class,クラスの代表的な価格(目安)
+cooler,k-aio360,簡易水冷 360mm,17000,class,クラスの代表的な価格(目安)
+cooler,k-aio420,簡易水冷 420mm,22000,class,クラスの代表的な価格(目安)
+cooler,rk-00,Scythe（サイズ） 虎徹 MARK4 (SCKTT-4000),2673,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-01,Thermalright Assassin X 120 Refined SE AX120-R-SE,2120,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-02,ドスパラセレクト A400F-WH (ホワイト),2780,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-03,ID-COOLING FROZN-A620-PRO-SE (120mmファン2基搭載 デュアルタワーCPUクーラー ブラック),4190,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-04,noctua NH-U12A,14827,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-05,noctua NH-D15-G2,21700,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-06,noctua NH-L12SX77,13645,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-07,ドスパラセレクト L240M2-WH (240mm ホワイト),7680,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-08,NZXT Kraken Elite 240 RGB RL-KR24E-B2 (ブラック),16480,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-09,SilverStone IceMyst 280 SST-IM280-ARGB (280mm ARGB ブラック),10980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-10,Corsair NAUTILUS 360 RS CW-9060089-WW,11815,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-11,ARCTIC Liquid Freezer III Pro 360 ACFRE00180A (360mm ブラック),14597,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+cooler,rk-12,MONTECH HyperFlow Silent 360 Black,9980,2026-11-13,ドスパラ通販の販売価格（実際の商品）
+os,win11,Windows 11 Home,19280,2026-05,Microsoft 参考価格(パッケージ版)
+os,none,OSなし(手持ちのライセンスを使う),0,2026-11-13,-
