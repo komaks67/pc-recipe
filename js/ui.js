@@ -235,6 +235,7 @@ window.PCR_UI = (function () {
     'U200P': 'Core Ultra 200S Plus（最新）', 'U200': 'Core Ultra 200S', '14': 'Core 第14世代', '13': 'Core 第13世代', '12': 'Core 第12世代' };
   const groupOf = (k, p) => {
     if (p.legacy) return 'z1|旧世代（中古が中心）';
+    if (p.used) return 'y|中古（ドスパラの中古価格の目安）';
     if (p.priceUnverified) return 'z0|価格未確認（在庫が少ない・販売終了の可能性）';
     if (k === 'cpu') return (p.b === 'AMD' ? 'a' : 'b') + '|' + (CPU_FAM[p.fam] || p.b);
     if (k === 'gpu') return p.id === 'none' ? '0|グラボなし' : ({ NVIDIA: '1|NVIDIA GeForce', AMD: '2|AMD Radeon', Intel: '3|Intel Arc' }[p.b] || '4|' + p.b);
@@ -243,7 +244,11 @@ window.PCR_UI = (function () {
   /* list: パーツの配列、label(p): 選択肢の文字 */
   U.optionsHtml = function (k, list, cur, label) {
     const one = p => '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + U.esc(label(p)) + '</option>';
-    if (k !== 'cpu' && k !== 'gpu') return list.map(one).join('');
+    if (k !== 'cpu' && k !== 'gpu') {
+      if (!list.some(p => p.real)) return list.map(one).join('');
+      return '<optgroup label="種類ごとの目安（おすすめ）">' + list.filter(p => !p.real).map(one).join('') + '</optgroup>' +
+        '<optgroup label="実際の商品（ドスパラの価格）">' + list.filter(p => p.real).map(one).join('') + '</optgroup>';
+    }
     const g = {}, order = [];
     list.forEach(p => { const n = groupOf(k, p); if (!g[n]) { g[n] = []; order.push(n); } g[n].push(p); });
     order.sort((a, b) => a.split('|')[0] < b.split('|')[0] ? -1 : a.split('|')[0] > b.split('|')[0] ? 1 : order.indexOf(a) - order.indexOf(b));
@@ -256,15 +261,15 @@ window.PCR_UI = (function () {
   // 「すべてのメニュー」（スマホの「メニュー」タブ）
   const MENU = [
     ['PCを買いたい', [['/wizard', '🧭', '用途と予算から診断'], ['/best', '🏆', '予算で最強構成'], ['/build', '🔧', '自作PCビルダー'], ['/bto', '🖥️', 'BTOパソコン選び']]],
-    ['比べる・調べる', [['/compare', '⚖️', 'BTOモデル比較'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
+    ['比べる・調べる', [['/compare', '⚖️', 'BTOモデル比較'], ['/match', '🧩', 'CPUとグラボの相性表'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
     ['今のPC・サーバー', [['/mypc', '💻', '今のPCから診断'], ['/upgrade', '🔋', 'アップグレード診断'], ['/server', '🖥', 'ゲームサーバー用PC']]],
     ['そのほか', [['/saved', '⭐', '保存した構成'], ['/buy', '🛒', '購入ガイド・セール時期'], ['/about', 'ℹ️', 'このサイトについて']]]
   ];
   // スマホの下のタブ
   const TABS = [['/', '🏠', 'ホーム'], ['/wizard', '🧭', '診断'], ['/build', '🔧', '組む'], ['/compare', '⚖️', '比べる'], ['menu', '☰', 'メニュー']];
   // どのページが、どのメニューの仲間か
-  const GROUP = { '/best': '/wizard', '/upgrade': '/mypc', '/games': '/compare', '/history': '/compare', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
-  const TABGROUP = { '/bto': '/build', '/best': '/wizard', '/games': '/compare', '/history': '/compare' };
+  const GROUP = { '/match': '/compare', '/best': '/wizard', '/upgrade': '/mypc', '/games': '/compare', '/history': '/compare', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
+  const TABGROUP = { '/match': '/compare', '/bto': '/build', '/best': '/wizard', '/games': '/compare', '/history': '/compare' };
   function markNav(key) {
     const g = key in GROUP ? GROUP[key] : key;
     U.$$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.k === g));

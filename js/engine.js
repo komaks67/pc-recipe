@@ -55,7 +55,7 @@ window.PCR_ENGINE = (function () {
     const B = E.get(ids);
     const pw = E.power(B);
     const cs = B.case;
-    const list = D.psu.filter(p => cs.psu.indexOf(p.form) >= 0).sort((a, b) => a.w - b.w);
+    const list = D.psu.filter(p => !p.real && cs.psu.indexOf(p.form) >= 0).sort((a, b) => a.w - b.w);
     const needAtx3 = B.gpu.conn === '12V-2x6' && list.some(p => p.atx3 && p.w >= pw.rec);
     const good = list.filter(p => p.w >= pw.rec && (B.gpu.id === 'none' || p.grade !== 'Bronze') && (!needAtx3 || p.atx3));
     const ok = good.length ? good : list.filter(p => p.w >= pw.rec);
@@ -196,10 +196,10 @@ window.PCR_ENGINE = (function () {
   E.neighbors = function (key, ids) {
     const cur = D.by[key][ids[key]];
     let list;
-    if (key === 'gpu') list = D.gpu.slice().sort((a, b) => a.score - b.score);
+    if (key === 'gpu') list = D.gpu.filter(g => !g.used || g.id === cur.id).sort((a, b) => a.score - b.score);
     else if (key === 'cpu') list = D.cpu.filter(c => c.sock === cur.sock).sort((a, b) => (a.gs * 0.7 + a.mt * 0.3) - (b.gs * 0.7 + b.mt * 0.3));
-    else if (key === 'mem') list = D.mem.filter(m => m.type === cur.type).sort((a, b) => a.cap - b.cap || a.price - b.price);
-    else if (key === 'ssd') list = D.ssd.slice().sort((a, b) => a.price - b.price);
+    else if (key === 'mem') list = D.mem.filter(m => !m.real && m.type === cur.type).sort((a, b) => a.cap - b.cap || a.price - b.price);
+    else if (key === 'ssd') list = D.ssd.filter(x => !x.real).sort((a, b) => a.price - b.price);
     else return { up: null, down: null };
     const i = list.findIndex(x => x.id === cur.id);
     return { up: list[i + 1] || null, down: list[i - 1] || null };
@@ -261,7 +261,7 @@ window.PCR_ENGINE = (function () {
     if (!ids.case) {
       const pref = { mini: ['c-itx', 'c-itx-l'], compact: ['c-matx', 'c-matx-air', 'c-mid-s', 'c-mid'], mid: [opt.quiet ? 'c-quiet' : 'c-mid', 'c-air', 'c-full'], large: ['c-full', 'c-full-dual'] }[opt.size || 'mid'];
       const gpuOk = c => gpu.len <= c.gpuMax && gpu.slots <= c.gpuSlots;
-      const coolOk = c => D.cooler.some(k => k.tdpMax >= cpu.pw && (k.id !== 'k-low' || c.coolerMax < 100) && (k.kind === '空冷' ? k.h <= c.coolerMax : c.rad.indexOf(k.rad) >= 0));
+      const coolOk = c => D.cooler.some(k => !k.real && k.tdpMax >= cpu.pw && (k.id !== 'k-low' || c.coolerMax < 100) && (k.kind === '空冷' ? k.h <= c.coolerMax : c.rad.indexOf(k.rad) >= 0));
       ids.case = pref.find(id => gpuOk(D.by.case[id]) && coolOk(D.by.case[id])) || pref.find(id => gpuOk(D.by.case[id])) || pref[pref.length - 1];
     }
     const cs = D.by.case[ids.case];
@@ -270,7 +270,7 @@ window.PCR_ENGINE = (function () {
     if (!ids.ssd) ids.ssd = 'g4-1';
     if (!ids.os) ids.os = opt.noOs ? 'none' : 'win11';
     if (!ids.cooler) {
-      const cand = D.cooler.filter(k => k.tdpMax >= cpu.pw && (k.id !== 'k-low' || cs.coolerMax < 100) && (k.kind === '空冷' ? k.h <= cs.coolerMax : cs.rad.indexOf(k.rad) >= 0));
+      const cand = D.cooler.filter(k => !k.real && k.tdpMax >= cpu.pw && (k.id !== 'k-low' || cs.coolerMax < 100) && (k.kind === '空冷' ? k.h <= cs.coolerMax : cs.rad.indexOf(k.rad) >= 0));
       cand.sort((a, b) => (opt.quiet ? ((a.noise === '静か' ? 0 : 1) - (b.noise === '静か' ? 0 : 1)) : 0) || a.price - b.price);
       ids.cooler = (cand[0] || D.by.cooler['k-air-l']).id;
     }
@@ -354,7 +354,7 @@ window.PCR_ENGINE = (function () {
       const need = Math.max(g.rec, Math.ceil((oc.pw + g.tgp + 80) * 1.25 / 50) * 50);
       let extra = 0, psuNote = '';
       if (inp.psuW < need) {
-        const p = D.psu.filter(x => x.form === 'ATX' && x.w >= need).sort((a, b) => a.price - b.price)[0] || D.by.psu.p1200;
+        const p = D.psu.filter(x => !x.real && x.form === 'ATX' && x.w >= need).sort((a, b) => a.price - b.price)[0] || D.by.psu.p1200;
         extra = p.price; psuNote = '電源の交換が必要（今' + inp.psuW + 'W → ' + need + 'W以上。目安 +' + p.price.toLocaleString('ja-JP') + '円）';
       }
       res.gpuOptions.push({ gpu: g, r: r, cost: g.price + extra, psuNote: psuNote, extra: extra });

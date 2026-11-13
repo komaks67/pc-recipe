@@ -22,6 +22,7 @@ const sandbox = { window: {}, console };
 sandbox.window = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(read('js/config.js'), sandbox);
+vm.runInContext(read('js/parts-real.js'), sandbox);
 vm.runInContext(read('js/data.js'), sandbox);
 const D = sandbox.PCR_DATA;
 const KEYS = ['cpu', 'gpu', 'mb', 'mem', 'ssd', 'psu', 'case', 'cooler', 'os'];
@@ -47,9 +48,15 @@ if (process.argv.includes('--init')) {
   // すでに入力した価格は消さずに、新しく増えたパーツの行だけを足す
   const old = {};
   const pf0 = path.join(root, 'tools/parts-prices.csv');
-  if (fs.existsSync(pf0)) toObjs(parseCsv(fs.readFileSync(pf0, 'utf8'))).forEach(r => { old[r.category + '/' + r.id] = r.price; });
-  const lines = ['category,id,name,price'];
-  KEYS.forEach(k => D[k].forEach(p => lines.push([k, p.id, p.name, old[k + '/' + p.id] !== undefined && old[k + '/' + p.id] !== '' ? old[k + '/' + p.id] : p.price].map(esc).join(','))));
+  if (fs.existsSync(pf0)) toObjs(parseCsv(fs.readFileSync(pf0, 'utf8'))).forEach(r => { old[r.category + '/' + r.id] = r; });
+  const lines = ['category,id,name,price,checked,source'];
+  // 新しい行: 実際の商品（parts-real.js）は商品ページの確認日、中古グラボは data.js の価格を「中古の目安」として入れる
+  const fresh = p => p.real ? [p.price, p.checked || '', 'ドスパラ通販の販売価格（実際の商品）'] : p.used ? [p.price, '', 'ドスパラ中古の販売価格（要確認）'] : [p.price, '', '目安(未確認)'];
+  KEYS.forEach(k => D[k].forEach(p => {
+    const o = old[k + '/' + p.id];
+    const v = o && o.price !== '' ? [o.price, o.checked || '', o.source || ''] : fresh(p);
+    lines.push([k, p.id, p.name].concat(v).map(x => esc(String(x))).join(','));
+  }));
   fs.writeFileSync(pf0, '\uFEFF' + lines.join('\n') + '\n');
   if (!fs.existsSync(path.join(root, 'tools/bto-models.csv'))) {
     fs.writeFileSync(path.join(root, 'tools/bto-models.csv'), '\uFEFFmaker,name,cpu,gpu,memGB,ssdTB,price,warranty_years,delivery_days,url,updated\n');

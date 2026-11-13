@@ -9,7 +9,8 @@
   const ORDER = ['cpu', 'mb', 'mem', 'gpu', 'ssd', 'case', 'cooler', 'psu', 'os'];
 
   function specLine(k, p) {
-    return specBase(k, p) + (p.priceUnverified ? ' / 価格は未確認の目安（在庫が少ない・販売終了の可能性あり）' : '');
+    return specBase(k, p) + (p.priceUnverified ? ' / 価格は未確認の目安（在庫が少ない・販売終了の可能性あり）' : '') +
+      (p.used ? ' / 中古（価格はドスパラの中古の目安。状態や保証はお店ごとに確認）' : '') + (p.real ? ' / 実際の商品（ドスパラ ' + (p.checked || '') + ' の価格）' : '');
   }
   function specBase(k, p) {
     switch (k) {

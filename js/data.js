@@ -23,8 +23,8 @@ window.PCR_DATA = (function () {
     { id: 'r7-9850x3d', name: 'Ryzen 7 9850X3D', b: 'AMD', sock: 'AM5', core: '8コア/16スレッド', tdp: 120, pw: 130, gs: 105, mt: 58, price: 78000, q: 'Ryzen 7 9850X3D', fam: '9000', x3d: true },
     { id: 'r9-9900x', name: 'Ryzen 9 9900X', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 165, gs: 72, mt: 75, price: 58000, q: 'Ryzen 9 9900X', fam: '9000' },
     { id: 'r9-9900x3d', name: 'Ryzen 9 9900X3D', b: 'AMD', sock: 'AM5', core: '12コア/24スレッド', tdp: 120, pw: 165, gs: 95, mt: 78, price: 79000, q: 'Ryzen 9 9900X3D', fam: '9000', x3d: true },
-    { id: 'r9-9950x', name: 'Ryzen 9 9950X', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 75, mt: 100, price: 85000, q: 'Ryzen 9 9950X', fam: '9000' },
-    { id: 'r9-9950x3d', name: 'Ryzen 9 9950X3D', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 205, gs: 97, mt: 100, price: 98000, q: 'Ryzen 9 9950X3D', fam: '9000', x3d: true },
+    { id: 'r9-9950x', name: 'Ryzen 9 9950X', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 230, gs: 75, mt: 100, price: 85000, q: 'Ryzen 9 9950X', fam: '9000' },
+    { id: 'r9-9950x3d', name: 'Ryzen 9 9950X3D', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 170, pw: 230, gs: 97, mt: 100, price: 98000, q: 'Ryzen 9 9950X3D', fam: '9000', x3d: true },
     { id: 'r9-9950x3d2', name: 'Ryzen 9 9950X3D2 Dual Edition', b: 'AMD', sock: 'AM5', core: '16コア/32スレッド', tdp: 200, pw: 245, gs: 98, mt: 100, price: 120000, q: 'Ryzen 9 9950X3D2 Dual Edition', fam: '9000', x3d: true },
     { id: 'r5-7500f', name: 'Ryzen 5 7500F', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 56, mt: 40, price: 22000, q: 'Ryzen 5 7500F', fam: '7000', igpu: false },
     { id: 'r5-7600', name: 'Ryzen 5 7600', b: 'AMD', sock: 'AM5', core: '6コア/12スレッド', tdp: 65, pw: 88, gs: 60, mt: 42, price: 28000, q: 'Ryzen 5 7600', fam: '7000' },
@@ -50,9 +50,9 @@ window.PCR_DATA = (function () {
     { id: 'i5-12400f', name: 'Core i5-12400F', b: 'Intel', sock: 'LGA1700', core: '6コア/12スレッド', tdp: 65, pw: 117, gs: 52, mt: 38, price: 16000, q: 'Core i5-12400F', fam: '12', igpu: false },
     { id: 'i5-12600k', name: 'Core i5-12600K', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 125, pw: 150, gs: 60, mt: 55, price: 27000, q: 'Core i5-12600K', fam: '12', oc: true },
     { id: 'i5-13400f', name: 'Core i5-13400F', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 56, mt: 52, price: 24000, q: 'Core i5-13400F', fam: '13', igpu: false },
-    { id: 'i5-13600k', name: 'Core i5-13600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 72, mt: 76, price: 38000, q: 'Core i5-13600K', fam: '13', oc: true },
+    { id: 'i5-13600k', name: 'Core i5-13600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 72, mt: 76, price: 38000, q: 'Core i5-13600K', fam: '13', oc: true, unstable: true },
     { id: 'i5-14400f', name: 'Core i5-14400F', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 58, mt: 52, price: 25000, q: 'Core i5-14400F', fam: '14', igpu: false },
-    { id: 'i5-14600k', name: 'Core i5-14600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 74, mt: 78, price: 40000, q: 'Core i5-14600K', fam: '14', oc: true },
+    { id: 'i5-14600k', name: 'Core i5-14600K', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 74, mt: 78, price: 40000, q: 'Core i5-14600K', fam: '14', oc: true, unstable: true },
     { id: 'i7-13700k', name: 'Core i7-13700K', b: 'Intel', sock: 'LGA1700', core: '16コア(8P+8E)', tdp: 125, pw: 253, gs: 72, mt: 85, price: 48000, q: 'Core i7-13700K', fam: '13', oc: true, unstable: true },
     { id: 'i7-14700f', name: 'Core i7-14700F', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 65, pw: 219, gs: 74, mt: 90, price: 48000, q: 'Core i7-14700F', fam: '14', igpu: false, unstable: true },
     { id: 'i7-14700k', name: 'Core i7-14700K', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 125, pw: 253, gs: 76, mt: 95, price: 55000, q: 'Core i7-14700K', fam: '14', oc: true, unstable: true },
@@ -87,7 +87,7 @@ window.PCR_DATA = (function () {
     { id: 'i3-13100f', name: 'Core i3-13100F', b: 'Intel', sock: 'LGA1700', core: '4コア/8スレッド', tdp: 58, pw: 89, gs: 46, mt: 22, price: 14000, q: 'Core i3-13100F', fam: '13', igpu: false },
     { id: 'i5-13400', name: 'Core i5-13400', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 56, mt: 52, price: 28000, q: 'Core i5-13400', fam: '13' },
     { id: 'i5-13500', name: 'Core i5-13500', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 65, pw: 154, gs: 62, mt: 68, price: 36000, q: 'Core i5-13500', fam: '13' },
-    { id: 'i5-13600kf', name: 'Core i5-13600KF', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 72, mt: 76, price: 36000, q: 'Core i5-13600KF', fam: '13', igpu: false, oc: true },
+    { id: 'i5-13600kf', name: 'Core i5-13600KF', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 72, mt: 76, price: 36000, q: 'Core i5-13600KF', fam: '13', igpu: false, oc: true, unstable: true },
     { id: 'i7-13700', name: 'Core i7-13700', b: 'Intel', sock: 'LGA1700', core: '16コア(8P+8E)', tdp: 65, pw: 219, gs: 70, mt: 85, price: 50000, q: 'Core i7-13700', fam: '13', unstable: true },
     { id: 'i7-13700f', name: 'Core i7-13700F', b: 'Intel', sock: 'LGA1700', core: '16コア(8P+8E)', tdp: 65, pw: 219, gs: 70, mt: 85, price: 46000, q: 'Core i7-13700F', fam: '13', igpu: false, unstable: true },
     { id: 'i7-13700kf', name: 'Core i7-13700KF', b: 'Intel', sock: 'LGA1700', core: '16コア(8P+8E)', tdp: 125, pw: 253, gs: 72, mt: 85, price: 46000, q: 'Core i7-13700KF', fam: '13', igpu: false, oc: true, unstable: true },
@@ -99,7 +99,7 @@ window.PCR_DATA = (function () {
     { id: 'i3-14100f', name: 'Core i3-14100F', b: 'Intel', sock: 'LGA1700', core: '4コア/8スレッド', tdp: 58, pw: 89, gs: 47, mt: 22, price: 15000, q: 'Core i3-14100F', fam: '14', igpu: false },
     { id: 'i5-14400', name: 'Core i5-14400', b: 'Intel', sock: 'LGA1700', core: '10コア(6P+4E)', tdp: 65, pw: 148, gs: 58, mt: 52, price: 30000, q: 'Core i5-14400', fam: '14' },
     { id: 'i5-14500', name: 'Core i5-14500', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 65, pw: 154, gs: 64, mt: 70, price: 38000, q: 'Core i5-14500', fam: '14' },
-    { id: 'i5-14600kf', name: 'Core i5-14600KF', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 74, mt: 78, price: 38000, q: 'Core i5-14600KF', fam: '14', igpu: false, oc: true },
+    { id: 'i5-14600kf', name: 'Core i5-14600KF', b: 'Intel', sock: 'LGA1700', core: '14コア(6P+8E)', tdp: 125, pw: 181, gs: 74, mt: 78, price: 38000, q: 'Core i5-14600KF', fam: '14', igpu: false, oc: true, unstable: true },
     { id: 'i7-14700', name: 'Core i7-14700', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 65, pw: 219, gs: 74, mt: 90, price: 55000, q: 'Core i7-14700', fam: '14', unstable: true },
     { id: 'i7-14700kf', name: 'Core i7-14700KF', b: 'Intel', sock: 'LGA1700', core: '20コア(8P+12E)', tdp: 125, pw: 253, gs: 76, mt: 95, price: 52000, q: 'Core i7-14700KF', fam: '14', igpu: false, oc: true, unstable: true },
     { id: 'i9-14900', name: 'Core i9-14900', b: 'Intel', sock: 'LGA1700', core: '24コア(8P+16E)', tdp: 65, pw: 219, gs: 77, mt: 98, price: 73000, q: 'Core i9-14900', fam: '14', unstable: true },
@@ -160,37 +160,57 @@ window.PCR_DATA = (function () {
      slots: 厚みの目安(スロット数) / conn: 電源コネクタ / score: 性能の目安(RTX 5090 = 100) */
   D.gpu = [
     { id: 'none', name: 'グラフィックボードなし(CPU内蔵)', b: '-', vram: 0, tgp: 0, rec: 0, len: 0, slots: 0, conn: '-', score: 3, price: 0, q: '' },
-    { id: 'rx7600', name: 'Radeon RX 7600', b: 'AMD', vram: 8, tgp: 165, rec: 550, len: 240, slots: 2, conn: '8pin', score: 21, price: 38000, q: 'Radeon RX 7600', older: true },
+    { id: 'rx7600', name: 'Radeon RX 7600', b: 'AMD', vram: 8, tgp: 165, rec: 550, len: 240, slots: 2, conn: '8pin', score: 21, price: 38000, q: 'Radeon RX 7600', older: true, used: true },
     { id: 'arc-b570', name: 'Intel Arc B570', b: 'Intel', vram: 10, tgp: 150, rec: 450, len: 270, slots: 2, conn: '8pin', score: 23, price: 30000, q: 'Intel Arc B570' },
-    { id: 'rtx4060', name: 'GeForce RTX 4060', b: 'NVIDIA', vram: 8, tgp: 115, rec: 550, len: 240, slots: 2, conn: '8pin', score: 24, price: 48000, q: 'GeForce RTX 4060', older: true },
+    { id: 'rtx4060', name: 'GeForce RTX 4060', b: 'NVIDIA', vram: 8, tgp: 115, rec: 550, len: 240, slots: 2, conn: '8pin', score: 24, price: 48000, q: 'GeForce RTX 4060', older: true, used: true },
     { id: 'rx7600xt', name: 'Radeon RX 7600 XT', b: 'AMD', vram: 16, tgp: 190, rec: 600, len: 280, slots: 2.5, conn: '8pin', score: 25, price: 52000, q: 'Radeon RX 7600 XT', older: true },
     { id: 'arc-b580', name: 'Intel Arc B580', b: 'Intel', vram: 12, tgp: 190, rec: 600, len: 270, slots: 2, conn: '8pin', score: 27, price: 38000, q: 'Intel Arc B580' },
     { id: 'rtx5050', name: 'GeForce RTX 5050', b: 'NVIDIA', vram: 8, tgp: 130, rec: 550, len: 240, slots: 2, conn: '8pin', score: 22, price: 40000, q: 'GeForce RTX 5050' },
     { id: 'rtx5060', name: 'GeForce RTX 5060', b: 'NVIDIA', vram: 8, tgp: 145, rec: 550, len: 250, slots: 2, conn: '8pin', score: 29, price: 55000, q: 'GeForce RTX 5060' },
-    { id: 'rtx4060ti', name: 'GeForce RTX 4060 Ti 8GB', b: 'NVIDIA', vram: 8, tgp: 160, rec: 550, len: 250, slots: 2.5, conn: '8pin', score: 30, price: 62000, q: 'GeForce RTX 4060 Ti 8GB', older: true },
+    { id: 'rtx4060ti', name: 'GeForce RTX 4060 Ti 8GB', b: 'NVIDIA', vram: 8, tgp: 160, rec: 550, len: 250, slots: 2.5, conn: '8pin', score: 30, price: 62000, q: 'GeForce RTX 4060 Ti 8GB', older: true, used: true },
     { id: 'rtx4060ti16', name: 'GeForce RTX 4060 Ti 16GB', b: 'NVIDIA', vram: 16, tgp: 165, rec: 550, len: 260, slots: 2.5, conn: '8pin', score: 31, price: 78000, q: 'GeForce RTX 4060 Ti 16GB', older: true },
     { id: 'rx9060xt8', name: 'Radeon RX 9060 XT 8GB', b: 'AMD', vram: 8, tgp: 150, rec: 450, len: 280, slots: 2.5, conn: '8pin', score: 34, price: 52000, q: 'Radeon RX 9060 XT 8GB' },
     { id: 'rx9060xt', name: 'Radeon RX 9060 XT 16GB', b: 'AMD', vram: 16, tgp: 160, rec: 450, len: 280, slots: 2.5, conn: '8pin', score: 35, price: 68000, q: 'Radeon RX 9060 XT 16GB' },
     { id: 'rtx5060ti8', name: 'GeForce RTX 5060 Ti 8GB', b: 'NVIDIA', vram: 8, tgp: 180, rec: 600, len: 270, slots: 2.5, conn: '8pin', score: 35, price: 66000, q: 'GeForce RTX 5060 Ti 8GB' },
     { id: 'rtx5060ti', name: 'GeForce RTX 5060 Ti 16GB', b: 'NVIDIA', vram: 16, tgp: 180, rec: 600, len: 270, slots: 2.5, conn: '8pin', score: 36, price: 78000, q: 'GeForce RTX 5060 Ti 16GB' },
-    { id: 'rx7700xt', name: 'Radeon RX 7700 XT', b: 'AMD', vram: 12, tgp: 245, rec: 700, len: 280, slots: 2.5, conn: '8pin×2', score: 38, price: 70000, q: 'Radeon RX 7700 XT', older: true },
-    { id: 'rtx4070', name: 'GeForce RTX 4070', b: 'NVIDIA', vram: 12, tgp: 200, rec: 650, len: 270, slots: 2.5, conn: '8pin', score: 41, price: 88000, q: 'GeForce RTX 4070', older: true },
-    { id: 'rx7800xt', name: 'Radeon RX 7800 XT', b: 'AMD', vram: 16, tgp: 263, rec: 700, len: 300, slots: 2.5, conn: '8pin×2', score: 45, price: 85000, q: 'Radeon RX 7800 XT', older: true },
-    { id: 'rtx4070s', name: 'GeForce RTX 4070 SUPER', b: 'NVIDIA', vram: 12, tgp: 220, rec: 650, len: 280, slots: 2.5, conn: '8pin', score: 47, price: 100000, q: 'GeForce RTX 4070 SUPER', older: true },
+    { id: 'rx7700xt', name: 'Radeon RX 7700 XT', b: 'AMD', vram: 12, tgp: 245, rec: 700, len: 280, slots: 2.5, conn: '8pin×2', score: 38, price: 70000, q: 'Radeon RX 7700 XT', older: true, used: true },
+    { id: 'rtx4070', name: 'GeForce RTX 4070', b: 'NVIDIA', vram: 12, tgp: 200, rec: 650, len: 270, slots: 2.5, conn: '8pin', score: 41, price: 88000, q: 'GeForce RTX 4070', older: true, used: true },
+    { id: 'rx7800xt', name: 'Radeon RX 7800 XT', b: 'AMD', vram: 16, tgp: 263, rec: 700, len: 300, slots: 2.5, conn: '8pin×2', score: 45, price: 85000, q: 'Radeon RX 7800 XT', older: true, used: true },
+    { id: 'rtx4070s', name: 'GeForce RTX 4070 SUPER', b: 'NVIDIA', vram: 12, tgp: 220, rec: 650, len: 280, slots: 2.5, conn: '8pin', score: 47, price: 100000, q: 'GeForce RTX 4070 SUPER', older: true, used: true },
     { id: 'rtx5070', name: 'GeForce RTX 5070', b: 'NVIDIA', vram: 12, tgp: 250, rec: 650, len: 300, slots: 2.5, conn: '12V-2x6', score: 48, price: 95000, q: 'GeForce RTX 5070' },
     { id: 'rx7900gre', name: 'Radeon RX 7900 GRE', b: 'AMD', vram: 16, tgp: 260, rec: 700, len: 290, slots: 2.5, conn: '8pin×2', score: 49, price: 95000, q: 'Radeon RX 7900 GRE', older: true },
-    { id: 'rtx4070ti', name: 'GeForce RTX 4070 Ti', b: 'NVIDIA', vram: 12, tgp: 285, rec: 700, len: 300, slots: 3, conn: '12V-2x6', score: 51, price: 115000, q: 'GeForce RTX 4070 Ti', older: true },
+    { id: 'rtx4070ti', name: 'GeForce RTX 4070 Ti', b: 'NVIDIA', vram: 12, tgp: 285, rec: 700, len: 300, slots: 3, conn: '12V-2x6', score: 51, price: 115000, q: 'GeForce RTX 4070 Ti', older: true, used: true },
     { id: 'rx7900xt', name: 'Radeon RX 7900 XT', b: 'AMD', vram: 20, tgp: 315, rec: 750, len: 320, slots: 3, conn: '8pin×2', score: 53, price: 125000, q: 'Radeon RX 7900 XT', older: true },
     { id: 'rtx4070tis', name: 'GeForce RTX 4070 Ti SUPER', b: 'NVIDIA', vram: 16, tgp: 285, rec: 700, len: 310, slots: 3, conn: '12V-2x6', score: 55, price: 130000, q: 'GeForce RTX 4070 Ti SUPER', older: true },
     { id: 'rx9070', name: 'Radeon RX 9070', b: 'AMD', vram: 16, tgp: 220, rec: 650, len: 310, slots: 3, conn: '8pin×2', score: 55, price: 105000, q: 'Radeon RX 9070' },
-    { id: 'rtx4080', name: 'GeForce RTX 4080', b: 'NVIDIA', vram: 16, tgp: 320, rec: 750, len: 320, slots: 3.5, conn: '12V-2x6', score: 60, price: 180000, q: 'GeForce RTX 4080', older: true },
+    { id: 'rtx4080', name: 'GeForce RTX 4080', b: 'NVIDIA', vram: 16, tgp: 320, rec: 750, len: 320, slots: 3.5, conn: '12V-2x6', score: 60, price: 180000, q: 'GeForce RTX 4080', older: true, used: true },
     { id: 'rx7900xtx', name: 'Radeon RX 7900 XTX', b: 'AMD', vram: 24, tgp: 355, rec: 800, len: 330, slots: 3.5, conn: '8pin×2', score: 60, price: 150000, q: 'Radeon RX 7900 XTX', older: true },
     { id: 'rtx4080s', name: 'GeForce RTX 4080 SUPER', b: 'NVIDIA', vram: 16, tgp: 320, rec: 750, len: 320, slots: 3.5, conn: '12V-2x6', score: 62, price: 175000, q: 'GeForce RTX 4080 SUPER', older: true },
     { id: 'rtx5070ti', name: 'GeForce RTX 5070 Ti', b: 'NVIDIA', vram: 16, tgp: 300, rec: 750, len: 320, slots: 3, conn: '12V-2x6', score: 62, price: 135000, q: 'GeForce RTX 5070 Ti' },
     { id: 'rx9070xt', name: 'Radeon RX 9070 XT', b: 'AMD', vram: 16, tgp: 304, rec: 750, len: 320, slots: 3, conn: '8pin×2', score: 63, price: 120000, q: 'Radeon RX 9070 XT' },
     { id: 'rtx5080', name: 'GeForce RTX 5080', b: 'NVIDIA', vram: 16, tgp: 360, rec: 850, len: 330, slots: 3, conn: '12V-2x6', score: 70, price: 190000, q: 'GeForce RTX 5080' },
     { id: 'rtx4090', name: 'GeForce RTX 4090', b: 'NVIDIA', vram: 24, tgp: 450, rec: 850, len: 340, slots: 3.5, conn: '12V-2x6', score: 80, price: 330000, q: 'GeForce RTX 4090', older: true },
-    { id: 'rtx5090', name: 'GeForce RTX 5090', b: 'NVIDIA', vram: 32, tgp: 575, rec: 1000, len: 340, slots: 3.5, conn: '12V-2x6', score: 100, price: 450000, q: 'GeForce RTX 5090' }
+    { id: 'rtx5090', name: 'GeForce RTX 5090', b: 'NVIDIA', vram: 32, tgp: 575, rec: 1000, len: 340, slots: 3.5, conn: '12V-2x6', score: 100, price: 450000, q: 'GeForce RTX 5090' },
+    /* ---- 中古（新品はほぼ売られていない世代）。価格はドスパラの中古の販売価格の目安。性能・寸法は一般的な値の見積もり ---- */
+    { id: 'gtx1650', name: 'GeForce GTX 1650', b: 'NVIDIA', vram: 4, tgp: 75, rec: 350, len: 180, slots: 2, conn: 'なし', score: 6, price: 11900, q: 'GeForce GTX 1650 中古', used: true },
+    { id: 'gtx1070', name: 'GeForce GTX 1070', b: 'NVIDIA', vram: 8, tgp: 150, rec: 500, len: 240, slots: 2, conn: '8pin', score: 10, price: 14900, q: 'GeForce GTX 1070 中古', used: true },
+    { id: 'gtx1660s', name: 'GeForce GTX 1660 SUPER', b: 'NVIDIA', vram: 6, tgp: 125, rec: 450, len: 220, slots: 2, conn: '8pin', score: 11, price: 15360, q: 'GeForce GTX 1660 SUPER 中古', used: true },
+    { id: 'rtx2060', name: 'GeForce RTX 2060', b: 'NVIDIA', vram: 6, tgp: 160, rec: 500, len: 230, slots: 2, conn: '8pin', score: 14, price: 24900, q: 'GeForce RTX 2060 中古', used: true },
+    { id: 'rtx2060s', name: 'GeForce RTX 2060 SUPER', b: 'NVIDIA', vram: 8, tgp: 175, rec: 550, len: 240, slots: 2, conn: '8pin', score: 16, price: 25900, q: 'GeForce RTX 2060 SUPER 中古', used: true },
+    { id: 'rtx2070', name: 'GeForce RTX 2070', b: 'NVIDIA', vram: 8, tgp: 175, rec: 550, len: 250, slots: 2, conn: '8pin', score: 17, price: 28000, q: 'GeForce RTX 2070 中古', used: true },
+    { id: 'rtx2070s', name: 'GeForce RTX 2070 SUPER', b: 'NVIDIA', vram: 8, tgp: 215, rec: 650, len: 260, slots: 2.5, conn: '8pin×2', score: 19, price: 31900, q: 'GeForce RTX 2070 SUPER 中古', used: true },
+    { id: 'rtx2080s', name: 'GeForce RTX 2080 SUPER', b: 'NVIDIA', vram: 8, tgp: 250, rec: 650, len: 270, slots: 2.5, conn: '8pin×2', score: 23, price: 31900, q: 'GeForce RTX 2080 SUPER 中古', used: true },
+    { id: 'rtx3050', name: 'GeForce RTX 3050 8GB', b: 'NVIDIA', vram: 8, tgp: 130, rec: 550, len: 220, slots: 2, conn: '8pin', score: 12, price: 28900, q: 'GeForce RTX 3050 8GB 中古', used: true },
+    { id: 'rtx3060', name: 'GeForce RTX 3060 12GB', b: 'NVIDIA', vram: 12, tgp: 170, rec: 550, len: 240, slots: 2, conn: '8pin', score: 20, price: 47900, q: 'GeForce RTX 3060 12GB 中古', used: true },
+    { id: 'rtx3060ti', name: 'GeForce RTX 3060 Ti', b: 'NVIDIA', vram: 8, tgp: 200, rec: 600, len: 240, slots: 2, conn: '8pin', score: 25, price: 36900, q: 'GeForce RTX 3060 Ti 中古', used: true },
+    { id: 'rtx3070', name: 'GeForce RTX 3070', b: 'NVIDIA', vram: 8, tgp: 220, rec: 650, len: 270, slots: 2.5, conn: '8pin×2', score: 28, price: 39900, q: 'GeForce RTX 3070 中古', used: true },
+    { id: 'rtx3070ti', name: 'GeForce RTX 3070 Ti', b: 'NVIDIA', vram: 8, tgp: 290, rec: 750, len: 290, slots: 2.5, conn: '8pin×2', score: 30, price: 50900, q: 'GeForce RTX 3070 Ti 中古', used: true },
+    { id: 'rtx3080', name: 'GeForce RTX 3080 10GB', b: 'NVIDIA', vram: 10, tgp: 320, rec: 750, len: 300, slots: 2.5, conn: '8pin×2', score: 40, price: 56900, q: 'GeForce RTX 3080 中古', used: true },
+    { id: 'rtx3080ti', name: 'GeForce RTX 3080 Ti', b: 'NVIDIA', vram: 12, tgp: 350, rec: 750, len: 310, slots: 3, conn: '8pin×2', score: 44, price: 81900, q: 'GeForce RTX 3080 Ti 中古', used: true },
+    { id: 'rx6600', name: 'Radeon RX 6600', b: 'AMD', vram: 8, tgp: 132, rec: 450, len: 240, slots: 2, conn: '8pin', score: 18, price: 29900, q: 'Radeon RX 6600 中古', used: true },
+    { id: 'rx6600xt', name: 'Radeon RX 6600 XT', b: 'AMD', vram: 8, tgp: 160, rec: 500, len: 240, slots: 2, conn: '8pin', score: 21, price: 31900, q: 'Radeon RX 6600 XT 中古', used: true },
+    { id: 'rx6650xt', name: 'Radeon RX 6650 XT', b: 'AMD', vram: 8, tgp: 180, rec: 500, len: 250, slots: 2, conn: '8pin', score: 22, price: 32900, q: 'Radeon RX 6650 XT 中古', used: true },
+    { id: 'rx6700xt', name: 'Radeon RX 6700 XT', b: 'AMD', vram: 12, tgp: 230, rec: 650, len: 270, slots: 2.5, conn: '8pin×2', score: 24, price: 43901, q: 'Radeon RX 6700 XT 中古', used: true }
   ];
 
   /* ---------- マザーボード（チップセット別の代表クラス） ----------
@@ -562,6 +582,19 @@ window.PCR_DATA = (function () {
     { key: 'ozgaming', brand: 'OZgaming', note: '千葉のメーカーのゲーミングPCブランド。見た目にこだわったケースや台数限定のセールモデルが多いのが特徴です。', check: ['台数限定・セールの期限', '標準のパーツの内容', '保証とサポートの方法（LINE・電話など）'] }
   ];
 
+  /* ---------- 実際の商品（js/parts-real.js）を、種類ごとの目安の後ろに足す ---------- */
+  if (window.PCR_REAL) {
+    const BASE = { mb: id => D.mb.find(m => m.sock === id.sock && m.chip === id.chip && m.form === id.form) || D.mb.find(m => m.sock === id.sock && m.chip === id.chip) || D.mb.find(m => m.sock === id.sock) };
+    Object.keys(window.PCR_REAL).forEach(function (k) {
+      if (!D[k]) return;
+      window.PCR_REAL[k].forEach(function (x) {
+        // マザーボードは、M.2の世代・OC対応などを同じクラスの目安から引き継ぐ
+        const b = BASE[k] ? BASE[k](x) : null;
+        D[k].push(b ? Object.assign({ m2g: b.m2g, oc: b.oc }, x) : x);
+      });
+    });
+  }
+
   /* ---------- ID引き辞書 ---------- */
   D.by = {};
   ['cpu', 'gpu', 'mb', 'mem', 'ssd', 'psu', 'case', 'cooler', 'os', 'games', 'oldCpu', 'oldGpu'].forEach(function (k) {
@@ -587,7 +620,7 @@ window.PCR_DATA = (function () {
     D.priceChecked = window.PCR_PRICES.__checked || {};
   }
   /* おまかせ提案・交換の提案に出してよいパーツか（旧世代と、価格を確認できていないものは出さない） */
-  D.suggestable = function (p) { return !p.legacy && !p.priceUnverified; };
+  D.suggestable = function (p) { return !p.legacy && !p.priceUnverified && !p.used && !p.real; };
 
   return D;
 })();

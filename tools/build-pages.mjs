@@ -20,7 +20,7 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const sb = { console };
 sb.window = sb;
 vm.createContext(sb);
-['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/data.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb));
+['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb));
 const CFG = sb.PCR_CONFIG, D = sb.PCR_DATA, E = sb.PCR_ENGINE;
 const SITE = CFG.siteUrl.replace(/\/?$/, '/');
 const today = new Date().toISOString().slice(0, 10);
