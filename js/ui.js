@@ -18,7 +18,11 @@ window.PCR_UI = (function () {
   };
   const MAX_SAVED = 20;
   U.prefs = function () {
-    return Object.assign({ res: 1440, games: ['valorant', 'apex', 'palworld', 'cyberpunk'], hours: 3, kwh: CFG.electricityYenPerKwh, stream: false }, U.store.get('pcr.prefs.v1', {}));
+    return Object.assign({ res: 1440, quality: 'high', games: ['valorant', 'apex', 'palworld', 'cyberpunk'], hours: 3, kwh: CFG.electricityYenPerKwh, stream: false }, U.store.get('pcr.prefs.v1', {}));
+  };
+  /* 画質を選ぶチップ（name: input の name、cur: 今の画質） */
+  U.qualityChips = function (name, cur) {
+    return '<div class="chips">' + PCR_ENGINE.QKEYS.map(q => '<label class="chip"><input type="radio" name="' + name + '" value="' + q + '"' + (q === cur ? ' checked' : '') + '><span>' + PCR_ENGINE.QUALITY[q].t + '画質</span></label>').join('') + '</div>';
   };
   U.setPrefs = function (p) { U.store.set('pcr.prefs.v1', Object.assign(U.prefs(), p)); };
   U.getSaved = () => U.store.get('pcr.saved.v1', []);

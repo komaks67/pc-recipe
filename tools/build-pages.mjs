@@ -127,7 +127,7 @@ D.articles.forEach((a, i) => {
 const CPU = D.by.cpu['r7-9800x3d'], MEM = D.by.mem['d5-32'];
 const GPUS = D.gpu.filter(g => g.id !== 'none' && D.suggestable(g)).sort((a, b) => b.score - a.score);
 const RES = [[1080, 'フルHD'], [1440, 'WQHD'], [2160, '4K']];
-const fpsOf = (g, gpu, r) => E.fps(g, r, { cpu: CPU, gpu, mem: MEM }).fps;
+const fpsOf = (g, gpu, r, q) => E.fps(g, r, { cpu: CPU, gpu, mem: MEM }, { quality: q || 'high' }).fps;
 /* その解像度で目標fpsに届く、いちばん安いグラボ */
 const cheapest = (g, r, target) => GPUS.filter(x => fpsOf(g, x, r) >= target).sort((a, b) => a.price - b.price)[0];
 
@@ -137,7 +137,7 @@ D.games.forEach(g => {
   const rows = GPUS.map(gpu => `<tr><td><b>${esc(gpu.name)}</b><br><span class="muted">VRAM ${gpu.vram}GB / ${yen(gpu.price)}</span></td>` +
     RES.map(([r]) => { const f = fpsOf(g, gpu, r), l = E.fpsLabel(f); return `<td><b>${Math.round(f)}</b> <span class="fl ${l.c}">${l.t}</span></td>`; }).join('') + '</tr>').join('');
   const title = `${g.name}のfps目安とおすすめグラボ（フルHD・WQHD・4K）`;
-  const desc = `${g.name}を快適に遊ぶためのグラフィックボード選びの目安。フルHD・WQHD・4Kでのグラボ別fpsの目安と、${targets.join('fps・')}fpsに届くいちばん安いグラボをまとめました（価格確認日 ${priceDate}）。`;
+  const desc = `${g.name}を快適に遊ぶためのグラフィックボード選びの目安。フルHD・WQHD・4K、最高〜低画質でのグラボ別fpsの目安と、${targets.join('fps・')}fpsに届くいちばん安いグラボをまとめました（価格確認日 ${priceDate}）。`;
   const body = `<article class="article"><h1>${esc(title)}</h1>
 <p class="muted">${esc(g.genre || '')}${g.genre ? '｜' : ''}快適に遊べるメモリの目安: <b>${g.mem}GB以上</b>${g.cap ? `｜このゲームはfpsの上限が <b>${g.cap}fps</b> です` : ''}</p>
 <h2>結論：目標fpsに届く、いちばん安いグラボ</h2>
@@ -145,8 +145,11 @@ D.games.forEach(g => {
 <p class="muted">CPUは ${esc(CPU.name)}、メモリ ${MEM.cap}GB で計算しています。CPUが遅いと、ここより低くなることがあります。</p>
 <h2>グラボ別のfps目安</h2>
 <div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th>${RES.map(r => `<th>${r[1]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
+<h2>画質ごとのfps目安（WQHD）</h2>
+<p class="muted">同じグラボでも、ゲームの画質設定で fps は大きく変わります。表の数字は「最高／高／中／低」の4つの画質での目安です。</p>
+<div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th>${E.QKEYS.map(q => `<th>${E.QUALITY[q].t}</th>`).join('')}</tr></thead><tbody>${GPUS.map(gpu => `<tr><td><b>${esc(gpu.name)}</b></td>${E.QKEYS.map(q => `<td>${Math.round(fpsOf(g, gpu, 1440, q))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
 <h2>この数字について</h2>
-<ul><li>fpsは<b>実測ではなく、計算モデルによる目安</b>です。平均的なシーン・標準的な画質を想定しています。</li>
+<ul><li>fpsは<b>実測ではなく、計算モデルによる目安</b>です。平均的なシーンを想定し、上の2つの表は「高」画質の目安です。画質ごとの差は、一般的な傾向からの見積もりです。</li>
 <li>ゲームのアップデート、画質設定、DLSS・FSR（画質を少し下げてfpsを上げる機能）の有無で、大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</li>
 <li>価格は ${esc(priceDate)} 時点の目安で、毎日変わります。価格を確認できなかった古い世代のグラボは、一覧に入れていません。</li></ul>
 <p><a class="btn" href="../#/games?g=${esc(g.id)}">CPUを変えて計算する（ゲーム別fpsツール）</a></p></article>`;

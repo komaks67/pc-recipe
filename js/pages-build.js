@@ -29,9 +29,10 @@
   /* ---------- 操作パネル（解像度・ゲーム・電気代） ---------- */
   function controlsHtml(c) {
     const sel = D.games.filter(g => c.games.indexOf(g.id) >= 0).map(g => g.name.replace(/ \(.*\)$/, ''));
-    return '<details class="card flat ctl"><summary><b>🎮 計算の条件を変える</b><span class="muted ctl-now">' + esc(RES[c.res] + ' ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></summary><div class="sp">' +
+    return '<details class="card flat ctl"><summary><b>🎮 計算の条件を変える</b><span class="muted ctl-now">' + esc(RES[c.res] + ' ・ ' + E.QUALITY[c.quality || 'high'].t + '画質 ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></summary><div class="sp">' +
       '<label class="f">画面の解像度</label><div class="chips" id="c-res">' +
       [1080, 1440, 2160].map(r => '<label class="chip"><input type="radio" name="res" value="' + r + '"' + (c.res == r ? ' checked' : '') + '><span>' + RES[r] + (r == 1080 ? '(1920×1080)' : r == 1440 ? '(2560×1440)' : '(3840×2160)') + '</span></label>').join('') + '</div>' +
+      '<label class="f sp">画質（ゲームの設定）</label><div id="c-q">' + U.qualityChips('cq', c.quality || 'high') + '</div>' +
       '<label class="f sp">遊ぶゲーム（fpsの目安を出します）</label><div class="chips" id="c-games">' +
       D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"' + (c.games.indexOf(g.id) >= 0 ? ' checked' : '') + '><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div>' +
       '<div class="row sp"><label class="chip"><input type="checkbox" id="c-stream"' + (c.stream ? ' checked' : '') + '><span>ゲーム配信もする</span></label>' +
@@ -39,8 +40,9 @@
   }
   function readControls(root) {
     const res = +($('input[name=res]:checked', root) || { value: 1440 }).value;
+    const quality = ($('input[name=cq]:checked', root) || { value: 'high' }).value;
     const games = $$('#c-games input:checked', root).map(i => i.value);
-    return { res: res, games: games, stream: $('#c-stream', root).checked, hours: Math.max(0, +$('#c-hours', root).value || 0), kwh: Math.max(1, +$('#c-kwh', root).value || 31) };
+    return { res: res, quality: quality, games: games, stream: $('#c-stream', root).checked, hours: Math.max(0, +$('#c-hours', root).value || 0), kwh: Math.max(1, +$('#c-kwh', root).value || 31) };
   }
 
   /* ---------- チェック結果 ---------- */
@@ -77,6 +79,12 @@
   }
 
   /* ---------- 右側のまとめパネル ---------- */
+  /* 4つの画質のfpsを1行で（いま選んでいる画質は太字） */
+  function qline(g, ev, c) {
+    const all = E.fpsAll(g, c.res, ev.B, c), cur = c.quality || 'high';
+    return '<div class="qline">' + E.QKEYS.map(q => (q === cur ? '<b>' : '') + E.QUALITY[q].t + ' ' + Math.round(all[q]) + (q === cur ? '</b>' : '')).join('<span aria-hidden="true"> ／ </span>') + 'fps' +
+      (E.fps(g, c.res, ev.B, Object.assign({}, c, { quality: 'ultra' })).vramPen ? '<span class="neg">（最高画質はVRAM不足ぎみ）</span>' : '') + '</div>';
+  }
   function panelHtml(ev, ids, c, mode) {
     const ng = ev.checks.filter(x => x.lv === 'ng'), wr = ev.checks.filter(x => x.lv === 'warn'), ok = ev.checks.filter(x => x.lv === 'ok');
     const tips = ev.tips.filter(t => !ev.checks.some(x => x.title === t.title));
@@ -98,11 +106,11 @@
       '<p class="muted sp">最大消費電力の目安 <b>約' + pw.need + 'W</b> ／ 選んだ電源 <b>' + psu.w + 'W</b> ／ 推奨 <b>' + pw.rec + 'W以上</b></p>' +
       chkHtml([{ lv: ev.bottleneck.lv, title: 'CPUとGPUのバランス（ボトルネック）', msg: ev.bottleneck.msg }]) + '</div>';
 
-    h += '<div class="card sp"><h3>🎮 fpsの目安（' + RES[c.res] + '）</h3>';
+    h += '<div class="card sp"><h3>🎮 fpsの目安（' + RES[c.res] + '・' + E.QUALITY[c.quality || 'high'].t + '画質）</h3>';
     if (!ev.fpsRows.length) h += '<p class="muted">上の「遊ぶゲーム」を選ぶと表示されます。</p>';
     ev.fpsRows.forEach(r => {
       const l = E.fpsLabel(r.fps);
-      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>';
+      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c);
     });
     h += '<p class="muted">※実測ではなく、性能の目安から計算したものです。設定やゲームの更新で変わります。計算方法は「このサイトについて」にあります。</p></div>';
 

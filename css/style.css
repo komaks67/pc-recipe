@@ -315,3 +315,6 @@ body.noscroll { overflow: hidden; }
   .m-tab tbody th { font-size: .72rem; max-width: 92px; white-space: normal; line-height: 1.25; }
   .m-c { width: 46px; height: 42px; font-size: .74rem; }
 }
+
+.qline { grid-column: 1 / -1; font-size: .78rem; color: var(--muted); margin: -4px 0 6px; }
+.qline b { color: var(--ink); }

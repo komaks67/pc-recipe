@@ -119,6 +119,10 @@ pairs(D.gpu.filter(g => g.id !== 'none' && D.suggestable(g)), (a, b) => `gpu: ${
 D.games.forEach(g => {
   if (!(g.g[1080] >= g.g[1440] && g.g[1440] >= g.g[2160])) E_(`games/${g.id}: 解像度が上がるとfpsが上がる設定になっています`);
   if (!num(g.c, 20, 2000) || !num(g.k, 0.1, 2) || !num(g.mem, 4, 64)) E_(`games/${g.id}: 計算の値がおかしい`);
+  if (/最高|高設定|高\)|低設定|品質/.test(g.name)) W_(`games/${g.id}: 名前に画質が入っています（画質は選べるので、名前から外して base で指定してください）`);
+  if (g.base && !E.QUALITY[g.base]) E_(`games/${g.id}: base の画質 ${g.base} がありません`);
+  const a4 = E.fpsAll(g, 1440, { cpu: D.by.cpu['r7-9800x3d'], gpu: D.by.gpu['rtx5070'], mem: D.by.mem['d5-32'] }, {});
+  if (!(a4.ultra <= a4.high && a4.high <= a4.mid && a4.mid <= a4.low)) E_(`games/${g.id}: 画質を下げてもfpsが上がらない`);
 });
 
 /* ---------- 6. 価格ファイル・BTOモデル ---------- */
