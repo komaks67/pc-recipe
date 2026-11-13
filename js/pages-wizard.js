@@ -202,7 +202,7 @@
         return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span></td>' + [1080, 1440, 2160].map(r => { const f = E.fps(g, r, B).fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span></td>'; }).join('') + '</tr>';
       }).join('');
       $('#g-out', el).innerHTML = '<div class="card"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + '</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
-        '<p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';
+        '<p class="sp"><a href="fps/' + esc(g.id) + '.html">' + esc(g.name) + 'のおすすめグラボまとめ（目標fpsに届くいちばん安いグラボ）</a></p><p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';
     }
     el.addEventListener('change', draw); draw();
   }, '/tools');

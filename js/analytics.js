@@ -18,6 +18,7 @@
 
   /* 「#/build?b=...」のようなURLを「/pc-recipe/build」の形にして送る（構成の中身などの ? 以降は送らない） */
   function pagePath() {
+    if (window.PCR_STATIC) return location.pathname;   // 読みもの・fpsの静的ページ（guide/・fps/）
     const h = (location.hash.replace(/^#/, '') || '/').split('?')[0];
     return location.pathname.replace(/\/$/, '') + (h === '/' ? '/' : h);
   }

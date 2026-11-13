@@ -30,7 +30,13 @@
    - CPU・グラボで `checked` が空の行は「価格未確認」になり、おまかせ提案に使われません
 2. BTOモデルは `tools/bto-models.csv` を編集（`updated` に確認日）
 3. `node tools/update-prices.mjs` を実行 → `js/prices.js`・`js/bto-models.js`・`js/price-history.js` が作り直されます
+   続けて `node tools/build-pages.mjs` を実行 → fpsページの価格とサイトマップも新しくなります
 4. 作り直されたファイルを**そのまま公開してOK**です（以前の「初期版に戻す」作業は不要になりました）
+
+## 検索エンジン向けの静的ページ（guide/・fps/）
+- `node tools/build-pages.mjs` で、読みもの（`guide/`）・用語集・ゲーム別fps（`fps/`）のHTMLと `sitemap.xml` を作り直します
+- 記事やゲームを `js/data.js` に追加したとき、価格を更新したとき（`update-prices.mjs` のあと）に実行してください
+- `guide/` と `fps/` の中のHTMLは自動で作るので、手で直さないでください（次に実行したとき上書きされます）
 
 ## ファイルの役割
 | ファイル | 内容 |
