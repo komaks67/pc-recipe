@@ -59,6 +59,13 @@
       }).join('') + '</tbody></table></div><p class="muted">★ は、その行でいちばん良いもの（安い・速い・省電力など）です。</p>';
   }
 
+  /* CPUとグラボの相性（◎○△✕）。いちばん目のゲームで判定 */
+  function aisho(cpu, gpu) {
+    const p = U.prefs(), g = D.by.games[(p.games || [])[0]] || D.by.games.apex;
+    const j = U.matchJudge(cpu, gpu, g, st.res, st.quality);
+    return '<span class="m-key ' + j.c + '"><b>' + j.mk + '</b>' + j.t + '</span><br><span class="muted">' + esc(g.name) + 'で判定</span>';
+  }
+
   /* 選ぶ欄（スロット） */
   function slots(kind, ids, list, label) {
     return '<div class="vs-slots">' + ids.map((id, i) => '<div class="vs-slot"><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span><select data-kind="' + kind + '" data-i="' + i + '" aria-label="' + label + ' ' + (i + 1) + '">' +
@@ -68,7 +75,8 @@
 
   U.route('/vs', 'くらべる（グラボ・CPU・構成）', function (el, q) {
     if (['gpu', 'cpu', 'build'].indexOf(q.get('t')) >= 0) st.tab = q.get('t');
-    el.innerHTML = '<h1>くらべる</h1><p class="muted">グラボ同士・CPU同士・作った構成同士を、最大4つまで並べて比べられます。ほかにも <a href="#/compare">BTOモデル比較</a>・<a href="#/match">CPUとグラボの相性表</a>・<a href="#/games">ゲーム別fps</a> があります。</p>' +
+    el.innerHTML = '<h1>くらべる</h1><p class="muted">グラボ同士・CPU同士・作った構成同士を、最大4つまで並べて比べられます。ほかにも <a href="#/compare">BTOモデル比較</a>・<a href="#/games">ゲーム別fps</a> があります。</p>' +
+      '<a class="card card-link flat vs-match" href="#/match"><b>🧩 CPUとグラボの相性表（◎○△✕）</b><span class="muted">すべての組み合わせの相性を、表でまとめて見られます</span></a>' +
       '<div class="tabs vs-tabs no-print" role="tablist">' + [['gpu', '🎮 グラボ'], ['cpu', '🧠 CPU'], ['build', '🖥 構成']].map(t => '<button type="button" role="tab" data-tab="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' +
       '<div class="card flat no-print vs-cond"><div class="grid g2"><div><label class="f">画面の解像度</label><div class="chips">' + [1080, 1440, 2160].map(r => '<label class="chip"><input type="radio" name="vr" value="' + r + '"' + (st.res === r ? ' checked' : '') + '><span>' + RES[r] + '</span></label>').join('') + '</div></div>' +
       '<div><label class="f">画質</label>' + U.qualityChips('vq', st.quality) + '</div></div></div>' +
@@ -94,10 +102,11 @@
       const p = U.prefs(), games = (p.games || []).map(id => D.by.games[id]).filter(Boolean);
       const avgF = it => games.length ? games.reduce((s, g) => s + fpsOf(it, g).fps, 0) / games.length : 0;
       return '<div class="card">' + slots('gpu', st.gpu, cur => U.optionsHtml('gpu', D.gpu.filter(g => g.id !== 'none'), cur, g => g.name + '　' + yen(g.price)), 'グラボ') + '</div>' +
-        '<div class="card sp"><h2>fpsの比べっこ</h2><p class="muted">CPUは ' + esc(cpu.name) + '、メモリ32GBで計算しています。</p>' + fpsChart(items, fpsOf) + '</div>' +
+        '<div class="card sp"><h2>ゲームごとのfps</h2><p class="muted">CPUは ' + esc(cpu.name) + '、メモリ32GBで計算しています。</p>' + fpsChart(items, fpsOf) + '</div>' +
         '<div class="card sp"><h2>くわしく比べる</h2>' + table(items, [
           { t: '価格', v: it => it.p.price, better: 'lo', f: (v, it) => yen(v) + (it.p.used ? '<br><span class="muted">中古</span>' : it.p.priceUnverified ? '<br><span class="muted">未確認</span>' : '') },
           { t: '性能の目安', v: it => it.p.score, better: 'hi', f: v => v + '<span class="muted">（RTX 5090 = 100）</span>' },
+          { t: 'CPUとの相性<br><span class="muted">' + esc(cpu.name) + '</span>', v: it => it, f: (v, it) => aisho(cpu, it.p) },
           { t: '平均fps', v: it => Math.round(avgF(it)), better: 'hi', f: v => v + 'fps' },
           { t: '1fpsあたりの値段', v: it => avgF(it) ? Math.round(it.p.price / avgF(it)) : NaN, better: 'lo', f: v => isNaN(v) ? '—' : yen(v) },
           { t: 'VRAM', v: it => it.p.vram, better: 'hi', f: v => v + 'GB' },
@@ -117,10 +126,11 @@
       const fpsOf = (it, g) => E.fps(g, st.res, { cpu: it.p, gpu: gpu, mem: D.by.mem['d5-32'] }, { quality: st.quality });
       const note = c => [c.legacy ? '旧世代・中古中心' : '', c.priceUnverified ? '価格未確認' : '', c.unstable ? '第13・14世代の不安定問題の対象（最新のBIOSに）' : '', c.bios ? 'BIOS更新が必要な場合あり' : '', c.win11 === false ? 'Windows 11 公式非対応' : ''].filter(Boolean).join('・') || '—';
       return '<div class="card">' + slots('cpu', st.cpu, cur => U.optionsHtml('cpu', D.cpu, cur, c => c.name + '　' + yen(c.price)), 'CPU') + '</div>' +
-        '<div class="card sp"><h2>fpsの比べっこ</h2><p class="muted">グラボは ' + esc(gpu.name) + ' で計算しています（CPUの差が出やすいように、速いグラボにしています）。解像度や画質を下げるほど、CPUの差が大きくなります。</p>' + fpsChart(items, fpsOf) + '</div>' +
+        '<div class="card sp"><h2>ゲームごとのfps</h2><p class="muted">グラボは ' + esc(gpu.name) + ' で計算しています（CPUの差が出やすいように、速いグラボにしています）。解像度や画質を下げるほど、CPUの差が大きくなります。</p>' + fpsChart(items, fpsOf) + '</div>' +
         '<div class="card sp"><h2>くわしく比べる</h2>' + table(items, [
           { t: '価格', v: it => it.p.price, better: 'lo', f: v => yen(v) },
           { t: 'ゲーム性能の目安', v: it => it.p.gs, better: 'hi' },
+          { t: 'グラボとの相性<br><span class="muted">' + esc(gpu.name) + '</span>', v: it => it, f: (v, it) => aisho(it.p, gpu) },
           { t: '動画編集などの性能の目安', v: it => it.p.mt, better: 'hi' },
           { t: 'コア数', v: it => it.p.core },
           { t: 'ソケット', v: it => it.p.sock },
@@ -144,12 +154,13 @@
       const fpsOf = (it, g) => E.fps(g, st.res, it.ev.B, { quality: st.quality });
       return '<div class="card"><p class="muted">保存した構成、前回の自作構成、BTOモデル（' + ((window.PCR_BTO_MODELS || []).length) + '機種）から選べます。自作ビルダーの「保存する」で、比べる候補を増やせます。</p>' +
         slots('build', st.build.map(b => b.key), opt, '構成') + '</div>' +
-        '<div class="card sp"><h2>fpsの比べっこ</h2>' + fpsChart(items, fpsOf) + '</div>' +
+        '<div class="card sp"><h2>ゲームごとのfps</h2>' + fpsChart(items, fpsOf) + '</div>' +
         '<div class="card sp"><h2>くわしく比べる</h2>' + table(items, [
           { t: '種類', v: it => it.s.kind },
           { t: '価格', v: it => price(it), better: 'lo', f: (v, it) => yen(v) + '<br><span class="muted">' + (it.s.price ? 'メーカーの表示価格' : 'パーツ価格の合計') + '</span>' },
           { t: 'CPU', v: it => it.ev.B.cpu.name },
           { t: 'グラボ', v: it => it.ev.B.gpu.name },
+          { t: 'CPUとグラボの相性', v: it => it, f: (v, it) => it.ev.B.gpu.id === 'none' ? '—' : aisho(it.ev.B.cpu, it.ev.B.gpu) },
           { t: 'メモリ', v: it => it.ev.B.mem.cap, better: 'hi', f: (v, it) => it.ev.B.mem.name },
           { t: 'SSD', v: it => it.ev.B.ssd.cap, better: 'hi', f: (v, it) => it.ev.B.ssd.name },
           { t: '平均fps', v: it => Math.round(it.ev.avgFps || 0), better: 'hi', f: v => v + 'fps' },

@@ -341,3 +341,4 @@ body.noscroll { overflow: hidden; }
 .vs-best { background: var(--accent-soft); font-weight: 700; }
 .vs-star { color: var(--accent); }
 .vs-x { width: 40px; height: 40px; }
+.vs-match { display: flex; flex-direction: column; gap: 2px; margin: 0 0 14px; }
