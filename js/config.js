@@ -22,7 +22,7 @@ window.PCR_CONFIG = {
   contactUrl: '',
 
   /* Google アナリティクス 4 の測定ID（例: G-XXXXXXXXXX）。空のままだとアクセス解析は動きません */
-  gaMeasurementId: '',
+  gaMeasurementId: 'G-LZ2CY4LXWD',
 
   /* 運営者の表示名（ニックネーム可）。「このサイトについて」に表示します。空なら「PC Recipe 運営者」 */
   operatorName: '',
