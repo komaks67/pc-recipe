@@ -45,7 +45,8 @@ window.PCR_CONFIG = {
       tsukumo: { name: 'TSUKUMO',        brand: 'G-GEAR',   url: 'https://www.tsukumo.co.jp/' },
       frontier: { name: 'FRONTIER',      brand: 'FRONTIER', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DBVECY+3KX4+63WO2', imp: 'https://www19.a8.net/0.gif?a8mat=4BGK7W+DBVECY+3KX4+63WO2' },
       sycom: { name: 'サイコム',          brand: 'G-Master', url: 'https://www.sycom.co.jp/' },
-      mdl: { name: 'MDL',                brand: 'MDL.make', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM', imp: 'https://www13.a8.net/0.gif?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM' },
+      mdl: { name: 'MDL',                brand: 'MDL.make', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM', imp: 'https://www13.a8.net/0.gif?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM',
+        deepMat: '4BGK7W+DDNP6A+5HXK+BW8O2', deepImp: 'https://www12.a8.net/0.gif?a8mat=4BGK7W+DDNP6A+5HXK+BW8O2', deepAllow: 'https://mdlmake.shop/' },
       ozgaming: { name: 'OZgaming',      brand: 'OZgaming', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DE94S2+5U1O+5YRHE', imp: 'https://www18.a8.net/0.gif?a8mat=4BGK7W+DE94S2+5U1O+5YRHE',
         deepMat: '4BGK7W+DE94S2+5U1O+BW8O2', deepImp: 'https://www19.a8.net/0.gif?a8mat=4BGK7W+DE94S2+5U1O+BW8O2', deepAllow: 'https://www.ozgaming-pcshop.com/' }
     }
