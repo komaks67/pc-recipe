@@ -286,3 +286,32 @@ body.noscroll { overflow: hidden; }
 .goal.main .g-ico { background: rgba(255, 255, 255, .2); }
 .goal.main .g-go { color: var(--accent-ink); }
 @media (max-width: 720px) { .goals { grid-template-columns: 1fr; } .home-hero { padding: 24px 20px; } }
+
+/* ---------- CPUとグラボの相性表 ---------- */
+.m-wrap { max-height: 72vh; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--card); }
+.m-tab { border-collapse: separate; border-spacing: 2px; font-size: .78rem; }
+.m-tab th { position: sticky; background: var(--card); color: var(--ink); font-weight: 700; z-index: 1; }
+.m-tab thead th { top: 0; vertical-align: bottom; padding: 6px 2px; z-index: 2; }
+.m-tab thead th span { display: block; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; max-height: 140px; margin: 0 auto; line-height: 1.2; }
+.m-tab thead th em { font-style: normal; color: var(--muted); font-size: .7rem; margin-top: 4px; }
+.m-tab tbody th { left: 0; text-align: left; padding: 0 8px 0 4px; white-space: nowrap; font-size: .8rem; }
+.m-tab .m-corner { left: 0; z-index: 3; text-align: left; font-size: .72rem; color: var(--muted); }
+.m-c { width: 52px; height: 44px; border: 0; border-radius: 6px; font: inherit; font-size: .78rem; font-weight: 700; line-height: 1.1; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; }
+.m-c b { font-size: .8rem; }
+.m-c:hover, .m-c.on { outline: 3px solid var(--ink); outline-offset: 1px; }
+/* 状態の色（記号と文字でも区別できるようにしている） */
+.m-ok { background: #1f7a3a; color: #fff; }
+.m-gpu { background: #c9d4de; color: #1f2933; }
+.m-warn { background: #fab219; color: #0b0b0b; }
+.m-ng { background: #d03b3b; color: #fff; }
+[data-theme="dark"] .m-ok { background: #15803d; color: #fff; }
+[data-theme="dark"] .m-gpu { background: #3a4755; color: #fff; }
+.m-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.m-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700; }
+.m-key b { font-size: .95rem; }
+@media print { .m-wrap { max-height: none; overflow: visible; } }
+.m-tab thead th { padding-top: 10px; }
+@media (max-width: 720px) {
+  .m-tab tbody th { font-size: .72rem; max-width: 92px; white-space: normal; line-height: 1.25; }
+  .m-c { width: 46px; height: 42px; font-size: .74rem; }
+}

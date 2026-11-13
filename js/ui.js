@@ -261,15 +261,15 @@ window.PCR_UI = (function () {
   // 「すべてのメニュー」（スマホの「メニュー」タブ）
   const MENU = [
     ['PCを買いたい', [['/wizard', '🧭', '用途と予算から診断'], ['/best', '🏆', '予算で最強構成'], ['/build', '🔧', '自作PCビルダー'], ['/bto', '🖥️', 'BTOパソコン選び']]],
-    ['比べる・調べる', [['/compare', '⚖️', 'BTOモデル比較'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
+    ['比べる・調べる', [['/compare', '⚖️', 'BTOモデル比較'], ['/match', '🧩', 'CPUとグラボの相性表'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
     ['今のPC・サーバー', [['/mypc', '💻', '今のPCから診断'], ['/upgrade', '🔋', 'アップグレード診断'], ['/server', '🖥', 'ゲームサーバー用PC']]],
     ['そのほか', [['/saved', '⭐', '保存した構成'], ['/buy', '🛒', '購入ガイド・セール時期'], ['/about', 'ℹ️', 'このサイトについて']]]
   ];
   // スマホの下のタブ
   const TABS = [['/', '🏠', 'ホーム'], ['/wizard', '🧭', '診断'], ['/build', '🔧', '組む'], ['/compare', '⚖️', '比べる'], ['menu', '☰', 'メニュー']];
   // どのページが、どのメニューの仲間か
-  const GROUP = { '/best': '/wizard', '/upgrade': '/mypc', '/games': '/compare', '/history': '/compare', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
-  const TABGROUP = { '/bto': '/build', '/best': '/wizard', '/games': '/compare', '/history': '/compare' };
+  const GROUP = { '/match': '/compare', '/best': '/wizard', '/upgrade': '/mypc', '/games': '/compare', '/history': '/compare', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
+  const TABGROUP = { '/match': '/compare', '/bto': '/build', '/best': '/wizard', '/games': '/compare', '/history': '/compare' };
   function markNav(key) {
     const g = key in GROUP ? GROUP[key] : key;
     U.$$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.k === g));

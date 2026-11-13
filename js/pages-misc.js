@@ -22,6 +22,7 @@
         goal('#/mypc', '💻', '今のPCを強化したい', '今のパーツを読み取って、替える候補と費用を出します') +
         goal('#/server', '🖥', 'ゲームのサーバーを建てたい', 'ARK・マイクラ・パルワールドなど。24時間の電気代も') +
         goal('#/games', '🎮', 'ゲームが何fpsで動くか知りたい', D.games.length + '本のゲームを、グラボごとに比べます') +
+        goal('#/match', '🧩', 'CPUとグラボの相性を知りたい', 'ムダのない組み合わせが、ひと目で分かります') +
       '</div>' +
       (last || saved ? '<div class="card flat sp2 resume"><b>前回の続き</b><div class="row sp">' + (last ? '<a class="btn sub sm" href="#/build?' + U.idsToQuery(last) + '">🔧 前回の自作構成を開く</a>' : '') + (saved ? '<a class="btn sub sm" href="#/saved">⭐ 保存した構成（' + saved + '件）</a>' : '') + '</div></div>' : '') +
       '<h2 class="sp2">はじめての人へ</h2><div class="grid g3">' +
