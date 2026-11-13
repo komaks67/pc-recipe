@@ -68,8 +68,8 @@
     const req = E.serverReq(s, st);
     const margin = mode === 'room' ? 1.3 : 1;
     const kwh = opt.kwh || CFG.electricityYenPerKwh;
-    const cheapGpu = D.gpu.filter(g => g.id !== 'none' && g.price > 0).sort((a, b) => a.price - b.price)[0];
-    const cpus = D.cpu.filter(c => !c.unstable && !c.legacy);            // 24時間動かすので、不安定問題のあるCPUは避ける
+    const cheapGpu = D.gpu.filter(g => g.id !== 'none' && g.price > 0 && D.suggestable(g)).sort((a, b) => a.price - b.price)[0];
+    const cpus = D.cpu.filter(c => !c.unstable && D.suggestable(c));            // 24時間動かすので、不安定問題のあるCPUは避ける
     const prunedCpus = cpus.filter(a => !cpus.some(b => b !== a && b.sock === a.sock && b.price <= a.price && b.gs >= a.gs && b.mt >= a.mt && b.pw <= a.pw && (a.igpu === false || b.igpu !== false) && !(b.bios && !a.bios) && (b.price < a.price || b.gs > a.gs || b.mt > a.mt || b.pw < a.pw)));
     const ssdBase = req.disk > 700 ? 'g4-2' : 'g4-1';
     let best = null, fallback = null;

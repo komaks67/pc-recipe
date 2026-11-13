@@ -72,18 +72,20 @@
 
   /* ---------- BTOモデル比較 ---------- */
   const CMP = { maker: '', gpu: '', max: '', sort: 'price' };
-  const memId = gb => gb >= 64 ? 'd5-64' : gb >= 32 ? 'd5-32' : 'd5-16';
-  const ssdId = tb => tb >= 2 ? 'g4-2' : 'g4-1';
+  // BTOのメモリ容量 → 同じ容量の自作用メモリ（AM4などDDR4の土台ならDDR4）。8GBのモデルは16GBで近似
+  const memId = (gb, cpu) => E.memFor(gb >= 64 ? 64 : gb >= 48 ? 48 : gb >= 32 ? 32 : 16, E.platformTypes(D.by.cpu[cpu].sock)[0]);
+  const ssdId = tb => tb >= 4 ? 'g4-4' : tb >= 2 ? 'g4-2' : tb >= 1 ? 'g4-1' : 'g4-500';
 
   U.route('/compare', 'BTOモデル比較', function (el) {
     const models = (window.PCR_BTO_MODELS || []).filter(m => D.by.cpu[m.cpu] && D.by.gpu[m.gpu]);
-    let h = '<h1>BTOモデル比較</h1><p class="muted tipify">ドスパラ・パソコン工房・TSUKUMOのモデルを、<b>同じ中身で自作したときの目安</b>と比べます。</p>';
+    const mk = ['dospara', 'pckoubou', 'tsukumo'].filter(k => models.some(m => m.maker === k)).map(MAKER_NAME);
+    let h = '<h1>BTOモデル比較</h1><p class="muted tipify">' + (mk.length ? esc(mk.join('・')) : 'BTOメーカー') + 'のモデルを、<b>同じ中身で自作したときの目安</b>と比べます。価格は各メーカー公式サイトの表示価格（確認日はカードに記載）で、セールなどで毎日変わります。</p>';
     if (!models.length) {
       h += '<div class="card"><h2>モデルのデータは、まだ入っていません</h2><p>このページは、<code>tools/bto-models.csv</code> にモデルを入れて <code>node tools/update-prices.mjs</code> を実行すると、自動で表示されます。</p>' +
         '<p class="muted">正しい価格が確認できていないものを、勝手に表示することはしません。データを入れるまでは、下の「BTOと自作のちがい」と、各社のページへのリンクを使ってください。</p>' +
         '<div class="row sp"><a class="btn" href="#/bto">BTOパソコン選びへ</a><a class="btn sub" href="#/best">予算で最強構成へ</a></div></div>';
     } else {
-      h += '<div class="card"><div class="grid g3"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + ['dospara', 'pckoubou', 'tsukumo'].map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
+      h += '<div class="card"><div class="grid g3"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + ['dospara', 'pckoubou', 'tsukumo'].filter(k => models.some(m => m.maker === k)).map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
         '<div><label class="f">グラフィックボード</label><select id="cg"><option value="">すべて</option>' + D.gpu.filter(g => g.id !== 'none').map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></div>' +
         '<div><label class="f">上限金額（円）</label><input type="number" id="cx" min="0" step="10000" placeholder="例 300000"></div></div>' +
         '<div class="row sp"><label class="f" style="margin:0">並び順</label><select id="cs" style="width:auto"><option value="price">安い順</option><option value="perf">性能が高い順</option><option value="value">コスパ順（性能÷価格）</option></select></div></div><div id="list" class="sp"></div>';
@@ -102,7 +104,7 @@
     function draw() {
       let list = models.filter(m => (!CMP.maker || m.maker === CMP.maker) && (!CMP.gpu || m.gpu === CMP.gpu) && (!CMP.max || m.price <= +CMP.max));
       const info = list.map(m => {
-        const ids = E.complete({ cpu: m.cpu, gpu: m.gpu, mem: memId(m.memGB), ssd: ssdId(m.ssdTB) }, {});
+        const ids = E.complete({ cpu: m.cpu, gpu: m.gpu, mem: memId(m.memGB, m.cpu), ssd: ssdId(m.ssdTB) }, {});
         const ev = E.evaluate(ids, U.prefs());
         const perf = D.by.cpu[m.cpu].gs * 0.3 + D.by.gpu[m.gpu].score * 0.7;
         return { m: m, ev: ev, ids: ids, perf: perf, diy: ev.total, value: perf / m.price * 10000 };

@@ -1,1 +1,16 @@
 ﻿maker,name,cpu,gpu,memGB,ssdTB,price,warranty_years,delivery_days,url,updated
+dospara,GALLERIA XGR7M-R56-GD,r7-5700x,rtx5060,16,0.5,198880,1,,https://www.dospara.co.jp/TC30/MC19376.html,2026-11-13
+dospara,GALLERIA FGR7M-R56T8G-B,r7-5700x,rtx5060ti8,16,1,249980,1,,https://www.dospara.co.jp/TC30/MC25320.html,2026-11-13
+dospara,GALLERIA XPR7A-R56T8G-GD,r7-7700,rtx5060ti8,16,1,289980,1,,https://www.dospara.co.jp/TC30/MC26041.html,2026-11-13
+dospara,GALLERIA FPR7M-R56T16G-WCL,r7-7700,rtx5060ti,16,1,304980,1,,https://www.dospara.co.jp/TC30/MC20373.html,2026-11-13
+dospara,GALLERIA XPR7A-R57-GD ブラックフライデー2026モデル,r7-7700,rtx5070,16,1,314980,1,,https://www.dospara.co.jp/TC30/MC26519.html,2026-11-13
+dospara,GALLERIA XPC7A-R57-GD ブラックフライデー2026モデル,cu7-265f,rtx5070,16,1,339980,1,,https://www.dospara.co.jp/TC30/MC26507.html,2026-11-13
+dospara,GALLERIA XDR7A-R57-GD,r7-9800x3d,rtx5070,32,1,469980,1,,https://www.dospara.co.jp/TC30/MC19924.html,2026-11-13
+dospara,GALLERIA XDR7A-97XT-GD,r7-9800x3d,rx9070xt,32,1,474980,1,,https://www.dospara.co.jp/TC30/MC21788.html,2026-11-13
+dospara,GALLERIA XDR7A-R58-GD,r7-9800x3d,rtx5080,32,1,629980,1,,https://www.dospara.co.jp/TC30/MC19923.html,2026-11-13
+pckoubou,LEVEL-M155-R45-RK4XB,r5-4500,rtx5060,8,0.5,159800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1209203,2026-11-13
+pckoubou,LEVEL-M155-R45-TK7XB,r5-4500,rtx5070,16,0.5,219800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1270647,2026-11-13
+pckoubou,LEVEL-M88M-225F-TGXB,cu5-225f,rx9070xt,16,1,344800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1206135,2026-11-13
+pckoubou,LEVEL-M88M-225F-UKXB,cu5-225f,rtx5070ti,32,1,469800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1205853,2026-11-13
+pckoubou,LEVEL-M8AM-R97X-UKXB,r7-9700x,rtx5070ti,32,1,494800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1206124,2026-11-13
+pckoubou,LEVEL-R7B6-LCR98D-VKX,r7-9800x3d,rtx5080,32,1,594800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1124415,2026-11-13

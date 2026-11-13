@@ -9,6 +9,9 @@
   const ORDER = ['cpu', 'mb', 'mem', 'gpu', 'ssd', 'case', 'cooler', 'psu', 'os'];
 
   function specLine(k, p) {
+    return specBase(k, p) + (p.priceUnverified ? ' / 価格は未確認の目安（在庫が少ない・販売終了の可能性あり）' : '');
+  }
+  function specBase(k, p) {
     switch (k) {
       case 'cpu': return esc(p.b) + ' / ' + esc(p.core) + ' / 最大消費電力 約' + p.pw + 'W / ソケット ' + p.sock + (p.plus ? ' / 2026年3月発売の新型' : '') + (p.legacy ? ' / 旧世代・中古中心' : '') + (['7000', '5000', '12', '13', '14'].indexOf(p.fam) >= 0 ? ' / 前の世代' : '') + (p.igpu === false ? ' / 内蔵グラフィックスなし' : '') + ' / ゲーム性能の目安 ' + p.gs;
       case 'gpu': return p.id === 'none' ? 'CPU内蔵グラフィックスで表示します（事務・学習向け）' : 'VRAM ' + p.vram + 'GB / 消費電力 ' + p.tgp + 'W / 長さ 約' + p.len + 'mm / 電源端子 ' + p.conn + ' / 推奨電源 ' + p.rec + 'W' + (p.older ? ' / 前の世代（在庫により販売終了の場合あり）' : '');
@@ -80,7 +83,7 @@
     const pwPct = Math.min(100, pw.need / psu.w * 100);
     const maxF = 360;
     let h = '<div class="card"><div class="muted">合計金額（目安）</div><div class="total" data-yen>' + yen(ev.total) + '</div>' +
-      (CFG.priceIsPlaceholder ? '<div class="muted">※価格は仮の目安です。購入前に各店で確認してください。</div>' : '') +
+      '<div class="muted">' + (CFG.priceIsPlaceholder ? '※価格は仮の目安です。' : '※価格確認日 ' + esc(D.priceDate || CFG.dataDate) + ' 時点の目安です。') + '購入前に各店で確認してください。</div>' +
       '<div class="row sp">' + (ng.length ? '<span class="badge ng">要修正 ' + ng.length + '</span>' : '<span class="badge ok">互換性OK</span>') + (wr.length ? '<span class="badge warn">注意 ' + wr.length + '</span>' : '') + '</div></div>';
 
     h += '<div class="card sp"><h3>⚠ チェック結果</h3>' + (ng.length || wr.length ? chkHtml(ng.concat(wr)) : '<div class="chk ok"><span class="mk">✓</span><div><b>問題は見つかりませんでした</b>パーツ同士の組み合わせは合っています。</div></div>') +
@@ -162,7 +165,7 @@
           const swapped = E.swap(ids, k, p.id);
           const bad = p.id !== ids[k] && E.evaluate(swapped, c).hasNg ? ' ⚠' : '';
           const d = p.price - cur.price;
-          return '<option value="' + p.id + '"' + (p.id === ids[k] ? ' selected' : '') + '>' + esc(p.name) + ' — ' + (p.price ? yen(p.price) : '無料') + (p.id === ids[k] ? '' : d === 0 ? '' : '（' + U.sgn(d) + '）') + bad + '</option>';
+          return '<option value="' + p.id + '"' + (p.id === ids[k] ? ' selected' : '') + '>' + esc(p.name) + ' — ' + (p.price ? yen(p.price) + (p.priceUnverified ? '（未確認）' : '') : '無料') + (p.id === ids[k] ? '' : d === 0 ? '' : '（' + U.sgn(d) + '）') + bad + '</option>';
         }).join('');
         $('.spec', box).textContent = specLine(k, cur);
         const top = $('.top .nm', box); const oldImg = $('.pimg', box); if (oldImg) oldImg.remove(); const ih = U.partImg(k, cur.id, 44); if (ih) top.insertAdjacentHTML('beforebegin', ih);
@@ -255,7 +258,7 @@
         '<div class="row"><a class="btn sub sm" href="#/build?' + U.idsToQuery(ev.ids) + '">この構成を自作で組むと…（自作ビルダーで開く）</a></div></div>';
     }
     function makersHtml() {
-      return '<div class="card"><h2>3. BTOメーカーを比べる</h2><p class="muted">価格の自動取得は準備中です。下の注意点を確認しながら、各社のページで同じ構成を探してみましょう。</p><div class="grid g3">' +
+      return '<div class="card"><h2>3. BTOメーカーを比べる</h2><p class="muted">下の注意点を確認しながら、各社のページで同じ構成を探してみましょう。実際のモデルと価格は <a href="#/compare">BTOモデル比較</a> でも見られます。</p><div class="grid g3">' +
         D.makers.map(m => { const cf = CFG.affiliate.bto[m.key]; return '<div class="card flat"><h3>' + esc(cf.name) + '</h3><div class="muted">ブランド: ' + esc(m.brand) + '</div><p class="sp">' + esc(m.note) + '</p><b>確認するポイント</b><ul>' + m.check.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul><span class="pr">PR</span><a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.key)) + '">' + esc(cf.name) + 'を見る</a></div>'; }).join('') +
         '</div><p class="muted sp">※各社の特徴は一般的な傾向です。保証・納期・価格は変わるため、必ず公式ページで確認してください。</p></div>';
     }

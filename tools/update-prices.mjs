@@ -62,7 +62,7 @@ const today = new Date().toISOString().slice(0, 10);
 const problems = [];
 
 // ---- パーツ価格 ----
-const prices = { __date: today };
+const prices = { __date: today, __unverified: {}, __checked: {} };
 const pf = path.join(root, 'tools/parts-prices.csv');
 if (fs.existsSync(pf)) {
   toObjs(parseCsv(fs.readFileSync(pf, 'utf8'))).forEach((r, i) => {
@@ -72,6 +72,11 @@ if (fs.existsSync(pf)) {
     if (!KEYS.includes(r.category) || !D.by[r.category][r.id]) { problems.push('parts-prices.csv ' + line + '行目: 知らないパーツです (' + r.category + ' / ' + r.id + ')'); return; }
     if (!Number.isFinite(price) || price < 0 || price > 3000000) { problems.push('parts-prices.csv ' + line + '行目: 価格が正しくありません (' + r.price + ')'); return; }
     (prices[r.category] = prices[r.category] || {})[r.id] = price;
+    // checked 列（確認日）が空の CPU・グラボは「価格未確認」として、おまかせ提案に使わない
+    if ('checked' in r && (r.category === 'cpu' || r.category === 'gpu')) {
+      if (!r.checked) (prices.__unverified[r.category] = prices.__unverified[r.category] || []).push(r.id);
+      else if (/^\d{4}-\d{2}/.test(r.checked)) (prices.__checked[r.category] = prices.__checked[r.category] || {})[r.id] = r.checked;
+    }
   });
 } else problems.push('tools/parts-prices.csv がありません。--init で作れます。');
 
@@ -100,7 +105,7 @@ const hsb = { window: {} }; hsb.window = hsb; vm.createContext(hsb);
 const hf = path.join(root, 'js/price-history.js');
 try { vm.runInContext(read('js/price-history.js'), hsb); } catch (e) { /* 初回 */ }
 const hist = hsb.PCR_HISTORY || {};
-Object.keys(prices).filter(k => k !== '__date').forEach(k => {
+Object.keys(prices).filter(k => !k.startsWith('__')).forEach(k => {
   hist[k] = hist[k] || {};
   Object.keys(prices[k]).forEach(id => {
     const arr = (hist[k][id] = hist[k][id] || []).filter(p => p[0] !== today);
@@ -110,6 +115,6 @@ Object.keys(prices).filter(k => k !== '__date').forEach(k => {
 });
 fs.writeFileSync(hf, '/* 自動生成: tools/update-prices.mjs。実行のたびに、その日の価格が1点ずつ増えます */\nwindow.PCR_HISTORY = ' + JSON.stringify(hist) + ';\n');
 
-const n = Object.keys(prices).filter(k => k !== '__date').reduce((s, k) => s + Object.keys(prices[k]).length, 0);
+const n = Object.keys(prices).filter(k => !k.startsWith('__')).reduce((s, k) => s + Object.keys(prices[k]).length, 0);
 console.log('js/prices.js を更新しました（パーツ ' + n + ' 件）／ js/bto-models.js を更新しました（BTOモデル ' + models.length + ' 件）');
 console.log('価格を最新にしたら、js/config.js の priceIsPlaceholder を false にしてください。');

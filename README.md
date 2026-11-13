@@ -12,12 +12,24 @@
 4. 数分後に `https://ユーザー名.github.io/リポジトリ名/` で公開されます
 （Cloudflare Pages / Netlify でも、フォルダをそのままアップロードするだけで公開できます）
 
-## 公開前に必ずやること
-1. **価格を更新する** … `js/data.js` の `price`（円）を最新の値にして、`js/config.js` の `priceIsPlaceholder` を `false` にする
-   （`true` のあいだは、画面の上に「仮の価格です」の帯が出ます）
-2. **パーツ情報を公式サイトと見比べる** … CPU/GPU/マザーボード/電源などの仕様（ソケット、消費電力、推奨電源、GPUの長さなど）
-3. **アフィリエイトIDを入れる** … `js/config.js` の `amazonTag`、`rakutenId`、BTOメーカーの `url`（ASPが発行した広告リンクに差し替え）
-4. （任意）お問い合わせフォームのURLを `contactUrl` に入れる
+## 公開版の状態（2026-11-13）
+- **価格は実勢の目安に更新済み**（`priceIsPlaceholder: false`）。価格の出どころは「このサイトについて」に書いています。
+  - CPU・メモリ・SSD: AKIBA PC Hotline!「11月前半の価格」の最安値（2026-11-07調査）
+  - グラフィックボード・電源: ドスパラ通販の販売価格（2026-11-13）
+  - BTOモデル: ドスパラ9件・パソコン工房6件（各公式サイト 2026-11-13）。TSUKUMOは公式サイトが自動での読み取りを拒否しているため未掲載
+- 価格を確認できなかったCPU・グラボ（Intel第12・13世代の多く、RTX 40／RX 7000など）は「価格未確認」と表示し、**おまかせ提案・交換の提案には出しません**（自作ビルダーでは選べます）
+- `js/config.js` で設定するもの（空のままでも動きます）
+  - `gaMeasurementId` … Google アナリティクス 4 の測定ID。入れるとアクセス解析が動き、プライバシーポリシーの説明も自動で切り替わります
+  - `contactUrl` … お問い合わせ用 Googleフォームの URL
+  - `operatorName` … 運営者の表示名
+  - `affiliate.bto.*.url` … A8.net などで発行された広告リンク
+
+## 価格の更新のしかた（公開後）
+1. `tools/parts-prices.csv` の `price` を新しい金額にし、`checked` に確認日（例 `2026-12-01`）、`source` に出どころを書く
+   - CPU・グラボで `checked` が空の行は「価格未確認」になり、おまかせ提案に使われません
+2. BTOモデルは `tools/bto-models.csv` を編集（`updated` に確認日）
+3. `node tools/update-prices.mjs` を実行 → `js/prices.js`・`js/bto-models.js`・`js/price-history.js` が作り直されます
+4. 作り直されたファイルを**そのまま公開してOK**です（以前の「初期版に戻す」作業は不要になりました）
 
 ## ファイルの役割
 | ファイル | 内容 |
@@ -66,7 +78,7 @@
 4. `node tools/update-prices.mjs` … `js/prices.js` と `js/bto-models.js` が作り直されます（IDや金額が間違っていると、場所を教えて止まります）
 5. `js/config.js` の `priceIsPlaceholder` を `false` にする
 
-GitHub に置いている場合は、`.github/workflows/update-prices.yml` により、CSVを更新して push するだけで自動で 4 が実行されます。
+（自動実行の仕組み（GitHub Actions）は、今のリポジトリには入っていません。手元で 4 を実行してください。）
 将来、アフィリエイト会社の商品データ（API/フィード）が使えるようになったら、その結果を同じ形のCSVに書き出す処理を足せば、完全自動にできます。
 
 **注意:** 確認していない価格やモデルを入れないでください。サイトには「価格確認日」が表示されます。
