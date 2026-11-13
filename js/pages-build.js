@@ -259,7 +259,7 @@
     }
     function makersHtml() {
       return '<div class="card"><h2>3. BTOメーカーを比べる</h2><p class="muted">下の注意点を確認しながら、各社のページで同じ構成を探してみましょう。実際のモデルと価格は <a href="#/compare">BTOモデル比較</a> でも見られます。</p><div class="grid g3">' +
-        D.makers.map(m => { const cf = CFG.affiliate.bto[m.key]; return '<div class="card flat"><h3>' + esc(cf.name) + '</h3><div class="muted">ブランド: ' + esc(m.brand) + '</div><p class="sp">' + esc(m.note) + '</p><b>確認するポイント</b><ul>' + m.check.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul><span class="pr">PR</span><a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.key)) + '">' + esc(cf.name) + 'を見る</a></div>'; }).join('') +
+        D.makers.map(m => { const cf = CFG.affiliate.bto[m.key]; return '<div class="card flat"><h3>' + esc(cf.name) + '</h3><div class="muted">ブランド: ' + esc(m.brand) + '</div><p class="sp">' + esc(m.note) + '</p><b>確認するポイント</b><ul>' + m.check.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul><span class="pr">PR</span><a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.key)) + '">' + esc(cf.name) + 'を見る</a>' + U.makerImp(m.key) + '</div>'; }).join('') +
         '</div><p class="muted sp">※各社の特徴は一般的な傾向です。保証・納期・価格は変わるため、必ず公式ページで確認してください。</p></div>';
     }
     function memoHtml() {

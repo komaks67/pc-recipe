@@ -118,7 +118,10 @@
             (m.warranty ? '<tr><th>保証</th><td>' + m.warranty + '年</td></tr>' : '') + (m.days ? '<tr><th>納期の目安</th><td>' + m.days + '日</td></tr>' : '') + '</tbody></table>' +
             '<p class="sp">同じ中身で自作すると 約' + yen(x.diy) + '。BTOは<b>' + (d >= 0 ? '約' + yen(d) + ' 高い' : '約' + yen(-d) + ' 安い') + '</b>（組み立て・保証・サポート込みの価格）。</p>' +
             '<div class="muted">価格確認日: ' + esc(m.updated) + '</div>' +
-            '<div class="row sp"><span class="pr">PR</span>' + (m.url ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(m.url) + '">商品ページへ</a>' : '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">公式ページへ</a>') +
+            '<div class="row sp"><span class="pr">PR</span>' + (U.makerIsAd(m.maker)
+              // 広告リンクがあるメーカー: 広告リンク（公式サイトのトップ）と、商品ページへの直接リンクを並べる
+              ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">' + esc(MAKER_NAME(m.maker)) + '公式サイトへ</a>' + U.makerImp(m.maker) + (m.url ? '<a class="btn sub sm" target="_blank" rel="noopener" href="' + esc(m.url) + '">商品ページ</a>' : '')
+              : (m.url ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(m.url) + '">商品ページへ</a>' : '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">公式ページへ</a>')) +
             '<a class="btn sub sm" href="#/build?' + U.idsToQuery(x.ids) + '">自作で組む</a></div></div>';
         }).join('') + '</div><p class="muted sp">「自作の目安」は、このサイトの価格データでの計算です。BTOの価格は各社の標準構成（OS込み）で、送料が別にかかるメーカーもあります。セールで毎日変わるため、購入前に商品ページで確認してください。</p>';
     }

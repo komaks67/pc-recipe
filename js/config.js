@@ -34,15 +34,16 @@ window.PCR_CONFIG = {
     rakutenId: '596b99d6.84cad32d.596b99d7.476d5a69',
 
     /* BTOメーカーのリンク。ASP（A8.netなど）で提携が通ったら、
-       url を ASP が発行した「広告リンクのURL」に差し替えてください。 */
+       url を ASP が発行した「広告リンクのURL」に差し替えてください。
+       imp には、広告リンクと一緒に発行される 1×1 の計測用画像（0.gif）のURLを入れます。 */
     bto: {
       dospara: { name: 'ドスパラ',       brand: 'GALLERIA', url: 'https://www.dospara.co.jp/' },
       pckoubou: { name: 'パソコン工房',   brand: 'LEVEL∞',   url: 'https://www.pc-koubou.jp/' },
       tsukumo: { name: 'TSUKUMO',        brand: 'G-GEAR',   url: 'https://www.tsukumo.co.jp/' },
-      frontier: { name: 'FRONTIER',      brand: 'FRONTIER', url: 'https://www.frontier-direct.jp/' },
+      frontier: { name: 'FRONTIER',      brand: 'FRONTIER', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DBVECY+3KX4+63WO2', imp: 'https://www19.a8.net/0.gif?a8mat=4BGK7W+DBVECY+3KX4+63WO2' },
       sycom: { name: 'サイコム',          brand: 'G-Master', url: 'https://www.sycom.co.jp/' },
-      mdl: { name: 'MDL',                brand: 'MDL.make', url: 'https://mdlmake.shop/' },
-      ozgaming: { name: 'OZgaming',      brand: 'OZgaming', url: 'https://www.ozgaming-pcshop.com/' }
+      mdl: { name: 'MDL',                brand: 'MDL.make', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM', imp: 'https://www13.a8.net/0.gif?a8mat=4BGK7W+DDNP6A+5HXK+5YJRM' },
+      ozgaming: { name: 'OZgaming',      brand: 'OZgaming', url: 'https://px.a8.net/svt/ejp?a8mat=4BGK7W+DE94S2+5U1O+5YRHE', imp: 'https://www18.a8.net/0.gif?a8mat=4BGK7W+DE94S2+5U1O+5YRHE' }
     }
   }
 };
