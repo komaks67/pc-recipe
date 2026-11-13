@@ -33,7 +33,8 @@ const yen = n => '¥' + Math.round(n).toLocaleString('ja-JP');
 function page({ dir, file, title, desc, body, crumbs, jsonld }) {
   const url = SITE + dir + '/' + (file === 'index.html' ? '' : file);
   const full = title + ' | ' + CFG.siteName;
-  const nav = [['#/', 'ホーム'], ['#/wizard', '診断'], ['#/bto', 'BTO'], ['#/build', '自作'], ['#/best', '最強構成'], ['#/tools', 'ツール'], ['guide/', '読みもの']];
+  const nav = [['#/wizard', '診断'], ['#/build', '自作で組む'], ['#/bto', 'BTOで選ぶ'], ['#/compare', '比べる'], ['#/mypc', '今のPCを強化'], ['#/server', 'サーバー'], ['guide/', '調べる']];
+  const tabs = [['', '🏠', 'ホーム'], ['#/wizard', '🧭', '診断'], ['#/build', '🔧', '組む'], ['#/compare', '⚖️', '比べる'], ['guide/', '📘', '調べる']];
   const bc = [['../', 'ホーム']].concat(crumbs || []);
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: bc.concat([[null, title]]).map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[1], item: c[0] ? new URL(c[0], url).href : url })) }].concat(jsonld || []);
   return `<!doctype html>
@@ -43,7 +44,7 @@ function page({ dir, file, title, desc, body, crumbs, jsonld }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(full)}</title>
 <meta name="description" content="${esc(desc)}">
-<meta name="theme-color" content="#4f46e5">
+<meta name="theme-color" content="#23803d">
 <link rel="canonical" href="${esc(url)}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="${esc(CFG.siteName)}">
@@ -53,7 +54,7 @@ function page({ dir, file, title, desc, body, crumbs, jsonld }) {
 <meta property="og:image" content="${esc(SITE)}img/ogp.png">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234f46e5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2334a853'/%3E%3Crect x='9' y='9' width='14' height='14' rx='3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="../img/icon-180.png">
 <link rel="stylesheet" href="../css/style.css">
 <script>try{var t=JSON.parse(localStorage.getItem('pcr.theme'));if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}window.PCR_STATIC=true;</script>
@@ -65,7 +66,7 @@ function page({ dir, file, title, desc, body, crumbs, jsonld }) {
   <div class="hd-in">
     <a class="logo" href="../"><i></i>${esc(CFG.siteName)}</a>
     <nav class="nav" id="nav" aria-label="メインメニュー">${nav.map(n => `<a href="../${n[0]}"${n[0] === dir + '/' ? ' class="on"' : ''}>${n[1]}</a>`).join('')}</nav>
-    <button class="icon-btn menu-btn" id="menu" type="button" aria-label="メニューを開く" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    <a class="icon-btn sbtn" href="../#/search" aria-label="サイト内検索">🔍</a>
   </div>
 </header>
 <main id="app">
@@ -78,6 +79,7 @@ ${body}
 <p><a href="../guide/">読みもの</a>　<a href="../fps/">ゲーム別fpsの目安</a>　<a href="../#/about">このサイトについて・プライバシーポリシー</a>${CFG.contactUrl ? `　<a href="${esc(CFG.contactUrl)}" target="_blank" rel="noopener">お問い合わせ</a>` : ''}</p>
 <p>© ${new Date().getFullYear()} ${esc(CFG.siteName)}</p>
 </div></footer>
+<nav class="tabbar" aria-label="よく使うページ">${tabs.map(t => `<a href="../${t[0]}"${(t[0] === 'guide/' && dir === 'guide') ? ' class="on"' : ''}><span class="ti">${t[1]}</span>${t[2]}</a>`).join('')}</nav>
 <script src="../js/config.js"></script>
 <script src="../js/analytics.js"></script>
 <script>window.PCR_TRACK && window.PCR_TRACK();</script>

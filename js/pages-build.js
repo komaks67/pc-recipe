@@ -27,13 +27,14 @@
 
   /* ---------- 操作パネル（解像度・ゲーム・電気代） ---------- */
   function controlsHtml(c) {
-    return '<div class="card flat"><h3>見積もりの条件</h3>' +
+    const sel = D.games.filter(g => c.games.indexOf(g.id) >= 0).map(g => g.name.replace(/ \(.*\)$/, ''));
+    return '<details class="card flat ctl"><summary><b>🎮 計算の条件を変える</b><span class="muted ctl-now">' + esc(RES[c.res] + ' ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></summary><div class="sp">' +
       '<label class="f">画面の解像度</label><div class="chips" id="c-res">' +
       [1080, 1440, 2160].map(r => '<label class="chip"><input type="radio" name="res" value="' + r + '"' + (c.res == r ? ' checked' : '') + '><span>' + RES[r] + (r == 1080 ? '(1920×1080)' : r == 1440 ? '(2560×1440)' : '(3840×2160)') + '</span></label>').join('') + '</div>' +
       '<label class="f sp">遊ぶゲーム（fpsの目安を出します）</label><div class="chips" id="c-games">' +
       D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"' + (c.games.indexOf(g.id) >= 0 ? ' checked' : '') + '><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div>' +
       '<div class="row sp"><label class="chip"><input type="checkbox" id="c-stream"' + (c.stream ? ' checked' : '') + '><span>ゲーム配信もする</span></label>' +
-      '<span class="muted">1日</span><input type="number" id="c-hours" min="0" max="24" step="0.5" value="' + c.hours + '" style="width:76px"><span class="muted">時間 ／ 電気代</span><input type="number" id="c-kwh" min="10" max="80" value="' + c.kwh + '" style="width:76px"><span class="muted">円/kWh</span></div></div>';
+      '<span class="muted">1日</span><input type="number" id="c-hours" min="0" max="24" step="0.5" value="' + c.hours + '" style="width:76px"><span class="muted">時間 ／ 電気代</span><input type="number" id="c-kwh" min="10" max="80" value="' + c.kwh + '" style="width:76px"><span class="muted">円/kWh</span></div></div></details>';
   }
   function readControls(root) {
     const res = +($('input[name=res]:checked', root) || { value: 1440 }).value;
@@ -112,9 +113,9 @@
 
   /* ---------- 買い物リスト ---------- */
   function buyHtml(ev) {
-    return '<details class="card sp"><summary><b>🛒 パーツを買えるお店のリンク</b></summary><div class="sp">' +
+    return '<div class="card sp" id="buylist"><h3>🛒 この構成のパーツを買う</h3><div>' +
       E.KEYS.filter(k => ev.B[k].q).map(k => '<div class="row" style="justify-content:space-between;margin-bottom:8px"><span>' + E.LABEL[k] + '：' + esc(ev.B[k].name) + '</span><span>' + U.links(ev.B[k].q) + '</span></div>').join('') +
-      '<p class="muted">リンクは商品の検索結果ページです。同じ規格・型番かを確認してから購入してください。</p></div></details>';
+      '<p class="muted">リンクは商品の検索結果ページです。同じ規格・型番かを確認してから購入してください。</p></div></div>';
   }
 
   function actionsHtml(mode) {
@@ -135,15 +136,26 @@
     const flt = { size: '', noise: false, ssd: '', wifi: false, form: '' };
 
     el.innerHTML = '<h1>自作PC ビルダー</h1><p class="muted tipify">パーツを選ぶと、合わない組み合わせはすぐ警告が出ます。選択肢の ⚠ は「それに替えると他のパーツと合わなくなる」印です。</p>' +
-      '<div class="build"><div><details class="card flat no-print" style="margin-bottom:12px"><summary><b>🔍 こだわり検索（絞り込み）</b></summary><div class="grid g2 sp">' +
+      '<div class="steps no-print" id="bsteps" role="tablist">' + ['パーツを選ぶ', '結果', '買う・保存'].map((t, i) => '<button type="button" role="tab" data-go="' + (i + 1) + '"><b>' + (i + 1) + '</b>' + t + '</button>').join('') + '</div>' +
+      '<div class="build stepped"><div data-step="1"><details class="card flat no-print" style="margin-bottom:12px"><summary><b>🔍 こだわり検索（絞り込み）</b></summary><div class="grid g2 sp">' +
       '<div><label class="f">ケースの大きさ</label><select id="f-size"><option value="">すべて</option><option>ミニ</option><option>ミドル</option><option>大型</option></select></div>' +
       '<div><label class="f">マザーボードのサイズ</label><select id="f-form"><option value="">すべて</option><option>ATX</option><option>mATX</option><option>ITX</option></select></div>' +
       '<div><label class="f">SSDの種類</label><select id="f-ssd"><option value="">すべて</option><option value="4">NVMe Gen4</option><option value="5">NVMe Gen5</option><option value="0">SATA</option></select></div>' +
       '<div><label class="chip"><input type="checkbox" id="f-noise"><span>静音重視のケース・クーラーだけ</span></label><br><label class="chip" style="margin-top:6px"><input type="checkbox" id="f-wifi"><span>Wi-Fi標準搭載のマザボだけ</span></label></div></div></details>' +
-      '<div id="parts"></div></div><div class="sticky"><div id="ctl"></div><div id="sum" class="sp"></div><div id="act"></div><div id="buy"></div></div></div>';
+      '<div id="parts"></div><div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
+      '<div class="sticky"><div data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">買う・保存へ →</button></div></div>' +
+      '<div data-step="3"><div id="buy"></div><div id="act"></div></div></div></div>';
 
+    // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
+    function goStep(n, scroll) {
+      $$('[data-step]', el).forEach(x => x.classList.toggle('cur', +x.dataset.step === n));
+      $$('#bsteps button', el).forEach(b => { b.classList.toggle('on', +b.dataset.go === n); b.setAttribute('aria-selected', +b.dataset.go === n ? 'true' : 'false'); });
+      if (scroll) $('#bsteps', el).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    el.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goStep(+b.dataset.go, true); });
+    goStep(1);
     const partsEl = $('#parts', el);
-    partsEl.innerHTML = ORDER.map(k => '<div class="part" data-k="' + k + '"><div class="top"><span class="nm">' + E.LABEL[k] + '</span><button class="fav" title="お気に入りに追加" aria-label="お気に入り"></button></div><select aria-label="' + E.LABEL[k] + '"></select><div class="spec tipify"></div><div class="links"></div></div>').join('');
+    partsEl.innerHTML = ORDER.map(k => '<div class="part" data-k="' + k + '"><div class="top"><span class="nm">' + E.LABEL[k] + '</span><button class="fav" title="お気に入りに追加" aria-label="お気に入り"></button></div><select aria-label="' + E.LABEL[k] + '"></select><div class="spec tipify"></div></div>').join('');
     $('#ctl', el).innerHTML = controlsHtml(c);
     $('#act', el).innerHTML = actionsHtml('build');
 
@@ -161,15 +173,14 @@
     function drawParts() {
       ORDER.forEach(k => {
         const box = $('.part[data-k=' + k + ']', partsEl), sel = $('select', box), cur = D.by[k][ids[k]];
-        sel.innerHTML = listFor(k).map(p => {
-          const swapped = E.swap(ids, k, p.id);
-          const bad = p.id !== ids[k] && E.evaluate(swapped, c).hasNg ? ' ⚠' : '';
+        sel.innerHTML = U.optionsHtml(k, listFor(k), ids[k], p => {
+          const bad = p.id !== ids[k] && E.evaluate(E.swap(ids, k, p.id), c).hasNg ? '⚠ ' : '';
           const d = p.price - cur.price;
-          return '<option value="' + p.id + '"' + (p.id === ids[k] ? ' selected' : '') + '>' + esc(p.name) + ' — ' + (p.price ? yen(p.price) + (p.priceUnverified ? '（未確認）' : '') : '無料') + (p.id === ids[k] ? '' : d === 0 ? '' : '（' + U.sgn(d) + '）') + bad + '</option>';
-        }).join('');
+          return bad + p.name + '　' + (p.id === ids[k] ? (p.price ? yen(p.price) : '0円') : d === 0 ? '±0' : U.sgn(d)) + (p.priceUnverified && p.id === ids[k] ? '（未確認）' : '');
+        });
         $('.spec', box).textContent = specLine(k, cur);
         const top = $('.top .nm', box); const oldImg = $('.pimg', box); if (oldImg) oldImg.remove(); const ih = U.partImg(k, cur.id, 44); if (ih) top.insertAdjacentHTML('beforebegin', ih);
-        $('.links', box).innerHTML = U.links(cur.q);
+
         const fav = $('.fav', box); const on = U.isFav(k, cur.id); fav.classList.toggle('on', on); fav.textContent = on ? '★' : '☆';
       });
       U.tipify(partsEl);
@@ -178,6 +189,7 @@
       const ev = E.evaluate(ids, c);
       $('#sum', el).innerHTML = panelHtml(ev, ids, c, 'build');
       $('#buy', el).innerHTML = buyHtml(ev);
+      U.sumBar(ev, () => goStep(2, true));
       U.tipify($('#sum', el));
       history.replaceState(null, '', '#/build?' + U.idsToQuery(ids));
       U.store.set('pcr.last.build', ids);
@@ -230,17 +242,29 @@
       size: ['mini', 'compact', 'mid', 'large'].indexOf(q.get('size')) >= 0 ? q.get('size') : 'mid', quiet: q.get('quiet') === '1'
     };
     let c = U.prefs();
-    const opts = (k, cur) => D[k].map(p => '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('');
+    const opts = (k, cur) => U.optionsHtml(k, D[k], cur, p => p.name);
 
     el.innerHTML = '<h1>BTOパソコン選び</h1><p class="muted tipify">ショップのカスタマイズ画面で選ぶ4つ（CPU・GPU・メモリ・SSD）を決めると、電源やケースの目安、fps、電気代までまとめて確認できます。</p>' +
-      '<div class="build"><div><div class="card"><h2>1. 中身を選ぶ</h2><div class="grid g2" id="sel"></div>' +
+      '<div class="steps no-print" id="bsteps" role="tablist">' + ['中身を選ぶ', '結果', 'ショップで選ぶ', '価格メモ'].map((t, i) => '<button type="button" role="tab" data-go="' + (i + 1) + '"><b>' + (i + 1) + '</b>' + t + '</button>').join('') + '</div>' +
+      '<div class="build stepped" id="bwrap"><div><div class="card" data-step="1"><h2>1. 中身を選ぶ</h2><div class="grid g2" id="sel"></div>' +
       '<div class="grid g2 sp"><div><label class="f">大きさの好み</label><select id="b-size"><option value="mini">小型（Mini-ITX）</option><option value="compact">コンパクト（Micro-ATX）</option><option value="mid">標準（ミドルタワー）</option><option value="large">大型（フルタワー）</option></select></div>' +
-      '<div style="align-self:end"><label class="chip"><input type="checkbox" id="b-quiet"><span>静音重視</span></label></div></div></div>' +
-      '<div id="buyguide" class="sp"></div><div id="makers" class="sp"></div><div id="memo" class="sp"></div></div>' +
-      '<div class="sticky"><div id="ctl"></div><div id="sum" class="sp"></div><div id="act"></div></div></div>';
+      '<div style="align-self:end"><label class="chip"><input type="checkbox" id="b-quiet"><span>静音重視</span></label></div></div>' +
+      '<div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
+      '<div data-step="3"><div id="buyguide" class="sp"></div><div id="makers" class="sp"></div><div class="row sp step-next"><button class="btn sub" type="button" data-go="4">価格メモへ →</button></div></div><div id="memo" class="sp" data-step="4"></div></div>' +
+      '<div class="sticky" data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div id="act"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">ショップで選ぶときの目安へ →</button></div></div></div>';
 
     $('#sel', el).innerHTML = [['cpu', 'CPU'], ['gpu', 'グラフィックボード'], ['mem', 'メモリ'], ['ssd', 'ストレージ']].map(([k, l]) => '<div><label class="f">' + l + '</label><select data-k="' + k + '">' + opts(k, st[k]) + '</select></div>').join('');
     $('#b-size', el).value = st.size; $('#b-quiet', el).checked = st.quiet;
+    // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
+    let step = 1;
+    function goStep(n, scroll) {
+      step = n;
+      $$('[data-step]', el).forEach(x => x.classList.toggle('cur', +x.dataset.step === n));
+      $$('#bsteps button', el).forEach(b => { b.classList.toggle('on', +b.dataset.go === n); b.setAttribute('aria-selected', +b.dataset.go === n ? 'true' : 'false'); });
+      if (scroll) $('#bsteps', el).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    el.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goStep(+b.dataset.go, true); });
+    goStep(1);
     $('#ctl', el).innerHTML = controlsHtml(c);
     $('#act', el).innerHTML = actionsHtml('bto');
 
@@ -277,6 +301,7 @@
     function draw() {
       const i = ids(), ev = E.evaluate(i, c);
       $('#sum', el).innerHTML = panelHtml(ev, i, c, 'bto');
+      U.sumBar(ev, () => goStep(2, true));
       $('#buyguide', el).innerHTML = guide(ev);
       U.tipify($('#sum', el)); U.tipify($('#buyguide', el));
       history.replaceState(null, '', '#/bto?' + ['cpu', 'gpu', 'mem', 'ssd'].map(k => k + '=' + st[k]).join('&') + '&size=' + st.size + (st.quiet ? '&quiet=1' : ''));
