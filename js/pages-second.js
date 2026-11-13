@@ -78,14 +78,14 @@
 
   U.route('/compare', 'BTOモデル比較', function (el) {
     const models = (window.PCR_BTO_MODELS || []).filter(m => D.by.cpu[m.cpu] && D.by.gpu[m.gpu]);
-    const mk = ['dospara', 'pckoubou', 'tsukumo'].filter(k => models.some(m => m.maker === k)).map(MAKER_NAME);
+    const mk = Object.keys(CFG.affiliate.bto).filter(k => models.some(m => m.maker === k)).map(MAKER_NAME);
     let h = '<h1>BTOモデル比較</h1><p class="muted tipify">' + (mk.length ? esc(mk.join('・')) : 'BTOメーカー') + 'のモデルを、<b>同じ中身で自作したときの目安</b>と比べます。価格は各メーカー公式サイトの表示価格（確認日はカードに記載）で、セールなどで毎日変わります。</p>';
     if (!models.length) {
       h += '<div class="card"><h2>モデルのデータは、まだ入っていません</h2><p>このページは、<code>tools/bto-models.csv</code> にモデルを入れて <code>node tools/update-prices.mjs</code> を実行すると、自動で表示されます。</p>' +
         '<p class="muted">正しい価格が確認できていないものを、勝手に表示することはしません。データを入れるまでは、下の「BTOと自作のちがい」と、各社のページへのリンクを使ってください。</p>' +
         '<div class="row sp"><a class="btn" href="#/bto">BTOパソコン選びへ</a><a class="btn sub" href="#/best">予算で最強構成へ</a></div></div>';
     } else {
-      h += '<div class="card"><div class="grid g3"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + ['dospara', 'pckoubou', 'tsukumo'].filter(k => models.some(m => m.maker === k)).map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
+      h += '<div class="card"><div class="grid g3"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + Object.keys(CFG.affiliate.bto).filter(k => models.some(m => m.maker === k)).map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
         '<div><label class="f">グラフィックボード</label><select id="cg"><option value="">すべて</option>' + D.gpu.filter(g => g.id !== 'none').map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></div>' +
         '<div><label class="f">上限金額（円）</label><input type="number" id="cx" min="0" step="10000" placeholder="例 300000"></div></div>' +
         '<div class="row sp"><label class="f" style="margin:0">並び順</label><select id="cs" style="width:auto"><option value="price">安い順</option><option value="perf">性能が高い順</option><option value="value">コスパ順（性能÷価格）</option></select></div></div><div id="list" class="sp"></div>';
@@ -114,13 +114,13 @@
         '<div class="grid g2">' + info.map(x => {
           const m = x.m, d = m.price - x.diy;
           return '<div class="card"><div class="muted">' + esc(MAKER_NAME(m.maker)) + '</div><h3>' + esc(m.name) + '</h3><div class="total">' + yen(m.price) + '</div>' +
-            '<table class="t sp"><tbody><tr><th>CPU</th><td>' + esc(D.by.cpu[m.cpu].name) + '</td></tr><tr><th>GPU</th><td>' + esc(D.by.gpu[m.gpu].name) + '</td></tr><tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + m.ssdTB + 'TB</td></tr>' +
+            '<table class="t sp"><tbody><tr><th>CPU</th><td>' + esc(D.by.cpu[m.cpu].name) + '</td></tr><tr><th>GPU</th><td>' + esc(D.by.gpu[m.gpu].name) + '</td></tr><tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + (m.ssdTB < 1 ? Math.round(m.ssdTB * 1000) + 'GB' : m.ssdTB + 'TB') + '</td></tr>' +
             (m.warranty ? '<tr><th>保証</th><td>' + m.warranty + '年</td></tr>' : '') + (m.days ? '<tr><th>納期の目安</th><td>' + m.days + '日</td></tr>' : '') + '</tbody></table>' +
             '<p class="sp">同じ中身で自作すると 約' + yen(x.diy) + '。BTOは<b>' + (d >= 0 ? '約' + yen(d) + ' 高い' : '約' + yen(-d) + ' 安い') + '</b>（組み立て・保証・サポート込みの価格）。</p>' +
             '<div class="muted">価格確認日: ' + esc(m.updated) + '</div>' +
             '<div class="row sp"><span class="pr">PR</span>' + (m.url ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(m.url) + '">商品ページへ</a>' : '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">公式ページへ</a>') +
             '<a class="btn sub sm" href="#/build?' + U.idsToQuery(x.ids) + '">自作で組む</a></div></div>';
-        }).join('') + '</div><p class="muted sp">「自作の目安」は、このサイトの価格データでの計算です。実際の価格は日々変わります。</p>';
+        }).join('') + '</div><p class="muted sp">「自作の目安」は、このサイトの価格データでの計算です。BTOの価格は各社の標準構成（OS込み）で、送料が別にかかるメーカーもあります。セールで毎日変わるため、購入前に商品ページで確認してください。</p>';
     }
     $('#cm', el).onchange = e => { CMP.maker = e.target.value; draw(); };
     $('#cg', el).onchange = e => { CMP.gpu = e.target.value; draw(); };
