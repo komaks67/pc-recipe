@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自作PC 組み立ての手順（初心者向け） | PC Recipe</title>
+<meta name="description" content="ケースを開けてからWindowsが起動するまでの流れです。">
+<meta name="theme-color" content="#4f46e5">
+<link rel="canonical" href="https://komaks67.github.io/pc-recipe/guide/assembly.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PC Recipe">
+<meta property="og:title" content="自作PC 組み立ての手順（初心者向け） | PC Recipe">
+<meta property="og:description" content="ケースを開けてからWindowsが起動するまでの流れです。">
+<meta property="og:url" content="https://komaks67.github.io/pc-recipe/guide/assembly.html">
+<meta property="og:image" content="https://komaks67.github.io/pc-recipe/img/ogp.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234f46e5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../img/icon-180.png">
+<link rel="stylesheet" href="../css/style.css">
+<script>try{var t=JSON.parse(localStorage.getItem('pcr.theme'));if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark'}catch(e){}window.PCR_STATIC=true;</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://komaks67.github.io/pc-recipe/"},{"@type":"ListItem","position":2,"name":"読みもの","item":"https://komaks67.github.io/pc-recipe/guide/"},{"@type":"ListItem","position":3,"name":"自作PC 組み立ての手順（初心者向け）","item":"https://komaks67.github.io/pc-recipe/guide/assembly.html"}]},{"@context":"https://schema.org","@type":"Article","headline":"自作PC 組み立ての手順（初心者向け）","description":"ケースを開けてからWindowsが起動するまでの流れです。","inLanguage":"ja","dateModified":"2026-11-13","author":{"@type":"Organization","name":"PC Recipe"},"publisher":{"@type":"Organization","name":"PC Recipe"}}]</script>
+</head>
+<body>
+<div class="prbar">当サイトは広告（アフィリエイト・PR）を含みます</div>
+<header class="hd">
+  <div class="hd-in">
+    <a class="logo" href="../"><i></i>PC Recipe</a>
+    <nav class="nav" id="nav" aria-label="メインメニュー"><a href="../#/">ホーム</a><a href="../#/wizard">診断</a><a href="../#/bto">BTO</a><a href="../#/build">自作</a><a href="../#/best">最強構成</a><a href="../#/tools">ツール</a><a href="../guide/" class="on">読みもの</a></nav>
+    <button class="icon-btn menu-btn" id="menu" type="button" aria-label="メニューを開く" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+  </div>
+</header>
+<main id="app">
+<p class="muted" style="font-size:.85rem"><a href="../">ホーム</a> › <a href="./">読みもの</a> › 自作PC 組み立ての手順（初心者向け）</p>
+<article class="article"><h1>自作PC 組み立ての手順（初心者向け）</h1><p class="muted">ケースを開けてからWindowsが起動するまでの流れです。</p><p>用意するもの：プラスドライバー(#2)、結束バンド、ハサミ、広い机。静電気を逃がすため、作業前に金属（ドアノブなど）に触れましょう。</p><ol><li><b>マザーボードにCPUをつける</b>：ソケットのレバーを上げ、CPUの▲印とソケットの▲印を合わせて<b>そっと置くだけ</b>。押し込まないこと。</li><li><b>メモリを差す</b>：向きの切り欠きを合わせ、「カチッ」と両側のツメが閉まるまで押す。2枚なら、取扱説明書で指定された位置（多くはA2とB2）に。</li><li><b>M.2 SSDをつける</b>：スロットに斜めに差し込み、ネジで固定。ヒートシンクのカバーのはがし忘れに注意。</li><li><b>CPUクーラーをつける</b>：グリスが塗られているか確認し、対角線の順にネジを少しずつ締める。ファンのケーブルを「CPU_FAN」に。</li><li><b>ケースにマザーボードを固定</b>：先にI/Oパネル（背面の板）をはめ、ケース側のスペーサー位置に合わせてネジ止め。</li><li><b>電源ユニットを取り付け</b>：ケースの下部が多い。ケーブルは必要なものだけ接続。</li><li><b>グラフィックボードを差す</b>：PCIeスロットの一番上（長いスロット）に差し、ケース背面のネジで固定。電源ケーブルは<b>奥まで確実に</b>。</li><li><b>配線をつなぐ</b>：マザーボードの24pin、CPU用の電源(8pin)、ケースのスイッチ線、USB、ファンの順に、説明書を見ながら。</li><li><b>最初の起動</b>：モニターを<b>グラフィックボードの端子</b>につなぎ、電源ON。BIOS画面が出れば成功。</li><li><b>Windowsのインストール</b>：USBメモリでインストールし、チップセットとGPUのドライバを入れる。</li></ol><p>どこかで不安になったら、<a href="no-boot.html">起動しないとき</a>の確認リストを見てください。</p></article>
+<div class="row sp2"><a class="btn sub" href="bto-or-diy.html">← BTOと自作、どっちがいい？</a><a class="btn sub" href="mistakes.html">次: よくある失敗10選 →</a><a class="btn sub" href="./">読みもの一覧</a></div>
+<div class="card flat sp2"><h3>診断ツールで、自分に合う構成を探す</h3><p>用途と予算を答えるだけで、おすすめ構成と互換性・電源・fpsの目安が分かります。</p><div class="row sp"><a class="btn" href="../#/wizard">🧭 まず診断してみる</a><a class="btn sub" href="../#/build">自作PCビルダー</a><a class="btn sub" href="../#/compare">BTOモデル比較</a></div></div>
+</main>
+<footer class="ft"><div class="ft-in">
+<p><b>PR</b>　当サイトにはアフィリエイト広告が含まれます。表示しているfps・性能は計算モデルによる目安です。価格は確認日時点の目安で、毎日変わります。（価格確認日: 2026-11-13）</p>
+<p><a href="../guide/">読みもの</a>　<a href="../fps/">ゲーム別fpsの目安</a>　<a href="../#/about">このサイトについて・プライバシーポリシー</a>　<a href="https://forms.gle/bYmnNZuCt7F6BkZd9" target="_blank" rel="noopener">お問い合わせ</a></p>
+<p>© 2026 PC Recipe</p>
+</div></footer>
+<script src="../js/config.js"></script>
+<script src="../js/analytics.js"></script>
+<script>window.PCR_TRACK && window.PCR_TRACK();</script>
+</body>
+</html>
