@@ -33,8 +33,8 @@ const yen = n => '¥' + Math.round(n).toLocaleString('ja-JP');
 function page({ dir, file, title, desc, body, crumbs, jsonld }) {
   const url = SITE + dir + '/' + (file === 'index.html' ? '' : file);
   const full = title + ' | ' + CFG.siteName;
-  const nav = [['#/wizard', '診断'], ['#/build', '自作で組む'], ['#/bto', 'BTOで選ぶ'], ['#/compare', '比べる'], ['#/mypc', '今のPCを強化'], ['#/server', 'サーバー'], ['guide/', '調べる']];
-  const tabs = [['', '🏠', 'ホーム'], ['#/wizard', '🧭', '診断'], ['#/build', '🔧', '組む'], ['#/compare', '⚖️', '比べる'], ['guide/', '📘', '調べる']];
+  const nav = [['#/wizard', '診断'], ['#/build', '自作で組む'], ['#/bto', 'BTOで選ぶ'], ['#/vs', '比べる'], ['#/mypc', '今のPCを強化'], ['#/server', 'サーバー'], ['guide/', '調べる']];
+  const tabs = [['', '🏠', 'ホーム'], ['#/wizard', '🧭', '診断'], ['#/build', '🔧', '組む'], ['#/vs', '⚖️', '比べる'], ['guide/', '📘', '調べる']];
   const bc = [['../', 'ホーム']].concat(crumbs || []);
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: bc.concat([[null, title]]).map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c[1], item: c[0] ? new URL(c[0], url).href : url })) }].concat(jsonld || []);
   return `<!doctype html>
