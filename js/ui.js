@@ -127,6 +127,8 @@ window.PCR_UI = (function () {
   /* 広告リンクの表示回数を数える 1×1 の画像（A8.net の決まりで、リンクと一緒に置く） */
   U.makerImp = k => { const u = (CFG.affiliate.bto[k] || {}).imp; return u ? '<img src="' + U.esc(u) + '" width="1" height="1" alt="" style="border:0;position:absolute">' : ''; };
   U.makerIsAd = k => !!(CFG.affiliate.bto[k] || {}).imp;
+  /* 機種のページへ飛ぶ広告リンク（A8.net の商品リンクの mat があるときだけ。ないときは null） */
+  U.makerDeepLink = (k, url) => { const m = (CFG.affiliate.bto[k] || {}).deepMat; return m && /^https:\/\//.test(url || '') ? 'https://px.a8.net/svt/ejp?a8mat=' + m + '&a8ejpredirect=' + encodeURIComponent(url) : null; };
 
   /* ---------- 用語ホバー ---------- */
   let termMap = null, termRe = null;
