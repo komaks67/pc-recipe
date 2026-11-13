@@ -178,6 +178,7 @@
       const ev = E.evaluate(ids, c);
       $('#sum', el).innerHTML = panelHtml(ev, ids, c, 'build');
       $('#buy', el).innerHTML = buyHtml(ev);
+      U.sumBar(ev);
       U.tipify($('#sum', el));
       history.replaceState(null, '', '#/build?' + U.idsToQuery(ids));
       U.store.set('pcr.last.build', ids);
@@ -277,6 +278,7 @@
     function draw() {
       const i = ids(), ev = E.evaluate(i, c);
       $('#sum', el).innerHTML = panelHtml(ev, i, c, 'bto');
+      U.sumBar(ev);
       $('#buyguide', el).innerHTML = guide(ev);
       U.tipify($('#sum', el)); U.tipify($('#buyguide', el));
       history.replaceState(null, '', '#/bto?' + ['cpu', 'gpu', 'mem', 'ssd'].map(k => k + '=' + st[k]).join('&') + '&size=' + st.size + (st.quiet ? '&quiet=1' : ''));

@@ -219,8 +219,8 @@ window.PCR_UI = (function () {
     }
     if (!r) { key = '/404'; r = routes['/404']; }
     document.title = (r.title ? r.title + ' | ' : '') + CFG.siteName;
-    U.$$('.nav a').forEach(a => a.classList.toggle('on', a.dataset.k === r.nav));
-    U.$('#nav').classList.remove('open');
+    markNav(key);
+    U.sumBar(null);
     main.style.animation = 'none'; void main.offsetWidth; main.style.animation = '';
     main.innerHTML = '';
     try { r.fn(main, q, arg); } catch (e) { console.error(e); main.innerHTML = '<div class="card"><h2>表示でエラーが起きました</h2><p>ページを読み込み直してください。</p></div>'; }
@@ -230,11 +230,63 @@ window.PCR_UI = (function () {
     U.keepScroll = false;
   }
 
+  /* ---------- メニュー（目的別） ---------- */
+  // パソコンの上のメニュー
+  const NAV = [['/wizard', '診断'], ['/build', '自作で組む'], ['/bto', 'BTOで選ぶ'], ['/compare', '比べる'], ['/mypc', '今のPCを強化'], ['/server', 'サーバー'], ['/guide', '調べる']];
+  // 「すべてのメニュー」（スマホの「メニュー」タブ）
+  const MENU = [
+    ['PCを買いたい', [['/wizard', '🧭', '用途と予算から診断'], ['/best', '🏆', '予算で最強構成'], ['/build', '🔧', '自作PCビルダー'], ['/bto', '🖥️', 'BTOパソコン選び']]],
+    ['比べる・調べる', [['/compare', '⚖️', 'BTOモデル比較'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
+    ['今のPC・サーバー', [['/mypc', '💻', '今のPCから診断'], ['/upgrade', '🔋', 'アップグレード診断'], ['/server', '🖥', 'ゲームサーバー用PC']]],
+    ['そのほか', [['/saved', '⭐', '保存した構成'], ['/buy', '🛒', '購入ガイド・セール時期'], ['/about', 'ℹ️', 'このサイトについて']]]
+  ];
+  // スマホの下のタブ
+  const TABS = [['/', '🏠', 'ホーム'], ['/wizard', '🧭', '診断'], ['/build', '🔧', '組む'], ['/compare', '⚖️', '比べる'], ['menu', '☰', 'メニュー']];
+  // どのページが、どのメニューの仲間か
+  const GROUP = { '/best': '/wizard', '/upgrade': '/mypc', '/games': '/compare', '/history': '/compare', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
+  const TABGROUP = { '/bto': '/build', '/best': '/wizard', '/games': '/compare', '/history': '/compare' };
+  function markNav(key) {
+    const g = key in GROUP ? GROUP[key] : key;
+    U.$$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.k === g));
+    const t = TABGROUP[key] || key;
+    U.$$('#tabbar a').forEach(a => a.classList.toggle('on', a.dataset.k === t));
+  }
+  function openSheet(open) {
+    U.$('#sheet').hidden = !open; U.$('#sheet-bg').hidden = !open;
+    document.body.classList.toggle('noscroll', open);
+    const b = U.$('#tabbar [data-k="menu"]'); if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  U.closeSheet = () => openSheet(false);
+
+  /* ---------- 画面の下の合計バー（スマホ。自作ビルダー・BTO選びで使う） ---------- */
+  U.sumBar = function (ev) {
+    const bar = U.$('#sumbar');
+    if (!ev) { bar.hidden = true; document.body.classList.remove('has-sumbar'); return; }
+    const ng = ev.checks.filter(x => x.lv === 'ng').length, wr = ev.checks.filter(x => x.lv === 'warn').length;
+    const f = ev.fpsRows && ev.fpsRows[0];
+    bar.innerHTML = '<div class="sb-l"><div class="sb-tot">' + U.yen(ev.total) + '</div><div class="sb-sub">' +
+      (ng ? '<span class="sb-ng">✕ 要修正 ' + ng + '</span>' : '<span class="sb-ok">✓ 互換性OK</span>') + (wr ? ' ・ 注意 ' + wr : '') +
+      (f ? ' ・ ' + U.esc(f.game.name) + ' 約' + Math.round(f.fps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
+    bar.querySelector('button').onclick = () => { const t = U.$('#sum'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    bar.hidden = false; document.body.classList.add('has-sumbar');
+  };
+
   U.start = function () {
-    const nav = [['/', 'ホーム'], ['/wizard', '診断'], ['/bto', 'BTO'], ['/build', '自作'], ['/best', '最強構成'], ['/tools', 'ツール'], ['/guide', '読みもの'], ['/saved', '保存']];
-    U.$('#nav').innerHTML = nav.map(n => '<a href="#' + n[0] + '" data-k="' + n[0] + '">' + n[1] + '</a>').join('');
-    U.$('#sf').addEventListener('submit', e => { e.preventDefault(); const v = U.$('#sq').value.trim(); if (v) { U.go('#/search?q=' + encodeURIComponent(v)); U.$('#sq').blur(); } });
-    U.$('#menu').addEventListener('click', () => U.$('#nav').classList.toggle('open'));
+    U.$('#nav').innerHTML = NAV.map(n => '<a href="#' + n[0] + '" data-k="' + n[0] + '">' + n[1] + '</a>').join('');
+    U.$('#tabbar').innerHTML = TABS.map(t => t[0] === 'menu'
+      ? '<a href="#" role="button" data-k="menu" aria-expanded="false"><span class="ti">' + t[1] + '</span>' + t[2] + '</a>'
+      : '<a href="#' + t[0] + '" data-k="' + t[0] + '"><span class="ti">' + t[1] + '</span>' + t[2] + '</a>').join('');
+    U.$('#sheet').innerHTML = '<div class="sheet-hd"><b>メニュー</b><button class="icon-btn" type="button" id="sheet-x" aria-label="閉じる">✕</button></div>' +
+      '<form class="sheet-sf" id="sf3" role="search"><input type="search" id="sq3" placeholder="🔍 サイト内を検索（例: RTX 5070）" aria-label="サイト内検索"></form>' +
+      MENU.map(g => '<div class="sheet-g"><div class="sheet-gt">' + g[0] + '</div><div class="sheet-grid">' + g[1].map(i => '<a href="#' + i[0] + '"><span class="ti">' + i[1] + '</span>' + i[2] + '</a>').join('') + '</div></div>').join('');
+    U.$('#tabbar [data-k="menu"]').addEventListener('click', e => { e.preventDefault(); openSheet(U.$('#sheet').hidden); });
+    U.$('#sheet-x').onclick = () => openSheet(false);
+    U.$('#sheet-bg').onclick = () => openSheet(false);
+    U.$('#sheet').addEventListener('click', e => { if (e.target.closest('a')) openSheet(false); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') openSheet(false); });
+    const searchGo = inp => e => { e.preventDefault(); const v = inp().value.trim(); if (v) { U.go('#/search?q=' + encodeURIComponent(v)); inp().blur(); openSheet(false); } };
+    U.$('#sf').addEventListener('submit', searchGo(() => U.$('#sq')));
+    U.$('#sf3').addEventListener('submit', searchGo(() => U.$('#sq3')));
     if (CFG.priceIsPlaceholder) U.$('#ribbon').hidden = false;
     initTheme(); initTip();
     window.addEventListener('hashchange', render);

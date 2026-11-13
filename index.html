@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PC Recipe | BTO・自作PCの構成診断とパーツ互換性チェック</title>
 <meta name="description" content="用途と予算を答えるだけで、BTO・自作PCのおすすめ構成を診断。パーツの互換性、電源容量、ゲーム別fpsの目安までチェックできる初心者向けサイトです。">
-<meta name="theme-color" content="#4f46e5">
+<meta name="theme-color" content="#23803d">
 <link rel="canonical" href="https://komaks67.github.io/pc-recipe/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PC Recipe">
@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="apple-touch-icon" href="img/icon-180.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"PC Recipe","url":"https://komaks67.github.io/pc-recipe/","inLanguage":"ja","description":"BTO・自作PCの構成診断とパーツ互換性チェック"}</script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234f46e5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2334a853'/%3E%3Crect x='9' y='9' width='14' height='14' rx='3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -27,13 +27,17 @@
   <div class="hd-in">
     <a class="logo" href="#/"><i></i>PC Recipe</a>
     <nav class="nav" id="nav" aria-label="メインメニュー"></nav>
-    <form class="sf" id="sf" role="search"><input type="search" id="sq" placeholder="検索" aria-label="サイト内検索"></form>
+    <form class="sf" id="sf" role="search"><input type="search" id="sq" placeholder="🔍 サイト内を検索" aria-label="サイト内検索"></form>
+    <a class="icon-btn sbtn" href="#/search" aria-label="サイト内検索">🔍</a>
     <button class="icon-btn" id="theme" type="button" aria-label="ダークモードにする">☾</button>
-    <button class="icon-btn menu-btn" id="menu" type="button" aria-label="メニューを開く">☰</button>
   </div>
 </header>
 <main id="app" aria-live="polite"></main>
 <footer class="ft" id="ft"></footer>
+<div class="sumbar" id="sumbar" hidden></div>
+<nav class="tabbar" id="tabbar" aria-label="よく使うページ"></nav>
+<div class="sheet-bg" id="sheet-bg" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-label="すべてのメニュー"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <noscript><p style="padding:20px">このサイトはJavaScriptを使います。ブラウザの設定で有効にしてください。</p></noscript>
 <script src="js/config.js"></script>
