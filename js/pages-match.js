@@ -14,6 +14,11 @@
     if (r <= 1.8) return { c: 'm-ok', t: 'ぴったり', mk: '◎', msg: 'CPUとグラボのバランスが良く、どちらもムダになりにくい組み合わせです。' };
     return { c: 'm-gpu', t: '問題なし', mk: '○', msg: 'グラボの性能でfpsが決まる、ゲーム用PCではふつうの状態です。CPUには余裕があるので、将来グラボだけ交換しても力を出せます。' };
   }
+  /* ほかのページ（くらべる）でも使う：CPUとグラボの相性（ゲーム・解像度・画質を指定） */
+  U.matchJudge = function (cpu, gpu, game, res, quality) {
+    const f = E.fps(game, res, { cpu: cpu, gpu: gpu, mem: D.by.mem['d5-32'] }, { quality: quality });
+    return judge(f.cpuF / f.gpuF);
+  };
   // 「主なCPU」: ゲーム性能の幅が広くなるよう、価格を確認できたCPUから選ぶ
   const MAIN_CPU = ['r5-5500', 'r5-5600', 'r7-5700x', 'i5-14400f', 'r5-7500f', 'r5-9600x', 'cu5-225f', 'r7-9700x', 'i7-14700f', 'cu7-265k', 'r7-7800x3d', 'r7-9800x3d', 'r9-9950x3d'];
 
