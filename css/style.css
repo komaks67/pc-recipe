@@ -252,3 +252,21 @@ body.noscroll { overflow: hidden; }
   .ft { padding-bottom: 24px; }
 }
 @media print { .tabbar, .sumbar, .sheet, .sheet-bg { display: none !important; } body { padding: 0 !important; } }
+
+/* ---------- ステップ表示（BTO選び。スマホだけ1ステップずつ） ---------- */
+.steps { display: none; }
+.step-next { display: none; }
+@media (max-width: 720px) {
+  .steps { display: flex; gap: 6px; position: sticky; top: 61px; z-index: 40; background: var(--bg); padding: 8px 0 10px; margin: 0 0 6px; overflow-x: auto; }
+  .steps button { flex: 1; min-width: 72px; min-height: 48px; border: 1.5px solid var(--line); background: var(--card); color: var(--muted); border-radius: 14px; font: inherit; font-size: .75rem; font-weight: 700; line-height: 1.2; cursor: pointer; padding: 4px 4px; }
+  .steps button b { display: block; font-size: .95rem; }
+  .steps button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .stepped [data-step]:not(.cur) { display: none; }
+  .stepped .sticky { position: static; }
+  .step-next { display: flex; justify-content: flex-end; }
+}
+
+@media (max-width: 720px) { .filt { grid-template-columns: 1fr 1fr !important; } .filt > div:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+
+.ctl summary { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; min-height: 28px; }
+.ctl-now { font-size: .82rem; }

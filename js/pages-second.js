@@ -71,7 +71,7 @@
   });
 
   /* ---------- BTOモデル比較 ---------- */
-  const CMP = { maker: '', gpu: '', max: '', sort: 'price' };
+  const CMP = { maker: '', gpu: '', max: '', sort: 'price', limit: 8 };
   // BTOのメモリ容量 → 同じ容量の自作用メモリ（AM4などDDR4の土台ならDDR4）。8GBのモデルは16GBで近似
   const memId = (gb, cpu) => E.memFor(gb >= 64 ? 64 : gb >= 48 ? 48 : gb >= 32 ? 32 : 16, E.platformTypes(D.by.cpu[cpu].sock)[0]);
   const ssdId = tb => tb >= 4 ? 'g4-4' : tb >= 2 ? 'g4-2' : tb >= 1 ? 'g4-1' : 'g4-500';
@@ -85,8 +85,8 @@
         '<p class="muted">正しい価格が確認できていないものを、勝手に表示することはしません。データを入れるまでは、下の「BTOと自作のちがい」と、各社のページへのリンクを使ってください。</p>' +
         '<div class="row sp"><a class="btn" href="#/bto">BTOパソコン選びへ</a><a class="btn sub" href="#/best">予算で最強構成へ</a></div></div>';
     } else {
-      h += '<div class="card"><div class="grid g3"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + Object.keys(CFG.affiliate.bto).filter(k => models.some(m => m.maker === k)).map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
-        '<div><label class="f">グラフィックボード</label><select id="cg"><option value="">すべて</option>' + D.gpu.filter(g => g.id !== 'none').map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></div>' +
+      h += '<div class="card"><div class="grid g3 filt"><div><label class="f">メーカー</label><select id="cm"><option value="">すべて</option>' + Object.keys(CFG.affiliate.bto).filter(k => models.some(m => m.maker === k)).map(k => '<option value="' + k + '">' + esc(MAKER_NAME(k)) + '</option>').join('') + '</select></div>' +
+        '<div><label class="f">グラフィックボード</label><select id="cg"><option value="">すべて</option>' + D.gpu.filter(g => models.some(m => m.gpu === g.id)).map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></div>' +
         '<div><label class="f">上限金額（円）</label><input type="number" id="cx" min="0" step="10000" placeholder="例 300000"></div></div>' +
         '<div class="row sp"><label class="f" style="margin:0">並び順</label><select id="cs" style="width:auto"><option value="price">安い順</option><option value="perf">性能が高い順</option><option value="value">コスパ順（性能÷価格）</option></select></div></div><div id="list" class="sp"></div>';
     }
@@ -110,7 +110,9 @@
         return { m: m, ev: ev, ids: ids, perf: perf, diy: ev.total, value: perf / m.price * 10000 };
       });
       info.sort((a, b) => CMP.sort === 'perf' ? b.perf - a.perf : CMP.sort === 'value' ? b.value - a.value : a.m.price - b.m.price);
-      $('#list', el).innerHTML = !info.length ? '<div class="card"><p>条件に合うモデルがありません。</p></div>' :
+      const total = info.length; info.splice(CMP.limit);   // 一度に出すのは CMP.limit 件まで
+      $('#list', el).innerHTML = !total ? '<div class="card"><p>条件に合うモデルがありません。上限金額やグラボの条件をゆるめてみてください。</p></div>' :
+        '<p class="muted"><b>' + total + '件</b>見つかりました' + (total > info.length ? '（' + info.length + '件を表示中）' : '') + '</p>' +
         '<div class="grid g2">' + info.map(x => {
           const m = x.m, d = m.price - x.diy;
           return '<div class="card"><div class="muted">' + esc(MAKER_NAME(m.maker)) + '</div><h3>' + esc(m.name) + '</h3><div class="total">' + yen(m.price) + '</div>' +
@@ -126,12 +128,14 @@
               ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">' + esc(MAKER_NAME(m.maker)) + '公式サイトへ</a>' + U.makerImp(m.maker) + (m.url ? '<a class="btn sub sm" target="_blank" rel="noopener" href="' + esc(m.url) + '">商品ページ</a>' : '')
               : (m.url ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(m.url) + '">商品ページへ</a>' : '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerLink(m.maker)) + '">公式ページへ</a>')) +
             '<a class="btn sub sm" href="#/build?' + U.idsToQuery(x.ids) + '">自作で組む</a></div></div>';
-        }).join('') + '</div><p class="muted sp">「自作の目安」は、このサイトの価格データでの計算です。BTOの価格は各社の標準構成（OS込み）で、送料が別にかかるメーカーもあります。セールで毎日変わるため、購入前に商品ページで確認してください。</p>';
+        }).join('') + '</div>' + (total > info.length ? '<div class="row sp" style="justify-content:center"><button class="btn sub" type="button" id="more">もっと見る（残り ' + (total - info.length) + '件）</button></div>' : '') + '<p class="muted sp">「自作の目安」は、このサイトの価格データでの計算です。BTOの価格は各社の標準構成（OS込み）で、送料が別にかかるメーカーもあります。セールで毎日変わるため、購入前に商品ページで確認してください。</p>';
     }
-    $('#cm', el).onchange = e => { CMP.maker = e.target.value; draw(); };
-    $('#cg', el).onchange = e => { CMP.gpu = e.target.value; draw(); };
-    $('#cx', el).oninput = e => { CMP.max = e.target.value; draw(); };
-    $('#cs', el).onchange = e => { CMP.sort = e.target.value; draw(); };
+    const re = () => { CMP.limit = 8; draw(); };
+    $('#cm', el).onchange = e => { CMP.maker = e.target.value; re(); };
+    $('#cg', el).onchange = e => { CMP.gpu = e.target.value; re(); };
+    $('#cx', el).oninput = e => { CMP.max = e.target.value; re(); };
+    $('#cs', el).onchange = e => { CMP.sort = e.target.value; re(); };
+    el.addEventListener('click', e => { if (e.target.id === 'more') { CMP.limit += 8; U.keepScroll = true; draw(); } });
     draw();
   }, '/bto');
 

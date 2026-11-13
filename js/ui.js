@@ -230,6 +230,26 @@ window.PCR_UI = (function () {
     U.keepScroll = false;
   }
 
+  /* ---------- 選択肢のグループ分け（CPU・グラボは数が多いので、世代ごとにまとめる） ---------- */
+  const CPU_FAM = { '9000': 'Ryzen 9000（最新）', '8000': 'Ryzen 8000G（内蔵グラフィックス強め）', '7000': 'Ryzen 7000', '5000': 'Ryzen 5000（AM4・DDR4）', '4000': 'Ryzen 4000（AM4）',
+    'U200P': 'Core Ultra 200S Plus（最新）', 'U200': 'Core Ultra 200S', '14': 'Core 第14世代', '13': 'Core 第13世代', '12': 'Core 第12世代' };
+  const groupOf = (k, p) => {
+    if (p.legacy) return 'z1|旧世代（中古が中心）';
+    if (p.priceUnverified) return 'z0|価格未確認（在庫が少ない・販売終了の可能性）';
+    if (k === 'cpu') return (p.b === 'AMD' ? 'a' : 'b') + '|' + (CPU_FAM[p.fam] || p.b);
+    if (k === 'gpu') return p.id === 'none' ? '0|グラボなし' : ({ NVIDIA: '1|NVIDIA GeForce', AMD: '2|AMD Radeon', Intel: '3|Intel Arc' }[p.b] || '4|' + p.b);
+    return '';
+  };
+  /* list: パーツの配列、label(p): 選択肢の文字 */
+  U.optionsHtml = function (k, list, cur, label) {
+    const one = p => '<option value="' + p.id + '"' + (p.id === cur ? ' selected' : '') + '>' + U.esc(label(p)) + '</option>';
+    if (k !== 'cpu' && k !== 'gpu') return list.map(one).join('');
+    const g = {}, order = [];
+    list.forEach(p => { const n = groupOf(k, p); if (!g[n]) { g[n] = []; order.push(n); } g[n].push(p); });
+    order.sort((a, b) => a.split('|')[0] < b.split('|')[0] ? -1 : a.split('|')[0] > b.split('|')[0] ? 1 : order.indexOf(a) - order.indexOf(b));
+    return order.map(n => '<optgroup label="' + U.esc(n.split('|')[1]) + '">' + g[n].map(one).join('') + '</optgroup>').join('');
+  };
+
   /* ---------- メニュー（目的別） ---------- */
   // パソコンの上のメニュー
   const NAV = [['/wizard', '診断'], ['/build', '自作で組む'], ['/bto', 'BTOで選ぶ'], ['/compare', '比べる'], ['/mypc', '今のPCを強化'], ['/server', 'サーバー'], ['/guide', '調べる']];
@@ -259,7 +279,7 @@ window.PCR_UI = (function () {
   U.closeSheet = () => openSheet(false);
 
   /* ---------- 画面の下の合計バー（スマホ。自作ビルダー・BTO選びで使う） ---------- */
-  U.sumBar = function (ev) {
+  U.sumBar = function (ev, onOpen) {
     const bar = U.$('#sumbar');
     if (!ev) { bar.hidden = true; document.body.classList.remove('has-sumbar'); return; }
     const ng = ev.checks.filter(x => x.lv === 'ng').length, wr = ev.checks.filter(x => x.lv === 'warn').length;
@@ -267,7 +287,7 @@ window.PCR_UI = (function () {
     bar.innerHTML = '<div class="sb-l"><div class="sb-tot">' + U.yen(ev.total) + '</div><div class="sb-sub">' +
       (ng ? '<span class="sb-ng">✕ 要修正 ' + ng + '</span>' : '<span class="sb-ok">✓ 互換性OK</span>') + (wr ? ' ・ 注意 ' + wr : '') +
       (f ? ' ・ ' + U.esc(f.game.name) + ' 約' + Math.round(f.fps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
-    bar.querySelector('button').onclick = () => { const t = U.$('#sum'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    bar.querySelector('button').onclick = onOpen || (() => { const t = U.$('#sum'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     bar.hidden = false; document.body.classList.add('has-sumbar');
   };
 
