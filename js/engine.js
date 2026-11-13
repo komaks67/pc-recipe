@@ -16,19 +16,47 @@ window.PCR_ENGINE = (function () {
     return o;
   };
 
+  /* ---------- 画質 ----------
+     ゲームのデータ（D.games の g / c）は「高」画質での目安（base: 'ultra' のゲームは「最高」画質での目安）。ほかの画質は、そこからの倍率で計算する。
+     g: グラボ側の上限fpsの倍率、c: CPU側の上限fpsの倍率（画質を下げると、描く物が減ってCPUも少し楽になる） */
+  E.QUALITY = {
+    ultra: { t: '最高', g: 0.78, c: 0.95 },
+    high: { t: '高', g: 1, c: 1 },
+    mid: { t: '中', g: 1.3, c: 1.04 },
+    low: { t: '低', g: 1.65, c: 1.08 }
+  };
+  E.QKEYS = ['ultra', 'high', 'mid', 'low'];
+  // 最高画質で、グラボのメモリ（VRAM）が足りなくなりやすい目安（重いゲームだけ）
+  const VRAM_ULTRA = { 1080: 8, 1440: 10, 2160: 12 };
+
   /* ---------- fps の目安 ---------- */
   E.fps = function (game, res, B, opt) {
     opt = opt || {};
-    const gpuF = game.g[res] * Math.pow(B.gpu.score / 100, game.k);
-    const cpuF = game.c * Math.pow(B.cpu.gs / 100, 0.8);
+    const qk = E.QUALITY[opt.quality] ? opt.quality : 'high';
+    const Q = E.QUALITY[qk];
+    // 軽いゲーム（eスポーツなど）は、画質を変えてもfpsの変わり方が小さい
+    const soft = game.k <= 0.6 ? 0.5 : 1;
+    // ゲームのデータを測った画質（base。ふつうは「高」）からの倍率にする
+    const B0 = E.QUALITY[game.base] || E.QUALITY.high;
+    const qg = (1 + (Q.g - 1) * soft) / (1 + (B0.g - 1) * soft), qc = (1 + (Q.c - 1) * soft) / (1 + (B0.c - 1) * soft);
+    const gpuF = game.g[res] * Math.pow(B.gpu.score / 100, game.k) * qg;
+    const cpuF = game.c * Math.pow(B.cpu.gs / 100, 0.8) * qc;
     const p = 6;
     let f = Math.pow(Math.pow(gpuF, -p) + Math.pow(cpuF, -p), -1 / p);
     const need = game.mem + (opt.stream ? 8 : 0);
     const memPen = !!(B.mem && B.mem.cap < need);
     if (memPen) f *= 0.85;
+    const vramPen = qk === 'ultra' && game.k >= 0.8 && B.gpu.vram > 0 && B.gpu.vram < VRAM_ULTRA[res];
+    if (vramPen) f *= 0.85;
     if (opt.stream) f *= 0.9;
     if (game.cap) f = Math.min(f, game.cap);   // フレームレートの上限があるゲーム
-    return { fps: f, gpuF: gpuF, cpuF: cpuF, limit: gpuF <= cpuF ? 'GPU' : 'CPU', memPen: memPen };
+    return { fps: f, gpuF: gpuF, cpuF: cpuF, limit: gpuF <= cpuF ? 'GPU' : 'CPU', memPen: memPen, vramPen: vramPen, quality: qk };
+  };
+  /* 4つの画質すべてのfps（表示用） */
+  E.fpsAll = function (game, res, B, opt) {
+    const o = {};
+    E.QKEYS.forEach(q => { o[q] = E.fps(game, res, B, Object.assign({}, opt || {}, { quality: q })).fps; });
+    return o;
   };
   E.fpsLabel = function (f) {
     if (f >= 240) return { t: '240fps級', c: 'a' };
@@ -282,7 +310,7 @@ window.PCR_ENGINE = (function () {
   E.satisfaction = function (B, o) {
     const parts = [];
     if (o.game && o.games.length) {
-      const arr = o.games.map(id => E.fps(D.by.games[id], o.res, B, { stream: o.stream }).fps / o.target);
+      const arr = o.games.map(id => E.fps(D.by.games[id], o.res, B, { stream: o.stream, quality: o.quality }).fps / o.target);
       parts.push({ w: 0.75, v: avg(arr.map(x => Math.min(x, o.maxPerf ? 5 : 1.15))) });
     }
     if (o.edit && o.edit !== 'none') {
@@ -342,7 +370,7 @@ window.PCR_ENGINE = (function () {
     const memStub = { cap: inp.memGB };
     const run = (cpuGs, gpuScore, memCap) => {
       const B = { cpu: { gs: cpuGs }, gpu: { score: gpuScore }, mem: { cap: memCap } };
-      const rows = games.map(g => E.fps(g, inp.res, B, {}));
+      const rows = games.map(g => E.fps(g, inp.res, B, { quality: inp.quality }));
       return { avg: avg(rows.map(r => r.fps)), cpuLim: rows.filter(r => r.cpuF < r.gpuF * 0.95).length, rows: rows, ok: rows.filter(r => r.fps >= inp.target).length };
     };
     const now = run(oc.gs, og.score, inp.memGB);

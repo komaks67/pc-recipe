@@ -301,11 +301,11 @@ body.noscroll { overflow: hidden; }
 .m-c:hover, .m-c.on { outline: 3px solid var(--ink); outline-offset: 1px; }
 /* 状態の色（記号と文字でも区別できるようにしている） */
 .m-ok { background: #1f7a3a; color: #fff; }
-.m-gpu { background: #c9d4de; color: #1f2933; }
+.m-gpu { background: #a7e3b5; color: #0c3b1b; }
 .m-warn { background: #fab219; color: #0b0b0b; }
 .m-ng { background: #d03b3b; color: #fff; }
 [data-theme="dark"] .m-ok { background: #15803d; color: #fff; }
-[data-theme="dark"] .m-gpu { background: #3a4755; color: #fff; }
+[data-theme="dark"] .m-gpu { background: #86b896; color: #0c2414; }
 .m-legend { display: flex; flex-wrap: wrap; gap: 8px; }
 .m-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700; }
 .m-key b { font-size: .95rem; }
@@ -315,3 +315,29 @@ body.noscroll { overflow: hidden; }
   .m-tab tbody th { font-size: .72rem; max-width: 92px; white-space: normal; line-height: 1.25; }
   .m-c { width: 46px; height: 42px; font-size: .74rem; }
 }
+
+.qline { grid-column: 1 / -1; font-size: .78rem; color: var(--muted); margin: -4px 0 6px; }
+.qline b { color: var(--ink); }
+
+/* ---------- くらべる ---------- */
+:root { --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; }
+[data-theme="dark"] { --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; }
+.vs-tabs button { font-size: 1rem; }
+.vs-slots { display: grid; gap: 10px; }
+.vs-slot { display: flex; align-items: center; gap: 8px; }
+.vs-slot select { flex: 1; min-width: 0; }
+.vs-mk { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: #fff; font-weight: 800; font-size: .9rem; flex: none; }
+.vs-mk.s1, .vs-bar i.s1 { background: var(--s1); } .vs-mk.s2, .vs-bar i.s2 { background: var(--s2); }
+.vs-mk.s3, .vs-bar i.s3 { background: var(--s3); } .vs-mk.s4, .vs-bar i.s4 { background: var(--s4); }
+.vs-mk.s4 { color: #0b0b0b; }
+.vs-g { margin-bottom: 14px; }
+.vs-gt { font-weight: 800; font-size: .92rem; margin-bottom: 4px; }
+.vs-row { display: grid; grid-template-columns: 26px 1fr minmax(84px, auto); gap: 8px; align-items: center; margin-bottom: 4px; }
+.vs-bar { height: 16px; }
+.vs-bar i { display: block; height: 100%; border-radius: 0 4px 4px 0; }
+.vs-v { font-size: .86rem; white-space: nowrap; } .vs-v b { font-size: 1rem; }
+.vs-t th:first-child { white-space: nowrap; }
+.vs-t thead th { color: var(--ink); font-size: .85rem; vertical-align: bottom; min-width: 120px; }
+.vs-best { background: var(--accent-soft); font-weight: 700; }
+.vs-star { color: var(--accent); }
+.vs-x { width: 40px; height: 40px; }

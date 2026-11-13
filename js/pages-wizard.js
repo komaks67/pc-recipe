@@ -189,19 +189,19 @@
      ============================================================ */
   U.route('/games', 'ゲーム別fps目安', function (el, q) {
     const p = U.prefs();
-    const st = { game: D.by.games[q.get('g')] ? q.get('g') : 'apex', cpu: D.by.cpu[q.get('cpu')] ? q.get('cpu') : 'r7-9800x3d', mem: 'd5-32' };
+    const st = { game: D.by.games[q.get('g')] ? q.get('g') : 'apex', cpu: D.by.cpu[q.get('cpu')] ? q.get('cpu') : 'r7-9800x3d', mem: 'd5-32', quality: E.QUALITY[q.get('q')] ? q.get('q') : 'high' };
     el.innerHTML = '<h1>ゲーム別 fps の目安</h1><p class="muted tipify">ゲームとCPUを選ぶと、グラフィックボードごとの目安fpsが一覧で見られます。実測値ではなく、性能の目安から計算した値です。</p>' +
       '<div class="card"><div class="grid g2"><div><label class="f">ゲーム</label><select id="g-game">' + D.games.map(g => '<option value="' + g.id + '">' + esc(g.name) + '</option>').join('') + '</select></div>' +
-      '<div><label class="f">CPU</label><select id="g-cpu">' + D.cpu.map(c => '<option value="' + c.id + '">' + esc(c.name) + '</option>').join('') + '</select></div></div></div><div id="g-out" class="sp"></div>';
+      '<div><label class="f">CPU</label><select id="g-cpu">' + D.cpu.map(c => '<option value="' + c.id + '">' + esc(c.name) + '</option>').join('') + '</select></div></div><label class="f sp">画質（ゲームの設定）</label>' + U.qualityChips('gq', st.quality) + '</div><div id="g-out" class="sp"></div>';
     $('#g-game', el).value = st.game; $('#g-cpu', el).value = st.cpu;
     function draw() {
-      st.game = $('#g-game', el).value; st.cpu = $('#g-cpu', el).value;
+      st.game = $('#g-game', el).value; st.cpu = $('#g-cpu', el).value; st.quality = ($('input[name=gq]:checked', el) || { value: 'high' }).value;
       const g = D.by.games[st.game], cpu = D.by.cpu[st.cpu];
       const rows = D.gpu.filter(x => x.id !== 'none').sort((a, b) => b.score - a.score).map(gpu => {
         const B = { cpu: cpu, gpu: gpu, mem: D.by.mem[st.mem] };
-        return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span></td>' + [1080, 1440, 2160].map(r => { const f = E.fps(g, r, B).fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span></td>'; }).join('') + '</tr>';
+        return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span></td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
       }).join('');
-      $('#g-out', el).innerHTML = '<div class="card"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + '</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      $('#g-out', el).innerHTML = '<div class="card"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + ' ／ ' + E.QUALITY[st.quality].t + '画質</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
         '<p class="sp"><a href="fps/' + esc(g.id) + '.html">' + esc(g.name) + 'のおすすめグラボまとめ（目標fpsに届くいちばん安いグラボ）</a></p><p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';
     }
     el.addEventListener('change', draw); draw();
