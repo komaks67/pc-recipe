@@ -86,7 +86,8 @@ const bf = path.join(root, 'tools/bto-models.csv');
 if (fs.existsSync(bf)) {
   toObjs(parseCsv(fs.readFileSync(bf, 'utf8'))).forEach((r, i) => {
     const line = i + 2, price = Number((r.price || '').replace(/[,¥円\s]/g, ''));
-    if (!['dospara', 'pckoubou', 'tsukumo'].includes(r.maker)) { problems.push('bto-models.csv ' + line + '行目: maker は dospara / pckoubou / tsukumo のどれかです'); return; }
+    const MAKERS = Object.keys(sandbox.PCR_CONFIG.affiliate.bto);
+    if (!MAKERS.includes(r.maker)) { problems.push('bto-models.csv ' + line + '行目: maker は ' + MAKERS.join(' / ') + ' のどれかです（js/config.js の affiliate.bto に書いたもの）'); return; }
     if (!D.by.cpu[r.cpu] || !D.by.gpu[r.gpu]) { problems.push('bto-models.csv ' + line + '行目: cpu か gpu のIDが data.js にありません (' + r.cpu + ' / ' + r.gpu + ')'); return; }
     if (!Number.isFinite(price) || price <= 0) { problems.push('bto-models.csv ' + line + '行目: 価格が正しくありません'); return; }
     if (r.url && !/^https?:\/\//.test(r.url)) { problems.push('bto-models.csv ' + line + '行目: url は http(s):// で始めてください'); return; }

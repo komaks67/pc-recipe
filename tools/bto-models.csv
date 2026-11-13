@@ -14,3 +14,29 @@ pckoubou,LEVEL-M88M-225F-TGXB,cu5-225f,rx9070xt,16,1,344800,1,,https://www.pc-ko
 pckoubou,LEVEL-M88M-225F-UKXB,cu5-225f,rtx5070ti,32,1,469800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1205853,2026-11-13
 pckoubou,LEVEL-M8AM-R97X-UKXB,r7-9700x,rtx5070ti,32,1,494800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1206124,2026-11-13
 pckoubou,LEVEL-R7B6-LCR98D-VKX,r7-9800x3d,rtx5080,32,1,594800,1,,https://www.pc-koubou.jp/products/detail.php?product_id=1124415,2026-11-13
+frontier,FRONTIER FRGHLB550/5060,r7-5700x,rtx5060,16,1,230800,1,,https://www.frontier-direct.jp/direct/g/g121483/,2026-11-13
+frontier,FRONTIER FRGHLB550/9060,r7-5700x,rx9060xt,32,1,254800,1,,https://www.frontier-direct.jp/direct/g/g121485/,2026-11-13
+frontier,FRONTIER FRGKA620/SK2,r5-7500f,rtx5050,16,1,259800,1,,https://www.frontier-direct.jp/direct/g/g122786/,2026-11-13
+frontier,FRONTIER FRGPLB860MKB/SG1,cu7-270kp,rtx5070,32,1,419800,1,,https://www.frontier-direct.jp/direct/g/g124024/,2026-11-13
+frontier,FRONTIER FRGHLB860/SG6,cu7-265f,rx9070xt,32,2,439800,1,,https://www.frontier-direct.jp/direct/g/g121705/,2026-11-13
+frontier,FRONTIER FRXAB850B/SK1,r7-9700x,rtx5070,32,1,484800,3,,https://www.frontier-direct.jp/direct/g/g122569/,2026-11-13
+frontier,FRONTIER FRGHLMB650/SG2,r7-9800x3d,rtx5070ti,32,1,499800,1,,https://www.frontier-direct.jp/direct/g/g120103/,2026-11-13
+frontier,FRONTIER FRGHLMB650/SG3,r7-9800x3d,rtx5080,32,2,599800,1,,https://www.frontier-direct.jp/direct/g/g120104/,2026-11-13
+sycom,G-Master Velox Mini 2 B550A D4,r7-5700x,rtx5060,16,1,254470,,,https://www.sycom.co.jp/custom/model?no=001101,2026-11-13
+sycom,G-Master Velox II Intel Edition,i5-14400f,rtx5060,16,1,264440,,,https://www.sycom.co.jp/custom/model?no=000932,2026-11-13
+sycom,G-Master Velox III AMD Edition,r5-9600,rtx5060,16,1,288780,,,https://www.sycom.co.jp/custom/model?no=001078,2026-11-13
+sycom,G-Master Spear 2 B760i D4,i7-14700,rtx5060ti,16,1,390330,,,https://www.sycom.co.jp/custom/model?no=001094,2026-11-13
+sycom,G-Master Spear 2 X870A,r7-9700x,rtx5060ti,32,1,446840,,,https://www.sycom.co.jp/custom/model?no=001095,2026-11-13
+sycom,G-Master Hydro X870A,r7-9700x,rtx5070ti,32,1,609490,,,https://www.sycom.co.jp/custom/model?no=000991,2026-11-13
+mdl,MDL Ryzen5 5500 × RTX 5050,r5-5500,rtx5050,16,0.5,152800,1,,https://mdlmake.shop/products/ryzen5-5500-rtx-5050,2026-11-13
+mdl,MDL Ryzen7 5700X × RTX 5060,r7-5700x,rtx5060,16,0.5,189800,1,,https://mdlmake.shop/products/ryzen7-5700x-rtx-5060,2026-11-13
+mdl,MDL Ryzen7 5700X × RX 9060 XT 16GB,r7-5700x,rx9060xt,16,0.5,195800,1,,https://mdlmake.shop/products/ryzen7-5700x-rx-9060-xt,2026-11-13
+mdl,MDL Ryzen7 7700 × RTX 5070,r7-7700,rtx5070,16,0.5,319800,1,,https://mdlmake.shop/products/ryzen7-7700-rtx-5070,2026-11-13
+mdl,MDL Ryzen 7 9800X3D × RX 9070 XT,r7-9800x3d,rx9070xt,16,0.5,329800,1,,https://mdlmake.shop/products/ryzen-7-9800x3d-rx-9070-xt,2026-11-13
+mdl,MDL Ryzen 7 9850X3D × RTX 5070 Ti,r7-9850x3d,rtx5070ti,16,0.5,451800,1,,https://mdlmake.shop/products/ryzen-7-9850x3d-rtx-5070ti,2026-11-13
+ozgaming,OZgaming M110A Ryzen 7 5700X・RTX5060（ブラックフライデーセール）,r7-5700x,rtx5060,16,0.5,159800,1,5,https://www.ozgaming-pcshop.com/view/item/000000003080,2026-11-13
+ozgaming,OZgaming Sシリーズ Ryzen7 5700X・RTX5060,r7-5700x,rtx5060,16,1,189800,1,5,https://www.ozgaming-pcshop.com/view/item/000000002988,2026-11-13
+ozgaming,OZgaming Sシリーズ Ryzen7 9700X・RTX5060Ti 8G,r7-9700x,rtx5060ti8,32,1,289800,1,5,https://www.ozgaming-pcshop.com/view/item/000000003040,2026-11-13
+ozgaming,OZgaming M110A Ryzen7 9700X・RTX5070（ブラックフライデーセール）,r7-9700x,rtx5070,32,1,329800,1,5,https://www.ozgaming-pcshop.com/view/item/000000003086,2026-11-13
+ozgaming,OZgaming P30series Ryzen7 7800X3D・RTX5070（ブラックフライデーセール）,r7-7800x3d,rtx5070,32,1,349800,1,5,https://www.ozgaming-pcshop.com/view/item/000000003087,2026-11-13
+ozgaming,OZgaming P30 Ryzen7 9800X3D・RTX5070Ti（ブラックフライデーセール）,r7-9800x3d,rtx5070ti,32,1,429800,1,,https://www.ozgaming-pcshop.com/view/item/000000003088,2026-11-13

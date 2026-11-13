@@ -38,7 +38,11 @@ window.PCR_CONFIG = {
     bto: {
       dospara: { name: 'ドスパラ',       brand: 'GALLERIA', url: 'https://www.dospara.co.jp/' },
       pckoubou: { name: 'パソコン工房',   brand: 'LEVEL∞',   url: 'https://www.pc-koubou.jp/' },
-      tsukumo: { name: 'TSUKUMO',        brand: 'G-GEAR',   url: 'https://www.tsukumo.co.jp/' }
+      tsukumo: { name: 'TSUKUMO',        brand: 'G-GEAR',   url: 'https://www.tsukumo.co.jp/' },
+      frontier: { name: 'FRONTIER',      brand: 'FRONTIER', url: 'https://www.frontier-direct.jp/' },
+      sycom: { name: 'サイコム',          brand: 'G-Master', url: 'https://www.sycom.co.jp/' },
+      mdl: { name: 'MDL',                brand: 'MDL.make', url: 'https://mdlmake.shop/' },
+      ozgaming: { name: 'OZgaming',      brand: 'OZgaming', url: 'https://www.ozgaming-pcshop.com/' }
     }
   }
 };
