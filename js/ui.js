@@ -124,6 +124,17 @@ window.PCR_UI = (function () {
       '<a class="btn sm sub" target="_blank" rel="sponsored noopener" href="' + U.esc(U.rakutenUrl(q)) + '">楽天で探す</a>';
   };
   U.makerLink = k => CFG.affiliate.bto[k].url;
+  /* 広告リンクの表示回数を数える 1×1 の画像（A8.net の決まりで、リンクと一緒に置く） */
+  U.makerImp = k => { const u = (CFG.affiliate.bto[k] || {}).imp; return u ? '<img src="' + U.esc(u) + '" width="1" height="1" alt="" style="border:0;position:absolute">' : ''; };
+  U.makerIsAd = k => !!(CFG.affiliate.bto[k] || {}).imp;
+  /* 機種のページへ飛ぶ広告リンク。A8.net の「テキスト生成」で発行される形と同じ（a8mat ＋ a8ejpredirect）。
+     deepMat があり、飛び先が広告主の決めた範囲（deepAllow）の中のときだけ作る。ほかは null */
+  U.makerDeepLink = (k, url) => {
+    const c = CFG.affiliate.bto[k] || {};
+    if (!c.deepMat || !c.deepAllow || !url || url.indexOf(c.deepAllow) !== 0) return null;
+    return 'https://px.a8.net/svt/ejp?a8mat=' + c.deepMat + '&a8ejpredirect=' + encodeURIComponent(url);
+  };
+  U.makerDeepImp = k => { const u = (CFG.affiliate.bto[k] || {}).deepImp; return u ? '<img src="' + U.esc(u) + '" width="1" height="1" alt="" style="border:0;position:absolute">' : ''; };
 
   /* ---------- 用語ホバー ---------- */
   let termMap = null, termRe = null;
