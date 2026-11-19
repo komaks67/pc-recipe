@@ -41,6 +41,11 @@ window.PCR_UI = (function () {
     return words.every(w => k.indexOf(w) >= 0) || k.indexOf(words.join('')) >= 0;
   };
 
+  /* 相性（◎○△✕）の小さい印。j は E.pair / E.judge の結果 */
+  U.pairTag = function (j, sm) { return j ? '<span class="m-key ' + j.c + (sm ? ' sm' : '') + '" title="CPUとグラボの相性: ' + U.esc(j.t) + '"><b>' + j.mk + '</b>' + U.esc(j.t) + '</span>' : ''; };
+  /* 判定の条件（どのゲーム・解像度・画質で見たか） */
+  U.pairCond = function (j) { return j ? (j.own ? '選んだゲーム' + j.n + '本' : '代表的なゲーム' + j.n + '本') + '・' + E.RES_LABEL[j.res] + '・' + E.QUALITY[j.quality].t + '画質で判定' : ''; };
+
   /* 「次にやること」のカード。items: [[番号の後の文, リンク, ボタンの文字], ...] */
   U.nextSteps = function (title, items) {
     return '<div class="card next sp no-print"><h3>👉 ' + U.esc(title) + '</h3><ol class="next-l">' + items.map(x => '<li><span>' + x[0] + '</span>' + (x[1] ? '<a class="btn sub sm" href="' + U.esc(x[1]) + '">' + U.esc(x[2]) + '</a>' : '') + '</li>').join('') + '</ol></div>';
@@ -341,7 +346,7 @@ window.PCR_UI = (function () {
     const f = ev.fpsRows && ev.fpsRows[0];
     bar.innerHTML = '<div class="sb-l"><div class="sb-tot">' + U.yen(ev.total) + '</div><div class="sb-sub">' +
       (ng ? '<span class="sb-ng">✕ 要修正 ' + ng + '</span>' : '<span class="sb-ok">✓ 互換性OK</span>') + (wr ? ' ・ 注意 ' + wr : '') +
-      (f ? ' ・ ' + U.esc(f.game.name) + ' 約' + Math.round(f.fps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
+      (ev.pair ? ' ・ 相性' + ev.pair.mk : '') + (f ? ' ・ ' + U.esc(f.game.name.replace(/ \(.*\)$/, '')) + ' 約' + Math.round(f.fps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
     bar.querySelector('button').onclick = onOpen || (() => { const t = U.$('#sum'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     bar.hidden = false; document.body.classList.add('has-sumbar');
   };

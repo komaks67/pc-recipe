@@ -96,14 +96,22 @@
       else l.sort((a, b) => (isNew(b) - isNew(a)) || ((!!a.real) - (!!b.real)) || ((!!a.priceUnverified) - (!!b.priceUnverified)) || (k === 'cpu' || k === 'gpu' ? perf(a) - perf(b) : a.price - b.price));
       return l;
     }
+    // 相手（CPUならグラボ、グラボならCPU）が決まっていれば、候補ごとに相性を出す
+    const mate = o.ids && (k === 'gpu' ? D.by.cpu[o.ids.cpu] : k === 'cpu' ? D.by.gpu[o.ids.gpu] : null);
+    const pcache = {};
+    const pairOpt = { games: ctx.games, res: ctx.res, quality: ctx.quality };
+    function pairOf(p) {
+      if (!mate || p.id === 'none' || (k === 'cpu' && mate.id === 'none')) return null;
+      return p.id in pcache ? pcache[p.id] : (pcache[p.id] = k === 'gpu' ? E.pair(mate, p, pairOpt) : E.pair(p, mate, pairOpt));
+    }
     function badge(p) {
-      return (p.id === cur ? '<span class="badge ok">選択中</span>' : '') + (p.used ? '<span class="badge warn">中古</span>' : '') + (p.legacy ? '<span class="badge warn">旧世代</span>' : '') +
+      return U.pairTag(pairOf(p), 1) + (p.id === cur ? '<span class="badge ok">選択中</span>' : '') + (p.used ? '<span class="badge warn">中古</span>' : '') + (p.legacy ? '<span class="badge warn">旧世代</span>' : '') +
         (p.priceUnverified ? '<span class="badge warn">価格未確認</span>' : '') + (p.real ? '<span class="badge">実際の商品</span>' : '') + (p.unstable ? '<span class="badge warn">BIOS更新を</span>' : '') +
         (!st.compat && isBad(p) ? '<span class="badge ng">⚠ 合わない</span>' : '');
     }
     function draw() {
       const l = list(), shown = l.slice(0, st.page);
-      box.querySelector('.pk-count').textContent = l.length + '件' + (st.compat ? '（今の構成に合うものだけ）' : '');
+      box.querySelector('.pk-count').textContent = l.length + '件' + (st.compat ? '（今の構成に合うものだけ）' : '') + (mate && mate.id !== 'none' ? ' ／ ◎○△✕ は ' + mate.name + ' との相性' : '');
       box.querySelector('.pk-list').innerHTML = !l.length ? '<li class="pk-none">見つかりませんでした。絞り込みを外すか、「合うものだけ」を外してみてください。</li>' :
         shown.map(p => {
           const d = curP ? p.price - curP.price : 0, pf = (PERF[k] || (() => 0))(p);

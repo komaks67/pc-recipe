@@ -102,6 +102,25 @@ window.PCR_PARTINFO = (function () {
   }
 
   /* 本体 */
+  /* CPUとグラボの相性（◎○△✕）。WQHD・高画質・代表的なゲームで判定 */
+  const PAIR_GPU = ['rtx5050', 'rtx5060', 'rx9060xt', 'rtx5060ti', 'rtx5070', 'rx9070', 'rx9070xt', 'rtx5070ti', 'rtx5080', 'rtx5090'];
+  const PAIR_CPU = ['r5-5500', 'r5-5600', 'i5-14400f', 'r5-7500f', 'cu5-225f', 'r5-9600x', 'r7-9700x', 'i7-14700f', 'cu7-265k', 'r7-7800x3d', 'r7-9800x3d'];
+  const tag = j => '<span class="m-key sm ' + j.c + '"><b>' + j.mk + '</b>' + esc(j.t) + '</span>';
+  function pairSec(k, p, link, base) {
+    if (k === 'gpu' && p.id === 'none') return '';
+    const pt = E.partners(k, p);
+    const list = (k === 'gpu' ? PAIR_CPU : PAIR_GPU).map(id => D.by[k === 'gpu' ? 'cpu' : 'gpu'][id]).filter(Boolean)
+      .map(x => ({ p: x, j: k === 'gpu' ? E.pair(x, p) : E.pair(p, x) })).filter(x => x.j);
+    const ok = pt.best.slice(0, 4);
+    let h = '<div class="card sp"><h2>' + (k === 'gpu' ? 'CPUとの相性' : 'グラボとの相性') + '</h2>';
+    if (pt.limit) h += '<p>' + (k === 'gpu' ? '<b>' + esc(pt.limit.name) + '</b>（ゲーム性能 ' + pt.limit.gs + '）くらい以上のCPUなら、このグラボの力を出し切れます。' : 'このCPUなら、<b>' + esc(pt.limit.name) + '</b>（性能 ' + pt.limit.score + '）くらいまでのグラボの力を出し切れます。それより上のグラボは、CPUが先に限界になりやすくなります。') + '</p>';
+    if (k === 'gpu' && ok.length) h += '<p class="muted">◎か○になる、いちばん安いCPU: ' + ok.map(x => '<a href="' + link('cpu', x.p.id) + '">' + esc(x.p.name) + '</a>（' + yen(x.p.price) + '）').join('、') + '</p>';
+    h += '<div class="tbl-wrap"><table class="t"><thead><tr><th>' + (k === 'gpu' ? 'CPU' : 'グラボ') + '</th><th>相性</th><th>価格</th></tr></thead><tbody>' +
+      list.map(x => '<tr><td><a href="' + link(k === 'gpu' ? 'cpu' : 'gpu', x.p.id) + '">' + esc(x.p.name) + '</a></td><td>' + tag(x.j) + '</td><td>' + yen(x.p.price) + '</td></tr>').join('') + '</tbody></table></div>' +
+      '<p class="muted">◎ ぴったり ／ ○ 問題なし（グラボの性能でfpsが決まる）／ △ CPUやや不足 ／ ✕ CPU不足。WQHD・高画質・代表的なゲーム' + E.PAIR_GAMES.length + '本で判定した目安です。<a href="' + base + '#/match">相性表でゲーム・解像度を変えて見る</a></p></div>';
+    return h;
+  }
+
   function html(k, p, opt) {
     opt = opt || {};
     const base = opt.base || '';
@@ -126,6 +145,7 @@ window.PCR_PARTINFO = (function () {
       '<div class="card sp"><h2>ライバルとの比較</h2><div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>価格</th><th>' + (k === 'cpu' ? 'ゲーム性能' : '性能') + '</th><th>性能÷価格</th></tr></thead><tbody>' +
       [p].concat(rv).map(x => { const v = perf(k, x) / x.price * 10000; return '<tr' + (x === p ? ' class="vs-best"' : '') + '><td>' + (x === p ? '<b>' + esc(x.name) + '</b>（このパーツ）' : '<a href="' + (opt.static ? k + '-' + esc(x.id) + '.html' : base + '#/part/' + k + '/' + esc(x.id)) + '">' + esc(x.name) + '</a>') + '</td><td>' + yen(x.price) + '</td><td>' + perf(k, x) + '</td><td>' + v.toFixed(1) + '</td></tr>'; }).join('') +
       '</tbody></table></div><p class="muted">「性能÷価格」は、1万円あたりの性能です。大きいほどお得です。</p></div>' +
+      pairSec(k, p, (kk, id) => opt.static ? kk + '-' + esc(id) + '.html' : base + '#/part/' + kk + '/' + esc(id), base) +
       '<div class="card sp"><h2>ゲームごとのfpsの目安（高画質）</h2>' + fpsTable(k, p) + '<p class="muted">* はCPUの速さで頭打ちになっているゲームです。公式スペックは、Steamなどの公式発表と比べた判定です。</p></div>' +
       '<div class="card sp"><h2>一緒に使うパーツの目安</h2>' + pairing(k, p).replace(/\{BASE\}/g, base) + '</div>' +
       '</article>';

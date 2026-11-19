@@ -307,7 +307,7 @@ body.noscroll { overflow: hidden; }
 [data-theme="dark"] .m-ok { background: #15803d; color: #fff; }
 [data-theme="dark"] .m-gpu { background: #86b896; color: #0c2414; }
 .m-legend { display: flex; flex-wrap: wrap; gap: 8px; }
-.m-key { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700; }
+.m-key { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700; }
 .m-key b { font-size: .95rem; }
 @media print { .m-wrap { max-height: none; overflow: visible; } }
 .m-tab thead th { padding-top: 10px; }
@@ -412,3 +412,14 @@ body.noscroll { overflow: hidden; }
 /* ---------- ホームの検索 ---------- */
 .home-sf { display: flex; gap: 8px; max-width: 560px; }
 .home-sf input { flex: 1; min-width: 0; }
+
+/* ---------- CPUとグラボの相性（どこでも出す印） ---------- */
+.m-key.sm { padding: 2px 8px; font-size: .78rem; gap: 4px; vertical-align: middle; }
+.m-key.sm b { font-size: .85rem; }
+.pk-b .m-key.sm { margin-right: 4px; }
+.pair-box { margin-top: 12px; padding: 12px; border-radius: var(--r-sm); background: var(--accent-soft); }
+.pair-box .row { gap: 8px; }
+.pair-box p { margin: 6px 0 0; }
+.pair-fix { margin-top: 10px; }
+.pair-fix ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.pair-fix .m-key { margin: 0 4px; }

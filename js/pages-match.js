@@ -8,12 +8,7 @@
 
   /* r = CPU側の上限fps ÷ グラボ側の上限fps
      r が小さい → CPUが先に限界（グラボの力を出し切れない） */
-  function judge(r) {
-    if (r < 0.75) return { c: 'm-ng', t: 'CPU不足', mk: '✕', msg: 'CPUの力が足りず、グラボの性能をかなり出し切れません。もっと速いCPUにするか、グラボを1つ下げても同じくらいのfpsになります。' };
-    if (r < 0.95) return { c: 'm-warn', t: 'CPUやや不足', mk: '△', msg: 'CPUが少し先に限界になります。設定を上げる（画質・解像度）と、グラボの力を活かせます。' };
-    if (r <= 1.8) return { c: 'm-ok', t: 'ぴったり', mk: '◎', msg: 'CPUとグラボのバランスが良く、どちらもムダになりにくい組み合わせです。' };
-    return { c: 'm-gpu', t: '問題なし', mk: '○', msg: 'グラボの性能でfpsが決まる、ゲーム用PCではふつうの状態です。CPUには余裕があるので、将来グラボだけ交換しても力を出せます。' };
-  }
+  const judge = E.judge;   // 判定のしかたは engine.js にまとめてある
   /* ほかのページ（くらべる）でも使う：CPUとグラボの相性（ゲーム・解像度・画質を指定） */
   U.matchJudge = function (cpu, gpu, game, res, quality) {
     const f = E.fps(game, res, { cpu: cpu, gpu: gpu, mem: D.by.mem['d5-32'] }, { quality: quality });
