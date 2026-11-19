@@ -348,8 +348,10 @@ window.PCR_ENGINE = (function () {
       gpus.forEach(gpu => caps.forEach(cap => E.platformTypes(cpu.sock).forEach(type => {
         const ids = E.complete({ cpu: cpu.id, gpu: gpu.id, mem: E.memFor(cap, type), ssd: ssdId }, { size: o.size, quiet: o.quiet, cheap: o.budget < 200000, noOs: !o.os, memType: type });
         if (D.by.mb[ids.mb].m2g < D.by.ssd[ids.ssd].gen) ids.ssd = D.by.ssd[ids.ssd].cap >= 2 ? 'g3-2' : 'g3-1';   // 古いボードにはGen3 SSD
-        const ev = E.evaluate(ids, ctx);
-        if (ev.hasNg) return;
+        // 候補がたくさんあるので、ここでは価格と互換性だけを軽く調べる（詳しい評価は最後に1回だけ）
+        if (E.check(ids, ctx).some(x => x.lv === 'ng')) return;
+        const B = E.get(ids);
+        const ev = { B: B, total: E.KEYS.reduce((s, k) => s + (B[k] ? B[k].price : 0), 0) };
         const sat = E.satisfaction(ev.B, o);
         const lowMem = !officeOnly && D.by.mem[ids.mem].cap < 32 ? 6 : 0;
         const oldPlat = cpu.sock === 'AM4' || cpu.sock === 'LGA1700' ? (o.maxPerf ? 10 : 4) : 0;   // 新しいCPUが出ない世代は、少しだけ不利にする
@@ -359,8 +361,9 @@ window.PCR_ENGINE = (function () {
         if (ev.total <= o.budget && (!best || util > best.util || (util === best.util && ev.total < best.ev.total))) best = rec;
       })));
     });
-    if (best) return Object.assign(best, { over: false });
-    return Object.assign(cheapest, { over: true });
+    const r = best ? Object.assign(best, { over: false }) : Object.assign(cheapest, { over: true });
+    r.ev = E.evaluate(r.ids, ctx);
+    return r;
   };
 
   /* ---------- 今のPCからのアップグレード診断 ---------- */

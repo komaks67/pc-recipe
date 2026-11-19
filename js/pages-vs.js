@@ -68,8 +68,8 @@
 
   /* 選ぶ欄（スロット） */
   function slots(kind, ids, list, label) {
-    return '<div class="vs-slots">' + ids.map((id, i) => '<div class="vs-slot"><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span><select data-kind="' + kind + '" data-i="' + i + '" aria-label="' + label + ' ' + (i + 1) + '">' +
-      list(id) + '</select>' + (ids.length > 2 ? '<button type="button" class="icon-btn vs-x" data-del="' + i + '" aria-label="外す">✕</button>' : '') + '</div>').join('') +
+    return '<div class="vs-slots">' + ids.map((id, i) => '<div class="vs-slot"><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span>' +
+      (kind === 'build' ? '<select data-kind="' + kind + '" data-i="' + i + '" aria-label="' + label + ' ' + (i + 1) + '">' + list(id) + '</select>' : U.pickButton(kind, id, ' data-i="' + i + '"')) + (ids.length > 2 ? '<button type="button" class="icon-btn vs-x" data-del="' + i + '" aria-label="外す">✕</button>' : '') + '</div>').join('') +
       (ids.length < MAX ? '<button type="button" class="btn sub sm" data-add="' + kind + '">＋ 比べるものを追加</button>' : '') + '</div>';
   }
 
@@ -181,6 +181,8 @@
     });
     el.addEventListener('click', e => {
       const tab = e.target.closest('[data-tab]'), add = e.target.closest('[data-add]'), del = e.target.closest('[data-del]');
+      const pb = e.target.closest('[data-pick]');
+      if (pb) { const k = pb.dataset.pick, i = +pb.dataset.i; U.pickPart({ k: k, cur: st[k][i], noNone: true, onPick: id => { st[k][i] = id; draw(); } }); return; }
       if (tab) { st.tab = tab.dataset.tab; draw(); }
       else if (add) {
         const k = add.dataset.add;
