@@ -193,6 +193,77 @@ window.PCR_ENGINE = (function () {
     return out;
   };
 
+  /* ---------- CPUとグラボの相性（◎○△✕） ----------
+     r = CPU側の上限fps ÷ グラボ側の上限fps。r が小さいほど CPU が先に限界になる。 */
+  E.judge = function (r) {
+    if (r < 0.75) return { c: 'm-ng', lv: 'ng', t: 'CPU不足', mk: '✕', msg: 'CPUの力が足りず、グラボの性能をかなり出し切れません。もっと速いCPUにするか、グラボを1つ下げても同じくらいのfpsになります。' };
+    if (r < 0.95) return { c: 'm-warn', lv: 'warn', t: 'CPUやや不足', mk: '△', msg: 'CPUが少し先に限界になります。設定を上げる（画質・解像度）と、グラボの力を活かせます。' };
+    if (r <= 1.8) return { c: 'm-ok', lv: 'best', t: 'ぴったり', mk: '◎', msg: 'CPUとグラボのバランスが良く、どちらもムダになりにくい組み合わせです。' };
+    return { c: 'm-gpu', lv: 'ok', t: '問題なし', mk: '○', msg: 'グラボの性能でfpsが決まる、ゲーム用PCではふつうの状態です。CPUには余裕があるので、将来グラボだけ交換しても力を出せます。' };
+  };
+  /* 解像度の指定がない時は WQHD で判定する（ゲーム用PCでいちばん多い使い方の目安） */
+  E.pairRes = function () { return 1440; };
+  E.RES_LABEL = { 1080: 'フルHD', 1440: 'WQHD', 2160: '4K' };
+  /* ゲームを選んでいない時に使う、代表的なゲーム（軽いもの〜重いものを混ぜる） */
+  E.PAIR_GAMES = ['apex', 'fortnite', 'valorant', 'cyberpunk', 'mhwilds', 'eldenring', 'palworld', 'rivals'];
+  /* 何本かのゲームでまとめた相性。下から4分の1の値で決め、いちばん悪いゲームも返す
+     opt: { games:[id], res, quality, mem } */
+  E.pair = function (cpu, gpu, opt) {
+    if (!cpu || !gpu || gpu.id === 'none') return null;
+    opt = opt || {};
+    let ids = (opt.games && opt.games.length ? opt.games : E.PAIR_GAMES).filter(id => D.by.games[id]);
+    if (!ids.length) ids = E.PAIR_GAMES;
+    const res = opt.res || E.pairRes(gpu), q = opt.quality || 'high';
+    const B = { cpu: cpu, gpu: gpu, mem: opt.mem || D.by.mem['d5-32'] };
+    const rs = ids.map(id => {
+      const g = D.by.games[id], f = E.fps(g, res, B, { quality: q });
+      // fpsの上限があるゲームは、両方が上限を超えていれば差は出ない
+      const cf = g.cap ? Math.min(f.cpuF, g.cap) : f.cpuF, gf = g.cap ? Math.min(f.gpuF, g.cap) : f.gpuF;
+      return { g: g, r: cf / gf };
+    }).sort((a, b) => a.r - b.r);
+    // 4本に1本ほどのゲームでCPUが足りなくなる所で判定（真ん中の値だと、軽いゲームのCPU不足が隠れるため）
+    const med = rs[Math.floor(rs.length / 4)].r;
+    let j = Object.assign({}, E.judge(med));
+    // いちばん速いCPUでも足りない＝グラボが強すぎて、この解像度では力が余るだけ。CPUのせいではない
+    if (med < 0.95 && !opt._top) {
+      const top = E.topCpu();
+      if (top && top.id !== cpu.id) {
+        const t = E.pair(top, gpu, Object.assign({}, opt, { _top: true, res: res, quality: q }));
+        if (t.r < 0.95 && med >= t.r * 0.9) j = { c: 'm-gpu', lv: 'ok', t: (res < 2160 ? '4K向け' : '問題なし'), mk: '○', hi: true, msg: 'このグラボは、' + E.RES_LABEL[res] + 'ではどのCPUでも力が少し余るほど強力です。CPUはトップクラスなので問題ありません。' + (res < 2160 ? '4Kなど高い解像度で遊ぶと、力を出し切れます。' : '') };
+      } else if (top && top.id === cpu.id) {
+        j = { c: 'm-gpu', lv: 'ok', t: (res < 2160 ? '4K向け' : '問題なし'), mk: '○', hi: true, msg: 'いちばん速いCPUでも、' + E.RES_LABEL[res] + 'ではグラボの力が少し余ります。' + (res < 2160 ? '4Kなど高い解像度で遊ぶと、力を出し切れます。' : '') };
+      }
+    }
+    j.r = med; j.n = rs.length; j.res = res; j.quality = q; j.own = !!(opt.games && opt.games.length);
+    j.worst = rs[0].r < 0.95 && E.judge(rs[0].r).mk !== j.mk ? { game: rs[0].g, j: E.judge(rs[0].r) } : null;
+    j.bad = rs.filter(x => x.r < 0.95).map(x => x.g);
+    return j;
+  };
+  let TOP = null;
+  E.topCpu = function () { return TOP || (TOP = D.cpu.filter(c => D.suggestable(c)).sort((a, b) => b.gs - a.gs)[0]); };
+  /* 相性のよい相手を探す。k = 今のパーツの種類（'cpu' なら相手はグラボ）
+     返り値: { best:[◎の相手], limit: 相性が△以下にならない上限/下限のパーツ } */
+  E.partners = function (k, p, opt) {
+    opt = opt || {};
+    const other = k === 'cpu' ? 'gpu' : 'cpu';
+    const cands = D[other].filter(x => x.id !== 'none' && D.suggestable(x));
+    const rows = cands.map(x => ({ p: x, j: k === 'cpu' ? E.pair(p, x, opt) : E.pair(x, p, opt) })).filter(x => x.j);
+    const good = rows.filter(x => x.j.mk === '◎' || x.j.mk === '○');
+    let best;
+    if (other === 'gpu') {
+      // CPUに合うグラボ：◎の中から、性能の高い順（そのCPUで活かせる上のほう）
+      best = rows.filter(x => x.j.mk === '◎').sort((a, b) => b.p.score - a.p.score || a.p.price - b.p.price);
+    } else {
+      // グラボに合うCPU：◎か○の中から、安い順（ムダなく力を出し切れるCPU）
+      best = good.sort((a, b) => a.p.price - b.p.price || b.p.gs - a.p.gs);
+    }
+    // 上限（CPUならこれより上のグラボは△✕）／下限（グラボならこれより遅いCPUは△✕）
+    let limit = null;
+    if (other === 'gpu') { const ok = good.sort((a, b) => b.p.score - a.p.score); limit = ok[0] ? ok[0].p : null; }
+    else { const ok = good.slice().sort((a, b) => a.p.gs - b.p.gs); limit = ok[0] ? ok[0].p : null; }
+    return { best: best, limit: limit };
+  };
+
   /* ---------- ボトルネック判定 ---------- */
   E.bottleneck = function (B, ctx) {
     if (B.gpu.id === 'none') return { lv: 'ok', msg: 'グラフィックボードなしの構成なので、ゲーム向けのバランス判定はしません。事務・学習用の構成です。' };

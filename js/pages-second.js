@@ -116,7 +116,7 @@
         '<div class="grid g2">' + info.map(x => {
           const m = x.m, d = m.price - x.diy;
           return '<div class="card"><div class="muted">' + esc(MAKER_NAME(m.maker)) + '</div><h3>' + esc(m.name) + '</h3><div class="total">' + yen(m.price) + '</div>' +
-            '<table class="t sp"><tbody><tr><th>CPU</th><td>' + esc(D.by.cpu[m.cpu].name) + '</td></tr><tr><th>GPU</th><td>' + esc(D.by.gpu[m.gpu].name) + '</td></tr><tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + (m.ssdTB < 1 ? Math.round(m.ssdTB * 1000) + 'GB' : m.ssdTB + 'TB') + '</td></tr>' +
+            '<table class="t sp"><tbody><tr><th>CPU</th><td>' + esc(D.by.cpu[m.cpu].name) + '</td></tr><tr><th>GPU</th><td>' + esc(D.by.gpu[m.gpu].name) + '</td></tr>' + (m.gpu !== 'none' ? '<tr><th>相性</th><td>' + U.pairTag(E.pair(D.by.cpu[m.cpu], D.by.gpu[m.gpu]), 1) + '</td></tr>' : '') + '<tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + (m.ssdTB < 1 ? Math.round(m.ssdTB * 1000) + 'GB' : m.ssdTB + 'TB') + '</td></tr>' +
             (m.warranty ? '<tr><th>保証</th><td>' + m.warranty + '年</td></tr>' : '') + (m.days ? '<tr><th>納期の目安</th><td>' + m.days + '日</td></tr>' : '') + '</tbody></table>' +
             '<p class="sp">同じ中身で自作すると 約' + yen(x.diy) + '。BTOは<b>' + (d >= 0 ? '約' + yen(d) + ' 高い' : '約' + yen(-d) + ' 安い') + '</b>（組み立て・保証・サポート込みの価格）。</p>' +
             '<div class="muted">価格確認日: ' + esc(m.updated) + '</div>' +
