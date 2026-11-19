@@ -52,6 +52,28 @@ window.PCR_ENGINE = (function () {
     if (game.cap) f = Math.min(f, game.cap);   // フレームレートの上限があるゲーム
     return { fps: f, gpuF: gpuF, cpuF: cpuF, limit: gpuF <= cpuF ? 'GPU' : 'CPU', memPen: memPen, vramPen: vramPen, quality: qk };
   };
+  /* 公式の必要スペックを満たすか（js/game-reqs.js）。
+     戻り値: { lv: 'rec' 推奨以上 / 'min' 最低以上 / 'low' 最低未満 / 'none' 情報なし, why: [足りないもの] } */
+  E.req = function (game, B) {
+    const R = (window.PCR_REQS || {})[game.id];
+    if (!R) return { lv: 'none', why: [] };
+    const cpu = B.cpu.gs, gpu = B.gpu.id === 'none' ? (B.cpu.igpu === false ? 0 : 3) : B.gpu.score, ram = B.mem ? B.mem.cap : 0, vram = B.gpu.vram || 0;
+    const short = r => {
+      const w = [];
+      if (cpu < r.cpu) w.push('CPU');
+      if (gpu < r.gpu) w.push('グラボ');
+      if (ram < r.ram) w.push('メモリ（' + r.ram + 'GB必要）');
+      if (r.vram && B.gpu.id !== 'none' && vram < r.vram) w.push('VRAM（' + r.vram + 'GB必要）');
+      return w;
+    };
+    const wm = short(R.min);
+    if (wm.length) return { lv: 'low', why: wm, R: R };
+    if (!R.rec) return { lv: 'min', why: [], R: R, noRec: true };
+    const wr = short(R.rec);
+    return { lv: wr.length ? 'min' : 'rec', why: wr, R: R };
+  };
+  E.REQ_LABEL = { rec: { t: '推奨スペック以上', c: 'ok', mk: '✓' }, min: { t: '最低スペック以上', c: 'warn', mk: '△' }, low: { t: '最低スペック未満', c: 'ng', mk: '✕' }, none: { t: '公式スペックの情報なし', c: '', mk: '' } };
+
   /* 4つの画質すべてのfps（表示用） */
   E.fpsAll = function (game, res, B, opt) {
     const o = {};
@@ -348,8 +370,10 @@ window.PCR_ENGINE = (function () {
       gpus.forEach(gpu => caps.forEach(cap => E.platformTypes(cpu.sock).forEach(type => {
         const ids = E.complete({ cpu: cpu.id, gpu: gpu.id, mem: E.memFor(cap, type), ssd: ssdId }, { size: o.size, quiet: o.quiet, cheap: o.budget < 200000, noOs: !o.os, memType: type });
         if (D.by.mb[ids.mb].m2g < D.by.ssd[ids.ssd].gen) ids.ssd = D.by.ssd[ids.ssd].cap >= 2 ? 'g3-2' : 'g3-1';   // 古いボードにはGen3 SSD
-        const ev = E.evaluate(ids, ctx);
-        if (ev.hasNg) return;
+        // 候補がたくさんあるので、ここでは価格と互換性だけを軽く調べる（詳しい評価は最後に1回だけ）
+        if (E.check(ids, ctx).some(x => x.lv === 'ng')) return;
+        const B = E.get(ids);
+        const ev = { B: B, total: E.KEYS.reduce((s, k) => s + (B[k] ? B[k].price : 0), 0) };
         const sat = E.satisfaction(ev.B, o);
         const lowMem = !officeOnly && D.by.mem[ids.mem].cap < 32 ? 6 : 0;
         const oldPlat = cpu.sock === 'AM4' || cpu.sock === 'LGA1700' ? (o.maxPerf ? 10 : 4) : 0;   // 新しいCPUが出ない世代は、少しだけ不利にする
@@ -359,8 +383,9 @@ window.PCR_ENGINE = (function () {
         if (ev.total <= o.budget && (!best || util > best.util || (util === best.util && ev.total < best.ev.total))) best = rec;
       })));
     });
-    if (best) return Object.assign(best, { over: false });
-    return Object.assign(cheapest, { over: true });
+    const r = best ? Object.assign(best, { over: false }) : Object.assign(cheapest, { over: true });
+    r.ev = E.evaluate(r.ids, ctx);
+    return r;
   };
 
   /* ---------- 今のPCからのアップグレード診断 ---------- */

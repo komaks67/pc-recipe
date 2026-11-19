@@ -46,7 +46,7 @@
 
   /* 比較表：行ごとに、いちばん良い値に ★ を付ける（better: 'hi' 大きいほど良い / 'lo' 小さいほど良い） */
   function table(items, rows) {
-    return '<div class="tbl-wrap"><table class="t vs-t"><thead><tr><th></th>' + items.map((it, i) => '<th><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span> ' + esc(it.label) + '</th>').join('') + '</tr></thead><tbody>' +
+    return '<div class="tbl-wrap"><table class="t vs-t"><thead><tr><th></th>' + items.map((it, i) => '<th><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span> ' + (it.p && (st.tab === 'cpu' || st.tab === 'gpu') ? '<a href="#/part/' + st.tab + '/' + esc(it.p.id) + '">' + esc(it.label) + '</a>' : esc(it.label)) + '</th>').join('') + '</tr></thead><tbody>' +
       rows.map(r => {
         const vals = items.map(r.v);
         let best = -1;
@@ -68,13 +68,20 @@
 
   /* 選ぶ欄（スロット） */
   function slots(kind, ids, list, label) {
-    return '<div class="vs-slots">' + ids.map((id, i) => '<div class="vs-slot"><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span><select data-kind="' + kind + '" data-i="' + i + '" aria-label="' + label + ' ' + (i + 1) + '">' +
-      list(id) + '</select>' + (ids.length > 2 ? '<button type="button" class="icon-btn vs-x" data-del="' + i + '" aria-label="外す">✕</button>' : '') + '</div>').join('') +
+    return '<div class="vs-slots">' + ids.map((id, i) => '<div class="vs-slot"><span class="vs-mk ' + SERIES[i] + '">' + MARK[i] + '</span>' +
+      (kind === 'build' ? '<select data-kind="' + kind + '" data-i="' + i + '" aria-label="' + label + ' ' + (i + 1) + '">' + list(id) + '</select>' : U.pickButton(kind, id, ' data-i="' + i + '"')) + (ids.length > 2 ? '<button type="button" class="icon-btn vs-x" data-del="' + i + '" aria-label="外す">✕</button>' : '') + '</div>').join('') +
       (ids.length < MAX ? '<button type="button" class="btn sub sm" data-add="' + kind + '">＋ 比べるものを追加</button>' : '') + '</div>';
   }
 
   U.route('/vs', 'くらべる（グラボ・CPU・構成）', function (el, q) {
     if (['gpu', 'cpu', 'build'].indexOf(q.get('t')) >= 0) st.tab = q.get('t');
+    const add = (q.get('add') || '').split(':');
+    if ((add[0] === 'cpu' || add[0] === 'gpu') && D.by[add[0]][add[1]]) {
+      const l = st[add[0]];
+      if (l.indexOf(add[1]) < 0) { l.push(add[1]); if (l.length > MAX) l.shift(); }
+      st.tab = add[0];
+      U.toast(D.by[add[0]][add[1]].name + ' を「くらべる」に追加しました');
+    }
     el.innerHTML = '<h1>くらべる</h1><p class="muted">グラボ同士・CPU同士・作った構成同士を、最大4つまで並べて比べられます。ほかにも <a href="#/compare">BTOモデル比較</a>・<a href="#/games">ゲーム別fps</a> があります。</p>' +
       '<a class="card card-link flat vs-match" href="#/match"><b>🧩 CPUとグラボの相性表（◎○△✕）</b><span class="muted">すべての組み合わせの相性を、表でまとめて見られます</span></a>' +
       '<div class="tabs vs-tabs no-print" role="tablist">' + [['gpu', '🎮 グラボ'], ['cpu', '🧠 CPU'], ['build', '🖥 構成']].map(t => '<button type="button" role="tab" data-tab="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' +
@@ -181,6 +188,8 @@
     });
     el.addEventListener('click', e => {
       const tab = e.target.closest('[data-tab]'), add = e.target.closest('[data-add]'), del = e.target.closest('[data-del]');
+      const pb = e.target.closest('[data-pick]');
+      if (pb) { const k = pb.dataset.pick, i = +pb.dataset.i; U.pickPart({ k: k, cur: st[k][i], noNone: true, onPick: id => { st[k][i] = id; draw(); } }); return; }
       if (tab) { st.tab = tab.dataset.tab; draw(); }
       else if (add) {
         const k = add.dataset.add;

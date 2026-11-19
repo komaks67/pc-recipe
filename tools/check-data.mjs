@@ -17,7 +17,7 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const sb = { console };
 sb.window = sb;
 vm.createContext(sb);
-['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb, { filename: f }));
+['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/game-reqs.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb, { filename: f }));
 const CFG = sb.PCR_CONFIG, D = sb.PCR_DATA, E = sb.PCR_ENGINE, P = sb.PCR_PRICES, M = sb.PCR_BTO_MODELS;
 
 const err = [], warn = [];
@@ -125,6 +125,23 @@ D.games.forEach(g => {
   if (!(a4.ultra <= a4.high && a4.high <= a4.mid && a4.mid <= a4.low)) E_(`games/${g.id}: 画質を下げてもfpsが上がらない`);
 });
 
+/* ---------- 5b. 公式の必要スペック ---------- */
+const RQ = sb.PCR_REQS || {};
+D.games.forEach(g => {
+  const r = RQ[g.id];
+  if (!r) { W_(`games/${g.id}: 公式の必要スペック（js/game-reqs.js）がありません`); return; }
+  if (!r.url || !r.src || !/^\d{4}-\d{2}-\d{2}$/.test(r.checked || '')) E_(`game-reqs/${g.id}: 出典・確認日がありません`);
+  ['min', 'rec'].forEach(k => { const x = r[k]; if (!x) return; if (!num(x.cpu, 1, 130) || !num(x.gpu, 0.5, 120) || !num(x.ram, 1, 128)) E_(`game-reqs/${g.id}.${k}: 数値がおかしい`); if (!x.text || !x.text.cpu) E_(`game-reqs/${g.id}.${k}: 公式の文字がありません`); });
+  if (r.min && r.rec && (r.rec.cpu < r.min.cpu || r.rec.gpu < r.min.gpu || r.rec.ram < r.min.ram)) E_(`game-reqs/${g.id}: 推奨が最低より低くなっています`);
+});
+Object.keys(RQ).forEach(id => { if (!D.by.games[id]) E_(`game-reqs: 知らないゲーム ${id}`); });
+// 2つの情報のつじつま: 公式の推奨スペックのPCは、フルHD・高画質でおよそ60fps前後になるはず
+D.games.forEach(g => {
+  const r = RQ[g.id] && RQ[g.id].rec; if (!r) return;
+  const f = E.fps(g, 1080, { cpu: { gs: r.cpu }, gpu: { score: r.gpu, vram: 16, id: 'x' }, mem: { cap: 32 } }, { quality: 'high' }).fps;
+  if (f < 35 || f > 150) W_(`games/${g.id}: 公式の推奨スペックでのfpsの目安が ${Math.round(f)}fps（ふつうは60fps前後）。ゲームの計算の値か、推奨スペックの置き換えを確認してください`);
+});
+
 /* ---------- 6. 価格ファイル・BTOモデル ---------- */
 Object.keys(P).filter(k => !k.startsWith('__')).forEach(k => Object.keys(P[k]).forEach(id => { if (!D.by[k] || !D.by[k][id]) E_(`prices.js: 知らないパーツ ${k}/${id}`); }));
 Object.keys(P.__unverified || {}).forEach(k => P.__unverified[k].forEach(id => { if (P.__checked && P.__checked[k] && P.__checked[k][id]) E_(`prices.js: ${k}/${id} が「確認済み」と「未確認」の両方に入っています`); }));
@@ -159,6 +176,7 @@ const sm = read('sitemap.xml');
   if (!fs.existsSync(f)) E_(`sitemap.xml: ファイルがありません ${p}`);
 });
 D.games.forEach(g => { if (!fs.existsSync(path.join(root, 'fps', g.id + '.html'))) W_(`fps/${g.id}.html がありません（node tools/build-pages.mjs を実行してください）`); });
+['cpu', 'gpu'].forEach(k => D[k].filter(p => p.id !== 'none').forEach(p => { if (!fs.existsSync(path.join(root, 'parts', k + '-' + p.id + '.html'))) W_(`parts/${k}-${p.id}.html がありません（node tools/build-pages.mjs を実行してください）`); }));
 
 /* ---------- 8. 自動の提案がちゃんと組めるか ---------- */
 [120000, 200000, 300000, 500000].forEach(b => {

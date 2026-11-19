@@ -82,7 +82,7 @@
         '<p>' + x.j.msg + '</p>' +
         '<p class="muted">CPU側の上限 約' + Math.round(x.f.cpuF) + 'fps ／ グラボ側の上限 約' + Math.round(x.f.gpuF) + 'fps' + (D.by.games[st.game].cap ? '（このゲームのfps上限 ' + D.by.games[st.game].cap + 'fps）' : '') + '</p>' +
         '<p class="muted">CPU ' + yen(c.price) + ' ＋ グラボ ' + yen(g.price) + (g.used ? '（中古）' : '') + '　／　この2つで組んだときの合計の目安 <b>' + yen(ev.total) + '</b></p>' +
-        '<div class="row"><a class="btn" href="#/build?' + U.idsToQuery(ids) + '">この組み合わせで組む</a><button class="btn sub" type="button" id="mx">閉じる</button></div></div>';
+        '<div class="row"><a class="btn" href="#/build?' + U.idsToQuery(ids) + '">この組み合わせで組む</a><a class="btn sub" href="#/part/cpu/' + c.id + '">CPUのくわしい情報</a><a class="btn sub" href="#/part/gpu/' + g.id + '">グラボのくわしい情報</a><button class="btn sub" type="button" id="mx">閉じる</button></div></div>';
       $('#mx', el).onclick = () => { st.sel = null; draw(); };
     }
     el.addEventListener('change', e => {

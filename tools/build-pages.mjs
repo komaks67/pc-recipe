@@ -20,7 +20,7 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const sb = { console };
 sb.window = sb;
 vm.createContext(sb);
-['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb));
+['js/config.js', 'js/prices.js', 'js/price-history.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/game-reqs.js', 'js/engine.js', 'js/part-info.js'].forEach(f => vm.runInContext(read(f), sb));
 const CFG = sb.PCR_CONFIG, D = sb.PCR_DATA, E = sb.PCR_ENGINE;
 const SITE = CFG.siteUrl.replace(/\/?$/, '/');
 const today = new Date().toISOString().slice(0, 10);
@@ -76,7 +76,7 @@ ${body}
 </main>
 <footer class="ft"><div class="ft-in">
 <p><b>PR</b>　当サイトにはアフィリエイト広告が含まれます。表示しているfps・性能は計算モデルによる目安です。価格は確認日時点の目安で、毎日変わります。（価格確認日: ${esc(priceDate)}）</p>
-<p><a href="../guide/">読みもの</a>　<a href="../fps/">ゲーム別fpsの目安</a>　<a href="../#/about">このサイトについて・プライバシーポリシー</a>${CFG.contactUrl ? `　<a href="${esc(CFG.contactUrl)}" target="_blank" rel="noopener">お問い合わせ</a>` : ''}</p>
+<p><a href="../guide/">読みもの</a>　<a href="../fps/">ゲーム別fpsの目安</a>　<a href="../parts/">CPU・グラボの一覧</a>　<a href="../#/about">このサイトについて・プライバシーポリシー</a>${CFG.contactUrl ? `　<a href="${esc(CFG.contactUrl)}" target="_blank" rel="noopener">お問い合わせ</a>` : ''}</p>
 <p>© ${new Date().getFullYear()} ${esc(CFG.siteName)}</p>
 </div></footer>
 <nav class="tabbar" aria-label="よく使うページ">${tabs.map(t => `<a href="../${t[0]}"${(t[0] === 'guide/' && dir === 'guide') ? ' class="on"' : ''}><span class="ti">${t[1]}</span>${t[2]}</a>`).join('')}</nav>
@@ -131,6 +131,20 @@ const fpsOf = (g, gpu, r, q) => E.fps(g, r, { cpu: CPU, gpu, mem: MEM }, { quali
 /* その解像度で目標fpsに届く、いちばん安いグラボ */
 const cheapest = (g, r, target) => GPUS.filter(x => fpsOf(g, x, r) >= target).sort((a, b) => a.price - b.price)[0];
 
+const R = sb.PCR_REQS || {};
+const equiv = r => ({
+  gpu: D.gpu.filter(x => x.id !== 'none' && D.suggestable(x) && x.score >= r.gpu && (!r.vram || x.vram >= r.vram)).sort((a, b) => a.price - b.price)[0],
+  cpu: D.cpu.filter(x => D.suggestable(x) && x.gs >= r.cpu).sort((a, b) => a.price - b.price)[0]
+});
+function reqHtml(g) {
+  const r = R[g.id]; if (!r) return '';
+  const col = x => {
+    if (!x) return '<td class="muted">公式の発表なし</td>';
+    const q = equiv(x);
+    return `<td><div><b>CPU</b> ${esc(x.text.cpu || '—')}</div><div><b>グラボ</b> ${esc(x.text.gpu || '—')}</div><div><b>メモリ</b> ${esc(x.text.ram || x.ram + ' GB')}</div><div class="muted" style="margin-top:6px">今買えるもので言うと: ${q.cpu ? esc(q.cpu.name) : '—'} ／ ${q.gpu ? esc(q.gpu.name) : '—'} 以上</div></td>`;
+  };
+  return `<h2>公式の必要スペック</h2><div class="tbl-wrap"><table class="t"><thead><tr><th>最低スペック</th><th>推奨スペック</th></tr></thead><tbody><tr>${col(r.min)}${col(r.rec)}</tr></tbody></table></div>${r.note ? `<p class="muted">${esc(r.note)}</p>` : ''}<p class="muted">出典: <a href="${esc(r.url)}" rel="noopener">${esc(r.src)}</a>（${esc(r.checked)} 確認）。「今買えるもので言うと」は、このサイトの性能の目安で同じくらい以上のパーツのうち、いちばん安いものです。</p>`;
+}
 D.games.forEach(g => {
   const targets = g.cap ? [Math.min(60, g.cap)] : [60, 144];
   const picks = RES.map(([r, rn]) => targets.map(t => { const x = cheapest(g, r, t); return `<tr><th>${rn}で${t}fps</th><td>${x ? `<b>${esc(x.name)}</b>（${yen(x.price)}・目安 ${Math.round(fpsOf(g, x, r))}fps）` : 'この一覧のグラボでは届かない見込み'}</td></tr>`; }).join('')).join('');
@@ -140,6 +154,7 @@ D.games.forEach(g => {
   const desc = `${g.name}を快適に遊ぶためのグラフィックボード選びの目安。フルHD・WQHD・4K、最高〜低画質でのグラボ別fpsの目安と、${targets.join('fps・')}fpsに届くいちばん安いグラボをまとめました（価格確認日 ${priceDate}）。`;
   const body = `<article class="article"><h1>${esc(title)}</h1>
 <p class="muted">${esc(g.genre || '')}${g.genre ? '｜' : ''}快適に遊べるメモリの目安: <b>${g.mem}GB以上</b>${g.cap ? `｜このゲームはfpsの上限が <b>${g.cap}fps</b> です` : ''}</p>
+${reqHtml(g)}
 <h2>結論：目標fpsに届く、いちばん安いグラボ</h2>
 <div class="tbl-wrap"><table class="t"><tbody>${picks}</tbody></table></div>
 <p class="muted">CPUは ${esc(CPU.name)}、メモリ ${MEM.cap}GB で計算しています。CPUが遅いと、ここより低くなることがあります。</p>
@@ -163,8 +178,37 @@ D.games.forEach(g => {
   sitemap.push(['fps/', today]);
 }
 
+/* ---------- パーツのページ（parts/） ---------- */
+const PI = sb.PCR_PARTINFO;
+const shop = q => {
+  if (!q) return '';
+  const am = 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(q) + (CFG.affiliate.amazonTag ? '&tag=' + encodeURIComponent(CFG.affiliate.amazonTag) : '');
+  const rb = 'https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(q) + '/';
+  const rk = CFG.affiliate.rakutenId ? 'https://hb.afl.rakuten.co.jp/ichiba/' + CFG.affiliate.rakutenId + '/?pc=' + encodeURIComponent(rb) : rb;
+  return `<span class="pr">PR</span><a class="btn sm sub" target="_blank" rel="sponsored noopener" href="${esc(am)}">Amazonで探す</a> <a class="btn sm sub" target="_blank" rel="sponsored noopener" href="${esc(rk)}">楽天で探す</a>`;
+};
+['cpu', 'gpu'].forEach(k => D[k].filter(p => p.id !== 'none').forEach(p => {
+  const kind = k === 'cpu' ? 'CPU' : 'グラボ';
+  const rk = PI.rank(k, p);
+  const desc = `${p.name}の性能・価格・ゲームのfpsの目安。${k === 'cpu' ? 'ゲーム性能' : '性能'}は新品で買える${kind}${rk.n}個の中で${rk.r}位、価格の目安は${'¥' + Math.round(p.price).toLocaleString('ja-JP')}${p.used ? '（中古）' : ''}。ライバルとの比較や、一緒に使うパーツの目安も。`;
+  const body = PI.html(k, p, { base: '../', static: true, shopLinks: shop(p.q) });
+  out.push(['parts/' + k + '-' + p.id + '.html', page({ dir: 'parts', file: k + '-' + p.id + '.html', title: p.name + 'の性能・価格・ゲームのfps', desc, body, crumbs: [['./', 'CPU・グラボの一覧']],
+    jsonld: [{ '@context': 'https://schema.org', '@type': 'Product', name: p.name, brand: { '@type': 'Brand', name: p.b }, category: kind, description: desc }] })]);
+  sitemap.push(['parts/' + k + '-' + p.id + '.html', today]);
+}));
+{
+  const sec = k => {
+    const l = D[k].filter(p => p.id !== 'none').sort((a, b) => (k === 'cpu' ? b.gs - a.gs : b.score - a.score));
+    return `<h2>${k === 'cpu' ? 'CPU（ゲーム性能が高い順）' : 'グラフィックボード（性能が高い順）'}</h2><div class="tbl-wrap"><table class="t"><thead><tr><th>名前</th><th>${k === 'cpu' ? 'ゲーム性能' : '性能'}</th><th>価格の目安</th></tr></thead><tbody>` +
+      l.map(p => `<tr><td><a href="${k}-${esc(p.id)}.html">${esc(p.name)}</a>${p.used ? ' <span class="badge warn">中古</span>' : p.legacy ? ' <span class="badge warn">旧世代</span>' : p.priceUnverified ? ' <span class="badge warn">価格未確認</span>' : ''}</td><td>${k === 'cpu' ? p.gs : p.score}</td><td>¥${Math.round(p.price).toLocaleString('ja-JP')}</td></tr>`).join('') + '</tbody></table></div>';
+  };
+  const body = `<h1>CPU・グラフィックボードの一覧と性能</h1><p class="muted">ゲーム性能の目安（公開ベンチマークに合わせた相対値）と価格の目安（${esc(priceDate)}確認）の一覧です。名前を押すと、くわしいページが開きます。</p>${sec('gpu')}${sec('cpu')}`;
+  out.push(['parts/index.html', page({ dir: 'parts', file: 'index.html', title: 'CPU・グラフィックボードの一覧と性能', desc: `CPU ${D.cpu.length}個・グラフィックボード ${D.gpu.length - 1}個の性能の目安と価格の一覧。ゲーム性能の順位、コスパ、ゲームごとのfpsの目安が分かります。`, body })]);
+  sitemap.push(['parts/', today]);
+}
+
 /* ---------- 書き出し ---------- */
-['guide', 'fps'].forEach(d => {
+['guide', 'fps', 'parts'].forEach(d => {
   const dir = path.join(root, d);
   fs.mkdirSync(dir, { recursive: true });
   // 前回作ったHTMLで、今回なくなったものは消す（このツールが作るフォルダの中だけ）

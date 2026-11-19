@@ -12,6 +12,7 @@
     return specBase(k, p) + (p.priceUnverified ? ' / 価格は未確認の目安（在庫が少ない・販売終了の可能性あり）' : '') +
       (p.used ? ' / 中古（価格はドスパラの中古の目安。状態や保証はお店ごとに確認）' : '') + (p.real ? ' / 実際の商品（ドスパラ ' + (p.checked || '') + ' の価格）' : '');
   }
+  U.specLine = (k, p) => specLine(k, p);
   function specBase(k, p) {
     switch (k) {
       case 'cpu': return esc(p.b) + ' / ' + esc(p.core) + ' / 最大消費電力 約' + p.pw + 'W / ソケット ' + p.sock + (p.plus ? ' / 2026年3月発売の新型' : '') + (p.legacy ? ' / 旧世代・中古中心' : '') + (['7000', '5000', '12', '13', '14'].indexOf(p.fam) >= 0 ? ' / 前の世代' : '') + (p.igpu === false ? ' / 内蔵グラフィックスなし' : '') + ' / ゲーム性能の目安 ' + p.gs;
@@ -80,6 +81,11 @@
 
   /* ---------- 右側のまとめパネル ---------- */
   /* 4つの画質のfpsを1行で（いま選んでいる画質は太字） */
+  function reqLine(g, ev) {
+    const r = E.req(g, ev.B), L = E.REQ_LABEL[r.lv];
+    if (r.lv === 'none') return '';
+    return '<div class="qline"><span class="badge ' + L.c + '">' + L.mk + ' 公式の' + L.t + '</span>' + (r.why.length ? ' <span class="muted">' + (r.lv === 'low' ? '足りない: ' : '推奨に足りない: ') + esc(r.why.join('・')) + '</span>' : r.noRec ? ' <span class="muted">（公式の推奨スペックは発表なし）</span>' : '') + '</div>';
+  }
   function qline(g, ev, c) {
     const all = E.fpsAll(g, c.res, ev.B, c), cur = c.quality || 'high';
     return '<div class="qline">' + E.QKEYS.map(q => (q === cur ? '<b>' : '') + E.QUALITY[q].t + ' ' + Math.round(all[q]) + (q === cur ? '</b>' : '')).join('<span aria-hidden="true"> ／ </span>') + 'fps' +
@@ -110,7 +116,7 @@
     if (!ev.fpsRows.length) h += '<p class="muted">上の「遊ぶゲーム」を選ぶと表示されます。</p>';
     ev.fpsRows.forEach(r => {
       const l = E.fpsLabel(r.fps);
-      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c);
+      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c) + reqLine(r.game, ev);
     });
     h += '<p class="muted">※実測ではなく、性能の目安から計算したものです。設定やゲームの更新で変わります。計算方法は「このサイトについて」にあります。</p></div>';
 
@@ -142,18 +148,14 @@
     const has = E.KEYS.every(k => ids[k]);
     if (!has) ids = U.queryToIds(q, U.store.get('pcr.last.build', null) || U.defaultIds());
     let c = U.prefs();
-    const flt = { size: '', noise: false, ssd: '', wifi: false, form: '' };
 
     el.innerHTML = '<h1>自作PC ビルダー</h1><p class="muted tipify">パーツを選ぶと、合わない組み合わせはすぐ警告が出ます。選択肢の ⚠ は「それに替えると他のパーツと合わなくなる」印です。</p>' +
       '<div class="steps no-print" id="bsteps" role="tablist">' + ['パーツを選ぶ', '結果', '買う・保存'].map((t, i) => '<button type="button" role="tab" data-go="' + (i + 1) + '"><b>' + (i + 1) + '</b>' + t + '</button>').join('') + '</div>' +
-      '<div class="build stepped"><div data-step="1"><details class="card flat no-print" style="margin-bottom:12px"><summary><b>🔍 こだわり検索（絞り込み）</b></summary><div class="grid g2 sp">' +
-      '<div><label class="f">ケースの大きさ</label><select id="f-size"><option value="">すべて</option><option>ミニ</option><option>ミドル</option><option>大型</option></select></div>' +
-      '<div><label class="f">マザーボードのサイズ</label><select id="f-form"><option value="">すべて</option><option>ATX</option><option>mATX</option><option>ITX</option></select></div>' +
-      '<div><label class="f">SSDの種類</label><select id="f-ssd"><option value="">すべて</option><option value="4">NVMe Gen4</option><option value="5">NVMe Gen5</option><option value="0">SATA</option></select></div>' +
-      '<div><label class="chip"><input type="checkbox" id="f-noise"><span>静音重視のケース・クーラーだけ</span></label><br><label class="chip" style="margin-top:6px"><input type="checkbox" id="f-wifi"><span>Wi-Fi標準搭載のマザボだけ</span></label></div></div></details>' +
+      '<div class="build stepped"><div data-step="1">' +
+      '<p class="muted tipify no-print">パーツの「変更」を押すと、名前で探したり、安い順・性能順に並べたりできます。今の構成に合わないものは、最初から外して表示します。</p>' +
       '<div id="parts"></div><div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
       '<div class="sticky"><div data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">買う・保存へ →</button></div></div>' +
-      '<div data-step="3"><div id="buy"></div><div id="act"></div></div></div></div>';
+      '<div data-step="3"><div id="buy"></div><div id="act"></div><div id="nx"></div></div></div></div>';
 
     // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
     function goStep(n, scroll) {
@@ -164,32 +166,16 @@
     el.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) goStep(+b.dataset.go, true); });
     goStep(1);
     const partsEl = $('#parts', el);
-    partsEl.innerHTML = ORDER.map(k => '<div class="part" data-k="' + k + '"><div class="top"><span class="nm">' + E.LABEL[k] + '</span><button class="fav" title="お気に入りに追加" aria-label="お気に入り"></button></div><select aria-label="' + E.LABEL[k] + '"></select><div class="spec tipify"></div></div>').join('');
+    partsEl.innerHTML = ORDER.map(k => '<div class="part" data-k="' + k + '"><div class="top"><span class="nm">' + E.LABEL[k] + '</span><button class="fav" title="お気に入りに追加" aria-label="お気に入り"></button></div><div class="pk-slot"></div><div class="spec tipify"></div></div>').join('');
     $('#ctl', el).innerHTML = controlsHtml(c);
     $('#act', el).innerHTML = actionsHtml('build');
 
-    function listFor(k) {
-      let list = D[k].filter(p => {
-        if (k === 'case') return (!flt.size || p.size === flt.size) && (!flt.noise || p.noise === '静音');
-        if (k === 'cooler') return !flt.noise || p.noise === '静か';
-        if (k === 'mb') return (!flt.form || p.form === flt.form) && (!flt.wifi || p.wifi === 'yes');
-        if (k === 'ssd') return flt.ssd === '' || String(p.gen) === flt.ssd;
-        return true;
-      });
-      if (!list.some(p => p.id === ids[k])) list.push(D.by[k][ids[k]]);
-      return list;
-    }
     function drawParts() {
       ORDER.forEach(k => {
-        const box = $('.part[data-k=' + k + ']', partsEl), sel = $('select', box), cur = D.by[k][ids[k]];
-        sel.innerHTML = U.optionsHtml(k, listFor(k), ids[k], p => {
-          const bad = p.id !== ids[k] && E.evaluate(E.swap(ids, k, p.id), c).hasNg ? '⚠ ' : '';
-          const d = p.price - cur.price;
-          return bad + p.name + '　' + (p.id === ids[k] ? (p.price ? yen(p.price) : '0円') : d === 0 ? '±0' : U.sgn(d)) + (p.priceUnverified && p.id === ids[k] ? '（未確認）' : '');
-        });
+        const box = $('.part[data-k=' + k + ']', partsEl), cur = D.by[k][ids[k]];
+        $('.pk-slot', box).innerHTML = U.pickButton(k, ids[k]) + (k === 'cpu' || k === 'gpu' ? '<a class="part-more" href="#/part/' + k + '/' + esc(cur.id) + '">' + esc(cur.name) + 'の詳しい情報 ›</a>' : '');
         $('.spec', box).textContent = specLine(k, cur);
         const top = $('.top .nm', box); const oldImg = $('.pimg', box); if (oldImg) oldImg.remove(); const ih = U.partImg(k, cur.id, 44); if (ih) top.insertAdjacentHTML('beforebegin', ih);
-
         const fav = $('.fav', box); const on = U.isFav(k, cur.id); fav.classList.toggle('on', on); fav.textContent = on ? '★' : '☆';
       });
       U.tipify(partsEl);
@@ -198,6 +184,12 @@
       const ev = E.evaluate(ids, c);
       $('#sum', el).innerHTML = panelHtml(ev, ids, c, 'build');
       $('#buy', el).innerHTML = buyHtml(ev);
+      $('#nx', el).innerHTML = U.nextSteps('次にやること', [
+        ['同じくらいの中身のBTOパソコンと、値段を比べる', '#/compare', 'BTOモデル比較'],
+        ['このグラボとCPUを、ほかと並べて比べる', '#/vs?add=gpu:' + ids.gpu, 'くらべる'],
+        ['保存した構成どうしを並べて比べる', '#/vs?t=build', '構成をくらべる'],
+        ['買う時期の目安と、買う前のチェックリストを見る', '#/buy', '購入ガイド']
+      ]);
       U.sumBar(ev, () => goStep(2, true));
       U.tipify($('#sum', el));
       history.replaceState(null, '', '#/build?' + U.idsToQuery(ids));
@@ -207,22 +199,21 @@
     function all() { drawParts(); drawSum(); }
     all();
 
-    partsEl.addEventListener('change', e => {
-      const box = e.target.closest('.part'); if (!box || e.target.tagName !== 'SELECT') return;
-      const k = box.dataset.k, before = ids;
-      ids = E.swap(ids, k, e.target.value);
+    function setPart(k, id) {
+      const before = ids;
+      ids = E.swap(ids, k, id);
       if (k === 'cpu' && before.mb !== ids.mb) U.toast('CPUに合わせてマザーボードも変更しました');
       if (k === 'case' && before.mb !== ids.mb) U.toast('ケースに合わせてマザーボードも変更しました');
       all();
-    });
+    }
     partsEl.addEventListener('click', e => {
+      const pb = e.target.closest('[data-pick]');
+      if (pb) { const k = pb.dataset.pick; U.pickPart({ k: k, cur: ids[k], ids: ids, ctx: c, onPick: id => setPart(k, id) }); return; }
       const f = e.target.closest('.fav'); if (!f) return;
       const k = f.closest('.part').dataset.k; const on = U.toggleFav(k, ids[k]);
       U.toast(on ? 'お気に入りに追加しました（「保存」ページで見られます）' : 'お気に入りから外しました'); drawParts();
     });
     $('#ctl', el).addEventListener('change', () => { c = readControls($('#ctl', el)); U.setPrefs(c); all(); });
-    ['f-size', 'f-form', 'f-ssd'].forEach(id => $('#' + id, el).addEventListener('change', e => { flt[id.slice(2)] = e.target.value; drawParts(); }));
-    ['f-noise', 'f-wifi'].forEach(id => $('#' + id, el).addEventListener('change', e => { flt[id.slice(2)] = e.target.checked; drawParts(); }));
 
     $('#act', el).addEventListener('click', e => {
       const id = e.target.id; if (!id) return;
@@ -251,7 +242,6 @@
       size: ['mini', 'compact', 'mid', 'large'].indexOf(q.get('size')) >= 0 ? q.get('size') : 'mid', quiet: q.get('quiet') === '1'
     };
     let c = U.prefs();
-    const opts = (k, cur) => U.optionsHtml(k, D[k], cur, p => p.name);
 
     el.innerHTML = '<h1>BTOパソコン選び</h1><p class="muted tipify">ショップのカスタマイズ画面で選ぶ4つ（CPU・GPU・メモリ・SSD）を決めると、電源やケースの目安、fps、電気代までまとめて確認できます。</p>' +
       '<div class="steps no-print" id="bsteps" role="tablist">' + ['中身を選ぶ', '結果', 'ショップで選ぶ', '価格メモ'].map((t, i) => '<button type="button" role="tab" data-go="' + (i + 1) + '"><b>' + (i + 1) + '</b>' + t + '</button>').join('') + '</div>' +
@@ -262,7 +252,9 @@
       '<div data-step="3"><div id="buyguide" class="sp"></div><div id="makers" class="sp"></div><div class="row sp step-next"><button class="btn sub" type="button" data-go="4">価格メモへ →</button></div></div><div id="memo" class="sp" data-step="4"></div></div>' +
       '<div class="sticky" data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div id="act"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">ショップで選ぶときの目安へ →</button></div></div></div>';
 
-    $('#sel', el).innerHTML = [['cpu', 'CPU'], ['gpu', 'グラフィックボード'], ['mem', 'メモリ'], ['ssd', 'ストレージ']].map(([k, l]) => '<div><label class="f">' + l + '</label><select data-k="' + k + '">' + opts(k, st[k]) + '</select></div>').join('');
+    const SELK = [['cpu', 'CPU'], ['gpu', 'グラフィックボード'], ['mem', 'メモリ'], ['ssd', 'ストレージ']];
+    const drawSel = () => { $('#sel', el).innerHTML = SELK.map(([k, l]) => '<div><span class="f">' + l + '</span>' + U.pickButton(k, st[k]) + '</div>').join(''); };
+    drawSel();
     $('#b-size', el).value = st.size; $('#b-quiet', el).checked = st.quiet;
     // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
     let step = 1;
@@ -319,7 +311,11 @@
     $('#memo', el).innerHTML = memoHtml();
     draw();
 
-    $('#sel', el).addEventListener('change', e => { st[e.target.dataset.k] = e.target.value; draw(); });
+    $('#sel', el).addEventListener('click', e => {
+      const pb = e.target.closest('[data-pick]'); if (!pb) return;
+      const k = pb.dataset.pick;
+      U.pickPart({ k: k, cur: st[k], ids: ids(), ctx: c, onPick: id => { st[k] = id; drawSel(); draw(); } });
+    });
     $('#b-size', el).addEventListener('change', e => { st.size = e.target.value; draw(); });
     $('#b-quiet', el).addEventListener('change', e => { st.quiet = e.target.checked; draw(); });
     $('#ctl', el).addEventListener('change', () => { c = readControls($('#ctl', el)); U.setPrefs(c); draw(); });
@@ -342,7 +338,7 @@
       if (id === 'b-img') U.downloadImage(i, c, 'BTO構成', '/build', 'pc-recipe-bto.png');
       if (id === 'b-qr') U.showQr(U.shortUrl('/build', i));
       if (id === 'b-print') window.print();
-      if (id === 'b-reset') { Object.assign(st, base, { size: 'mid', quiet: false }); $$('#sel select', el).forEach(s => { s.value = st[s.dataset.k]; }); $('#b-size', el).value = 'mid'; $('#b-quiet', el).checked = false; draw(); }
+      if (id === 'b-reset') { Object.assign(st, base, { size: 'mid', quiet: false }); drawSel(); $('#b-size', el).value = 'mid'; $('#b-quiet', el).checked = false; draw(); }
     });
   }, '/bto');
 })();

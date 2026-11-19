@@ -14,6 +14,12 @@
       '<section class="hero home-hero"><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
       '<p class="lead tipify">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。パーツ同士が合うか、電源は足りるか、ゲームが何fpsで動くかも、その場でチェックできます。</p>' +
       '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる（約1分）</a></div></section>' +
+      (U.store.get('pcr.welcome.done', false) ? '' :
+        '<div class="card welcome sp2" id="welcome"><div class="row" style="justify-content:space-between"><h2 style="margin:0">はじめての方へ：3ステップで決まります</h2><button type="button" class="icon-btn" id="wl-x" aria-label="この案内を閉じる">✕</button></div>' +
+        '<ol class="wl-steps"><li><b>① 診断する</b><span>用途と予算を答えると、3つのプランが出ます（約1分）</span><a class="btn sm" href="#/wizard">診断する</a></li>' +
+        '<li><b>② 比べる</b><span>BTO（完成品）や、ほかのグラボ・CPUと並べて比べます</span><a class="btn sub sm" href="#/vs">比べる</a></li>' +
+        '<li><b>③ 組む・買う</b><span>パーツを細かく調整して、合うかどうか確認してから買います</span><a class="btn sub sm" href="#/build">組む</a></li></ol>' +
+        '<p class="muted">点線の下線がある言葉は、押す（カーソルを合わせる）と意味が出ます。</p></div>') +
       '<h2 class="sp2">何をしたいですか？</h2>' +
       '<div class="goals">' +
         goal('#/wizard', '🧭', 'おすすめのPCを知りたい', '用途と予算を答えるだけ。3つのプランを提案します', true) +
@@ -30,6 +36,7 @@
         [['guide/bto-or-diy.html', '🤔', 'BTOと自作、どっちがいい？'], ['guide/checklist.html', '✅', 'BTO購入チェックリスト'], ['guide/glossary.html', '📖', 'むずかしい言葉の用語集']]
           .map(a => '<a class="card flat card-link feat" href="' + a[0] + '"><span class="ico">' + a[1] + '</span><span><b>' + a[2] + '</b></span></a>').join('') + '</div>' +
       '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>価格は<b>' + esc(D.priceDate || CFG.dataDate) + '</b>時点の目安です。購入前に必ずお店で確認してください。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
+    const wx = $('#wl-x', el); if (wx) wx.onclick = () => { U.store.set('pcr.welcome.done', true); $('#welcome', el).remove(); };
   });
 
   U.route('/404', 'ページが見つかりません', function (el) {
@@ -134,8 +141,9 @@
       '<h2 id="about-what">PC Recipe とは</h2><p>BTOパソコンや自作PCを選ぶ人のための、診断・チェックサイトです。むずかしい言葉は、カーソルを合わせると説明が出ます。利用は無料で、会員登録もいりません。</p>' +
       '<h2 id="about-data">データと計算方法</h2><ul>' +
       '<li><b>パーツの仕様</b>（ソケット、メモリ規格、消費電力、推奨電源など）は、メーカー公式の情報をもとにしています。データ確認日: <b>' + esc(CFG.dataDate) + '</b>。</li>' +
-      '<li><b>性能の数値</b>（ゲーム性能・動画編集性能の指数）は、公開されているベンチマークの傾向をもとにした<b>相対的な目安</b>で、公式の数字ではありません。</li>' +
-      '<li><b>fps</b>は、ゲームごとの「GPU側の上限」と「CPU側の上限」から計算した目安です（実測ではありません）。基準は「高」画質で、「最高・中・低」は一般的な傾向から計算しています（例: 最高画質はグラボ側の上限が約2割下がる、低画質は約1.6倍）。最高画質では、重いゲームでグラボのメモリ（VRAM）が足りないとさらに下げています。</li>' +
+      '<li><b>性能の数値</b>は<b>相対的な目安</b>です。グラボの性能は <a href="https://www.tomshardware.com/reviews/gpu-hierarchy,4388.html" target="_blank" rel="noopener">Tom\'s Hardware のGPU階層表</a>（WQHD・最高画質の平均fps、RTX 5090 = 100）、CPUのゲーム性能は <a href="https://www.tomshardware.com/reviews/cpu-hierarchy,4312.html" target="_blank" rel="noopener">同じくCPU階層表</a>（フルHDのゲーム性能、Ryzen 7 9800X3D = 100）に合わせています（2026年11月19日確認）。表にないパーツは、同じ系列のパーツとの比率から見積もっています。動画編集などの性能の指数は、一般的なベンチマークの傾向からの目安です。</li>' +
+      '<li><b>fps</b>は、ゲームごとの「GPU側の上限」と「CPU側の上限」から計算した目安です（実測ではありません）。各ゲームの計算は、公式の推奨スペックのPCがフルHD・高画質でおよそ60fpsになるように合わせています。基準は「高」画質で、「最高・中・低」は一般的な傾向から計算しています（例: 最高画質はグラボ側の上限が約2割下がる、低画質は約1.6倍）。最高画質では、重いゲームでグラボのメモリ（VRAM）が足りないとさらに下げています。</li>' +
+      '<li><b>ゲームの公式の必要スペック</b>は、Steamのストアページ、Riot Games・Epic Games・Minecraftの公式ページの発表をもとにしています。公式が書いた古いパーツは、このサイトの性能の目安で「同じくらいの性能」に置き換えて、構成が満たすかどうかを判定しています（置き換えは目安です）。</li>' +
       '<li><b>電源の推奨容量</b>は、CPUとGPUの最大消費電力に周辺機器分を足し、約25%の余裕を持たせて計算し、GPUメーカーの推奨容量と比べて大きい方を採用しています。</li>' +
       '<li><b>価格</b>（価格確認日: <b>' + pd + '</b>）は、次の公開情報をもとにした目安です。CPU・メモリ・SSDは秋葉原の店頭価格調査（AKIBA PC Hotline!）の最安値、新品のグラフィックボード・電源はドスパラ通販の販売価格、中古のグラフィックボードはドスパラの中古の販売価格（いちばん安いものの目安）、「実際の商品」はドスパラ通販の販売価格、BTOパソコンは各メーカー公式サイトの表示価格です。価格は毎日変わるため、<b>購入前に必ず購入先で確認</b>してください。</li>' +
       '<li>価格を確認できなかったパーツ（在庫が少ない、販売が終わった可能性があるもの）は「<b>価格未確認</b>」と表示し、おまかせ提案には使いません。自分でパーツを選ぶ画面では選べます。</li>' +
