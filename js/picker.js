@@ -78,9 +78,9 @@
     const curP = D.by[k][cur];
     const maxPerf = Math.max(1, ...base.map(PERF[k] || (() => 0)));
     function list() {
-      const q = st.q.toLowerCase().replace(/\s+/g, '');
+      const q = st.q;
       let l = base.filter(p => {
-        if (q && (p.name + ' ' + (p.q || '')).toLowerCase().replace(/\s+/g, '').indexOf(q) < 0) return false;
+        if (q && !U.matchQ(q, '', p._sk || (p._sk = U.searchKey(p.name + ' ' + (p.q || '') + ' ' + (p.b || ''))))) return false;
         if (!st.more && (p.legacy || p.priceUnverified) && p.id !== cur) return false;
         if (st.kind === '種類ごとの目安' && p.real) return false;
         if (st.kind === '実際の商品' && !p.real) return false;

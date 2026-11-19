@@ -6,6 +6,7 @@
   const $ = U.$, esc = U.esc, yen = U.yen;
   const strip = h => String(h || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
   const norm = t => String(t || '').toLowerCase().replace(/[！-～]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g, ' ');
+  const sk = U.searchKey;
 
   /* ---------- 検索のもと ---------- */
   const PAGES = [
@@ -23,23 +24,28 @@
     PAGES.forEach(p => INDEX.push({ t: 'ページ', title: p[1], text: p[2], href: '#' + p[0], w: 3 }));
     D.articles.forEach(a => INDEX.push({ t: '読みもの', title: a.title, text: a.lead + ' ' + strip(a.html), href: '#/guide/' + a.id, w: 2 }));
     D.glossary.forEach(g => INDEX.push({ t: '用語', title: g[0], text: g[1], href: '#/guide/glossary', w: 2 }));
-    CATS.forEach(c => D[c[0]].forEach(p => INDEX.push({ t: c[1], title: p.name, text: '', href: '#/history?k=' + c[0] + '&id=' + p.id, w: 1 })));
-    INDEX.forEach(x => { x.nt = norm(x.title); x.nb = norm(x.text); });
+    INDEX.push({ t: 'ページ', title: 'CPU・グラボの一覧と性能', text: '性能・価格・コスパの一覧', href: '#/part', w: 3 });
+    // CPU・グラボはくわしいページへ、ほかのパーツは価格の推移へ
+    CATS.forEach(c => D[c[0]].filter(p => p.id !== 'none').forEach(p => INDEX.push({ t: c[1] + (p.used ? '（中古）' : ''), title: p.name, text: '', href: (c[0] === 'cpu' || c[0] === 'gpu') ? '#/part/' + c[0] + '/' + p.id : '#/history?k=' + c[0] + '&id=' + p.id, w: (c[0] === 'cpu' || c[0] === 'gpu') ? 2 : 1, kw: (p.q || '') + ' ' + (p.b || '') })));
+    INDEX.forEach(x => { x.nt = norm(x.title); x.nb = norm(x.text); x.kt = sk(x.title + ' ' + (x.kw || '')); x.kb = sk(x.text); });
     return INDEX;
   }
   function search(q) {
     const words = norm(q).split(/\s+/).filter(Boolean);
     if (!words.length) return [];
+    const whole = sk(q);
     return index().map(x => {
+      if (words.length > 1 && whole && x.kt.indexOf(whole) >= 0) return { x: x, s: 10 * words.length * x.w };   // 「ryzen7 9800」のような区切り方の違い
       let s = 0;
       for (const w of words) {
-        if (x.nt === w) s += 12; else if (x.nt.indexOf(w) >= 0) s += 8; else if (x.nb.indexOf(w) >= 0) s += 2; else return null;
+        const ws = sk(w);
+        if (x.nt === w) s += 12; else if (x.nt.indexOf(w) >= 0) s += 8; else if (ws && x.kt.indexOf(ws) >= 0) s += 7; else if (x.nb.indexOf(w) >= 0) s += 2; else if (ws && x.kb.indexOf(ws) >= 0) s += 1; else return null;
       }
       return { x: x, s: s * x.w };
     }).filter(Boolean).sort((a, b) => b.s - a.s).map(r => r.x);
   }
   function snippet(x, q) {
-    const w = norm(q).split(/\s+/)[0]; const i = x.nb.indexOf(w);
+    const w = norm(q).split(/\s+/)[0]; const i = Math.max(0, x.nb.indexOf(w));
     if (!x.nb) return '';
     const from = Math.max(0, i - 20), t = x.text.replace(/\s+/g, ' ').slice(from, from + 90);
     return (from > 0 ? '…' : '') + t + '…';
@@ -49,14 +55,20 @@
     const term = q.get('q') || '';
     el.innerHTML = '<h1>サイト内検索</h1><form class="card row" id="sf2" role="search"><input type="search" id="sq2" placeholder="例: 電源 / DDR5 / RTX 5070" style="flex:1;min-width:180px"><button class="btn" type="submit">検索</button></form><div id="sr" class="sp"></div>';
     $('#sq2', el).value = term;
-    $('#sf2', el).onsubmit = e => { e.preventDefault(); U.go('#/search?q=' + encodeURIComponent($('#sq2', el).value)); };
+    $('#sf2', el).onsubmit = e => { e.preventDefault(); $('#sq2', el).blur(); };
     const sr = $('#sr', el);
-    if (!term.trim()) { sr.innerHTML = '<p class="muted">パーツ名・読みもの・用語・ページ名から探せます。</p>'; return; }
+    let tm = 0;
+    $('#sq2', el).addEventListener('input', e => { clearTimeout(tm); tm = setTimeout(() => { const v = e.target.value; history.replaceState(null, '', '#/search' + (v.trim() ? '?q=' + encodeURIComponent(v) : '')); show(v); }, 150); });
+    if (!term) $('#sq2', el).focus();
+    show(term);
+    function show(term) {
+    if (!term.trim()) { sr.innerHTML = '<p class="muted">パーツ名・読みもの・用語・ページ名から探せます。<br>例: <a href="#/search?q=9800X3D">9800X3D</a> / <a href="#/search?q=i5 14400">i5 14400</a> / <a href="#/search?q=ライゼン 7">ライゼン 7</a> / <a href="#/search?q=RTX 5070">RTX 5070</a></p>'; return; }
     const res = search(term);
     if (!res.length) { sr.innerHTML = '<div class="card"><p>「' + esc(term) + '」に合うものが見つかりませんでした。別の言葉で試してみてください。</p></div>'; return; }
     const shown = res.slice(0, 40);
     sr.innerHTML = '<p class="muted">' + res.length + '件' + (res.length > shown.length ? '（上位' + shown.length + '件を表示）' : '') + '</p><div class="grid">' +
       shown.map(x => '<a class="card card-link" href="' + esc(x.href) + '"><span class="badge ok">' + esc(x.t) + '</span> <b>' + esc(x.title) + '</b>' + (x.nb ? '<div class="muted sp">' + esc(snippet(x, term)) + '</div>' : '') + '</a>').join('') + '</div>';
+    }
   }, '');
 
   /* ---------- 価格の推移 ---------- */
