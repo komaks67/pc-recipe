@@ -81,6 +81,11 @@
 
   /* ---------- 右側のまとめパネル ---------- */
   /* 4つの画質のfpsを1行で（いま選んでいる画質は太字） */
+  function reqLine(g, ev) {
+    const r = E.req(g, ev.B), L = E.REQ_LABEL[r.lv];
+    if (r.lv === 'none') return '';
+    return '<div class="qline"><span class="badge ' + L.c + '">' + L.mk + ' 公式の' + L.t + '</span>' + (r.why.length ? ' <span class="muted">' + (r.lv === 'low' ? '足りない: ' : '推奨に足りない: ') + esc(r.why.join('・')) + '</span>' : r.noRec ? ' <span class="muted">（公式の推奨スペックは発表なし）</span>' : '') + '</div>';
+  }
   function qline(g, ev, c) {
     const all = E.fpsAll(g, c.res, ev.B, c), cur = c.quality || 'high';
     return '<div class="qline">' + E.QKEYS.map(q => (q === cur ? '<b>' : '') + E.QUALITY[q].t + ' ' + Math.round(all[q]) + (q === cur ? '</b>' : '')).join('<span aria-hidden="true"> ／ </span>') + 'fps' +
@@ -111,7 +116,7 @@
     if (!ev.fpsRows.length) h += '<p class="muted">上の「遊ぶゲーム」を選ぶと表示されます。</p>';
     ev.fpsRows.forEach(r => {
       const l = E.fpsLabel(r.fps);
-      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c);
+      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c) + reqLine(r.game, ev);
     });
     h += '<p class="muted">※実測ではなく、性能の目安から計算したものです。設定やゲームの更新で変わります。計算方法は「このサイトについて」にあります。</p></div>';
 

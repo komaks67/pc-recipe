@@ -20,6 +20,26 @@ window.PCR_UI = (function () {
   U.prefs = function () {
     return Object.assign({ res: 1440, quality: 'high', games: ['valorant', 'apex', 'palworld', 'cyberpunk'], hours: 3, kwh: CFG.electricityYenPerKwh, stream: false }, U.store.get('pcr.prefs.v1', {}));
   };
+  /* ゲームの公式の必要スペック（最低・推奨）と、それに当たる今買えるパーツ */
+  U.reqEquiv = function (r) {
+    const g = PCR_DATA.gpu.filter(x => x.id !== 'none' && PCR_DATA.suggestable(x) && x.score >= r.gpu && (!r.vram || x.vram >= r.vram)).sort((a, b) => a.price - b.price)[0];
+    const c = PCR_DATA.cpu.filter(x => PCR_DATA.suggestable(x) && x.gs >= r.cpu).sort((a, b) => a.price - b.price)[0];
+    return { gpu: g, cpu: c };
+  };
+  U.reqCard = function (g) {
+    const R = (window.PCR_REQS || {})[g.id];
+    if (!R) return '';
+    const col = (t, r) => {
+      if (!r) return '<td colspan="1" class="muted">公式の発表なし</td>';
+      const q = U.reqEquiv(r);
+      return '<td><div><b>CPU</b> ' + U.esc(r.text.cpu || '—') + '</div><div><b>グラボ</b> ' + U.esc(r.text.gpu || '—') + '</div><div><b>メモリ</b> ' + U.esc(r.text.ram || (r.ram + ' GB')) + '</div>' +
+        '<div class="muted sp" style="margin-top:6px">今買えるもので言うと: ' + (q.cpu ? U.esc(q.cpu.name) : '—') + ' ／ ' + (q.gpu ? U.esc(q.gpu.name) : '—') + ' 以上</div></td>';
+    };
+    return '<div class="card"><h2>' + U.esc(g.name) + 'の公式の必要スペック</h2><div class="tbl-wrap"><table class="t req-t"><thead><tr><th>最低スペック</th><th>推奨スペック</th></tr></thead><tbody><tr>' + col('最低', R.min) + col('推奨', R.rec) + '</tr></tbody></table></div>' +
+      (R.note ? '<p class="muted">' + U.esc(R.note) + '</p>' : '') +
+      '<p class="muted">出典: <a href="' + U.esc(R.url) + '" target="_blank" rel="noopener">' + U.esc(R.src) + '</a>（' + U.esc(R.checked) + ' 確認）。「今買えるもので言うと」は、このサイトの性能の目安で同じくらい以上のパーツのうち、いちばん安いものです。</p></div>';
+  };
+
   /* 画質を選ぶチップ（name: input の name、cur: 今の画質） */
   U.qualityChips = function (name, cur) {
     return '<div class="chips">' + PCR_ENGINE.QKEYS.map(q => '<label class="chip"><input type="radio" name="' + name + '" value="' + q + '"' + (q === cur ? ' checked' : '') + '><span>' + PCR_ENGINE.QUALITY[q].t + '画質</span></label>').join('') + '</div>';

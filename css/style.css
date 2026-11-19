@@ -384,3 +384,5 @@ body.noscroll { overflow: hidden; }
   .picker { left: 0; right: 0; top: auto; bottom: 0; transform: none; width: 100%; max-height: 92vh; height: 92vh; border-radius: 22px 22px 0 0; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
   .pk-filters { max-height: 30vh; overflow: auto; }
 }
+.req-t td { vertical-align: top; width: 50%; line-height: 1.6; font-size: .88rem; }
+.req-t td b { display: inline-block; min-width: 3.5em; color: var(--muted); font-size: .8rem; }

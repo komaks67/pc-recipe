@@ -52,6 +52,28 @@ window.PCR_ENGINE = (function () {
     if (game.cap) f = Math.min(f, game.cap);   // フレームレートの上限があるゲーム
     return { fps: f, gpuF: gpuF, cpuF: cpuF, limit: gpuF <= cpuF ? 'GPU' : 'CPU', memPen: memPen, vramPen: vramPen, quality: qk };
   };
+  /* 公式の必要スペックを満たすか（js/game-reqs.js）。
+     戻り値: { lv: 'rec' 推奨以上 / 'min' 最低以上 / 'low' 最低未満 / 'none' 情報なし, why: [足りないもの] } */
+  E.req = function (game, B) {
+    const R = (window.PCR_REQS || {})[game.id];
+    if (!R) return { lv: 'none', why: [] };
+    const cpu = B.cpu.gs, gpu = B.gpu.id === 'none' ? (B.cpu.igpu === false ? 0 : 3) : B.gpu.score, ram = B.mem ? B.mem.cap : 0, vram = B.gpu.vram || 0;
+    const short = r => {
+      const w = [];
+      if (cpu < r.cpu) w.push('CPU');
+      if (gpu < r.gpu) w.push('グラボ');
+      if (ram < r.ram) w.push('メモリ（' + r.ram + 'GB必要）');
+      if (r.vram && B.gpu.id !== 'none' && vram < r.vram) w.push('VRAM（' + r.vram + 'GB必要）');
+      return w;
+    };
+    const wm = short(R.min);
+    if (wm.length) return { lv: 'low', why: wm, R: R };
+    if (!R.rec) return { lv: 'min', why: [], R: R, noRec: true };
+    const wr = short(R.rec);
+    return { lv: wr.length ? 'min' : 'rec', why: wr, R: R };
+  };
+  E.REQ_LABEL = { rec: { t: '推奨スペック以上', c: 'ok', mk: '✓' }, min: { t: '最低スペック以上', c: 'warn', mk: '△' }, low: { t: '最低スペック未満', c: 'ng', mk: '✕' }, none: { t: '公式スペックの情報なし', c: '', mk: '' } };
+
   /* 4つの画質すべてのfps（表示用） */
   E.fpsAll = function (game, res, B, opt) {
     const o = {};

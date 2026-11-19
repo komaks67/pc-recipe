@@ -199,9 +199,10 @@
       const g = D.by.games[st.game], cpu = D.by.cpu[st.cpu];
       const rows = D.gpu.filter(x => x.id !== 'none').sort((a, b) => b.score - a.score).map(gpu => {
         const B = { cpu: cpu, gpu: gpu, mem: D.by.mem[st.mem] };
-        return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span></td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
+        const rq = E.req(g, B), RL = E.REQ_LABEL[rq.lv];
+        return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span>' + (rq.lv !== 'none' ? '<br><span class="badge ' + RL.c + '">' + RL.mk + ' ' + RL.t + '</span>' : '') + '</td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
       }).join('');
-      $('#g-out', el).innerHTML = '<div class="card"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + ' ／ ' + E.QUALITY[st.quality].t + '画質</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      $('#g-out', el).innerHTML = U.reqCard(g) + '<div class="card sp"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + ' ／ ' + E.QUALITY[st.quality].t + '画質</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
         '<p class="sp"><a href="fps/' + esc(g.id) + '.html">' + esc(g.name) + 'のおすすめグラボまとめ（目標fpsに届くいちばん安いグラボ）</a></p><p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';
     }
     el.addEventListener('change', draw); draw();

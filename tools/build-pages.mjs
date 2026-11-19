@@ -20,7 +20,7 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 const sb = { console };
 sb.window = sb;
 vm.createContext(sb);
-['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb));
+['js/config.js', 'js/prices.js', 'js/bto-models.js', 'js/parts-real.js', 'js/data.js', 'js/game-reqs.js', 'js/engine.js'].forEach(f => vm.runInContext(read(f), sb));
 const CFG = sb.PCR_CONFIG, D = sb.PCR_DATA, E = sb.PCR_ENGINE;
 const SITE = CFG.siteUrl.replace(/\/?$/, '/');
 const today = new Date().toISOString().slice(0, 10);
@@ -131,6 +131,20 @@ const fpsOf = (g, gpu, r, q) => E.fps(g, r, { cpu: CPU, gpu, mem: MEM }, { quali
 /* その解像度で目標fpsに届く、いちばん安いグラボ */
 const cheapest = (g, r, target) => GPUS.filter(x => fpsOf(g, x, r) >= target).sort((a, b) => a.price - b.price)[0];
 
+const R = sb.PCR_REQS || {};
+const equiv = r => ({
+  gpu: D.gpu.filter(x => x.id !== 'none' && D.suggestable(x) && x.score >= r.gpu && (!r.vram || x.vram >= r.vram)).sort((a, b) => a.price - b.price)[0],
+  cpu: D.cpu.filter(x => D.suggestable(x) && x.gs >= r.cpu).sort((a, b) => a.price - b.price)[0]
+});
+function reqHtml(g) {
+  const r = R[g.id]; if (!r) return '';
+  const col = x => {
+    if (!x) return '<td class="muted">公式の発表なし</td>';
+    const q = equiv(x);
+    return `<td><div><b>CPU</b> ${esc(x.text.cpu || '—')}</div><div><b>グラボ</b> ${esc(x.text.gpu || '—')}</div><div><b>メモリ</b> ${esc(x.text.ram || x.ram + ' GB')}</div><div class="muted" style="margin-top:6px">今買えるもので言うと: ${q.cpu ? esc(q.cpu.name) : '—'} ／ ${q.gpu ? esc(q.gpu.name) : '—'} 以上</div></td>`;
+  };
+  return `<h2>公式の必要スペック</h2><div class="tbl-wrap"><table class="t"><thead><tr><th>最低スペック</th><th>推奨スペック</th></tr></thead><tbody><tr>${col(r.min)}${col(r.rec)}</tr></tbody></table></div>${r.note ? `<p class="muted">${esc(r.note)}</p>` : ''}<p class="muted">出典: <a href="${esc(r.url)}" rel="noopener">${esc(r.src)}</a>（${esc(r.checked)} 確認）。「今買えるもので言うと」は、このサイトの性能の目安で同じくらい以上のパーツのうち、いちばん安いものです。</p>`;
+}
 D.games.forEach(g => {
   const targets = g.cap ? [Math.min(60, g.cap)] : [60, 144];
   const picks = RES.map(([r, rn]) => targets.map(t => { const x = cheapest(g, r, t); return `<tr><th>${rn}で${t}fps</th><td>${x ? `<b>${esc(x.name)}</b>（${yen(x.price)}・目安 ${Math.round(fpsOf(g, x, r))}fps）` : 'この一覧のグラボでは届かない見込み'}</td></tr>`; }).join('')).join('');
@@ -140,6 +154,7 @@ D.games.forEach(g => {
   const desc = `${g.name}を快適に遊ぶためのグラフィックボード選びの目安。フルHD・WQHD・4K、最高〜低画質でのグラボ別fpsの目安と、${targets.join('fps・')}fpsに届くいちばん安いグラボをまとめました（価格確認日 ${priceDate}）。`;
   const body = `<article class="article"><h1>${esc(title)}</h1>
 <p class="muted">${esc(g.genre || '')}${g.genre ? '｜' : ''}快適に遊べるメモリの目安: <b>${g.mem}GB以上</b>${g.cap ? `｜このゲームはfpsの上限が <b>${g.cap}fps</b> です` : ''}</p>
+${reqHtml(g)}
 <h2>結論：目標fpsに届く、いちばん安いグラボ</h2>
 <div class="tbl-wrap"><table class="t"><tbody>${picks}</tbody></table></div>
 <p class="muted">CPUは ${esc(CPU.name)}、メモリ ${MEM.cap}GB で計算しています。CPUが遅いと、ここより低くなることがあります。</p>
