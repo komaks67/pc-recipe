@@ -20,6 +20,27 @@ window.PCR_UI = (function () {
   U.prefs = function () {
     return Object.assign({ res: 1440, quality: 'high', games: ['valorant', 'apex', 'palworld', 'cyberpunk'], hours: 3, kwh: CFG.electricityYenPerKwh, stream: false }, U.store.get('pcr.prefs.v1', {}));
   };
+  /* ---------- 検索の共通ルール ----------
+     全角→半角、大文字小文字・空白・ハイフンを無視、カタカナの読み（ライゼン等）も受け付ける。
+     空白で区切った言葉は「すべて含む」で探す。 */
+  const ALIAS = [[/らいぜん|ライゼン/g, 'ryzen'], [/コア/g, 'core'], [/ウルトラ/g, 'ultra'], [/ジーフォース|ゲフォース|ジフォース/g, 'geforce'], [/ラデオン|レイディオン/g, 'radeon'],
+    [/インテル/g, 'intel'], [/エヌビディア|エヌビデア/g, 'nvidia']];
+  U.normQ = function (t) {
+    let s = String(t || '').replace(/[！-～]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/　/g, ' ').toLowerCase();
+    ALIAS.forEach(a => { s = s.replace(a[0], ' ' + a[1] + ' '); });
+    return s;
+  };
+  const squash = t => t.replace(/[\s\-_・.,、。()（）\/]+/g, '');
+  /* 検索用の文字列を作る（何度も使う時は作っておく） */
+  U.searchKey = function (text) { return squash(U.normQ(text)); };
+  /* text が q に合うか。key は U.searchKey(text) を渡すと速い */
+  U.matchQ = function (q, text, key) {
+    const words = U.normQ(q).split(/\s+/).map(squash).filter(Boolean);
+    if (!words.length) return true;
+    const k = key != null ? key : U.searchKey(text);
+    return words.every(w => k.indexOf(w) >= 0) || k.indexOf(words.join('')) >= 0;
+  };
+
   /* 「次にやること」のカード。items: [[番号の後の文, リンク, ボタンの文字], ...] */
   U.nextSteps = function (title, items) {
     return '<div class="card next sp no-print"><h3>👉 ' + U.esc(title) + '</h3><ol class="next-l">' + items.map(x => '<li><span>' + x[0] + '</span>' + (x[1] ? '<a class="btn sub sm" href="' + U.esc(x[1]) + '">' + U.esc(x[2]) + '</a>' : '') + '</li>').join('') + '</ol></div>';

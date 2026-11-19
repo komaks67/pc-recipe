@@ -15,8 +15,8 @@
       '<label class="chip sp"><input type="checkbox" id="pl-all"><span>中古・旧世代・価格未確認も表示</span></label></div><div id="pl" class="sp"></div>';
     function draw() {
       $$('.tabs button', el).forEach(b => b.classList.toggle('on', b.dataset.k === st.k));
-      const qq = st.q.toLowerCase().replace(/\s+/g, '');
-      let l = D[st.k].filter(p => p.id !== 'none' && (st.all || D.suggestable(p)) && (!qq || p.name.toLowerCase().replace(/\s+/g, '').indexOf(qq) >= 0));
+      // 検索中は、中古・旧世代なども含めて探す（見つからない、を防ぐ）
+      let l = D[st.k].filter(p => p.id !== 'none' && (st.all || st.q || D.suggestable(p)) && (!st.q || U.matchQ(st.q, p.name + ' ' + (p.q || '') + ' ' + (p.b || ''))));
       const val = p => perf(st.k, p) / p.price;
       l.sort((a, b) => st.sort === 'price' ? a.price - b.price : st.sort === 'value' ? val(b) - val(a) : perf(st.k, b) - perf(st.k, a));
       const max = Math.max(...l.map(p => perf(st.k, p)), 1);

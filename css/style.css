@@ -408,3 +408,7 @@ body.noscroll { overflow: hidden; }
 .welcome { position: relative; }
 .welcome h2 { padding-right: 48px; font-size: 1.15rem; }
 #wl-x { position: absolute; top: 12px; right: 12px; }
+
+/* ---------- ホームの検索 ---------- */
+.home-sf { display: flex; gap: 8px; max-width: 560px; }
+.home-sf input { flex: 1; min-width: 0; }
