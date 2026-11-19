@@ -20,6 +20,11 @@ window.PCR_UI = (function () {
   U.prefs = function () {
     return Object.assign({ res: 1440, quality: 'high', games: ['valorant', 'apex', 'palworld', 'cyberpunk'], hours: 3, kwh: CFG.electricityYenPerKwh, stream: false }, U.store.get('pcr.prefs.v1', {}));
   };
+  /* 「次にやること」のカード。items: [[番号の後の文, リンク, ボタンの文字], ...] */
+  U.nextSteps = function (title, items) {
+    return '<div class="card next sp no-print"><h3>👉 ' + U.esc(title) + '</h3><ol class="next-l">' + items.map(x => '<li><span>' + x[0] + '</span>' + (x[1] ? '<a class="btn sub sm" href="' + U.esc(x[1]) + '">' + U.esc(x[2]) + '</a>' : '') + '</li>').join('') + '</ol></div>';
+  };
+
   /* ゲームの公式の必要スペック（最低・推奨）と、それに当たる今買えるパーツ */
   U.reqEquiv = function (r) {
     const g = PCR_DATA.gpu.filter(x => x.id !== 'none' && PCR_DATA.suggestable(x) && x.score >= r.gpu && (!r.vram || x.vram >= r.vram)).sort((a, b) => a.price - b.price)[0];
@@ -285,15 +290,15 @@ window.PCR_UI = (function () {
   // 「すべてのメニュー」（スマホの「メニュー」タブ）
   const MENU = [
     ['PCを買いたい', [['/wizard', '🧭', '用途と予算から診断'], ['/best', '🏆', '予算で最強構成'], ['/build', '🔧', '自作PCビルダー'], ['/bto', '🖥️', 'BTOパソコン選び']]],
-    ['比べる・調べる', [['/vs', '⚖️', 'グラボ・CPU・構成をくらべる'], ['/compare', '🖥️', 'BTOモデル比較'], ['/match', '🧩', 'CPUとグラボの相性表'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
+    ['比べる・調べる', [['/vs', '⚖️', 'グラボ・CPU・構成をくらべる'], ['/part', '📋', 'CPU・グラボの一覧と性能'], ['/compare', '🖥️', 'BTOモデル比較'], ['/match', '🧩', 'CPUとグラボの相性表'], ['/games', '🎮', 'ゲーム別fpsの目安'], ['/history', '📈', '価格の推移'], ['/guide', '📘', '読みもの・用語集'], ['/search', '🔍', 'サイト内検索']]],
     ['今のPC・サーバー', [['/mypc', '💻', '今のPCから診断'], ['/upgrade', '🔋', 'アップグレード診断'], ['/server', '🖥', 'ゲームサーバー用PC']]],
     ['そのほか', [['/saved', '⭐', '保存した構成'], ['/buy', '🛒', '購入ガイド・セール時期'], ['/about', 'ℹ️', 'このサイトについて']]]
   ];
   // スマホの下のタブ
   const TABS = [['/', '🏠', 'ホーム'], ['/wizard', '🧭', '診断'], ['/build', '🔧', '組む'], ['/vs', '⚖️', '比べる'], ['menu', '☰', 'メニュー']];
   // どのページが、どのメニューの仲間か
-  const GROUP = { '/compare': '/vs', '/match': '/vs', '/best': '/wizard', '/upgrade': '/mypc', '/games': '/vs', '/history': '/vs', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
-  const TABGROUP = { '/compare': '/vs', '/match': '/vs', '/bto': '/build', '/best': '/wizard', '/games': '/vs', '/history': '/vs' };
+  const GROUP = { '/part': '/vs', '/compare': '/vs', '/match': '/vs', '/best': '/wizard', '/upgrade': '/mypc', '/games': '/vs', '/history': '/vs', '/search': '/guide', '/tools': '', '/buy': '', '/about': '', '/saved': '' };
+  const TABGROUP = { '/part': '/vs', '/compare': '/vs', '/match': '/vs', '/bto': '/build', '/best': '/wizard', '/games': '/vs', '/history': '/vs' };
   function markNav(key) {
     const g = key in GROUP ? GROUP[key] : key;
     U.$$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.k === g));

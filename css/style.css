@@ -386,3 +386,25 @@ body.noscroll { overflow: hidden; }
 }
 .req-t td { vertical-align: top; width: 50%; line-height: 1.6; font-size: .88rem; }
 .req-t td b { display: inline-block; min-width: 3.5em; color: var(--muted); font-size: .8rem; }
+
+/* ---------- パーツのページ ---------- */
+.part-page h1 { margin-bottom: 4px; }
+.pp-bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 8px 0 4px; }
+.pp-bar i { display: block; height: 100%; background: var(--accent2); }
+.pp-bar.sm { height: 6px; width: 120px; display: inline-block; margin: 0 8px 0 0; vertical-align: middle; }
+.pl-t td { white-space: nowrap; }
+
+/* ---------- 次にやること・はじめての案内 ---------- */
+.next { border: 2px solid var(--accent-soft); }
+.next-l { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+.next-l li { padding-left: 4px; }
+.next-l li > span { margin-right: 8px; }
+.welcome { border: 2px solid var(--accent2); }
+.wl-steps { list-style: none; padding: 0; margin: 12px 0 6px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.wl-steps li { display: flex; flex-direction: column; gap: 6px; padding: 12px; background: var(--accent-soft); border-radius: var(--r-sm); }
+.wl-steps li span { font-size: .88rem; color: var(--muted); flex: 1; }
+.wl-steps .btn { align-self: flex-start; }
+@media (max-width: 720px) { .wl-steps { grid-template-columns: 1fr; } }
+.welcome { position: relative; }
+.welcome h2 { padding-right: 48px; font-size: 1.15rem; }
+#wl-x { position: absolute; top: 12px; right: 12px; }

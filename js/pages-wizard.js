@@ -102,6 +102,13 @@
     }
 
     let PLANS = [];
+    /* 選んだゲームのうち、公式の推奨スペックを満たす本数 */
+    function reqSummary(ev) {
+      const rs = ev.fpsRows.map(f => E.req(f.game, ev.B)).filter(r => r.lv !== 'none');
+      if (!rs.length) return '';
+      const rec = rs.filter(r => r.lv === 'rec' || r.noRec).length, low = rs.filter(r => r.lv === 'low').length;   // 推奨の発表がないゲームは、最低を満たせばOK
+      return '<div class="sp"><span class="badge ' + (low ? 'ng' : rec === rs.length ? 'ok' : 'warn') + '">' + (low ? '✕ 最低スペック未満のゲームあり' : rec === rs.length ? '✓ 選んだゲームはすべて公式の推奨スペック以上' : '△ 推奨スペックに届かないゲームあり（' + (rs.length - rec) + '本）') + '</span></div>';
+    }
     function resultHtml() {
       const game = W.purposes.indexOf('game') >= 0 && W.games.length > 0;
       const o = { budget: W.budget, game: game, games: game ? W.games : [], res: W.res, target: W.target, edit: W.purposes.indexOf('edit') >= 0 ? W.edit : 'none', stream: W.purposes.indexOf('stream') >= 0, size: W.size, quiet: W.quiet, os: W.os };
@@ -133,11 +140,19 @@
         const ev2 = E.evaluate(ids, c);
         h += '<div class="card"><div class="row" style="justify-content:space-between"><h3>' + gr.labels.join('・') + (gr.star ? ' ⭐' : '') + '</h3><span class="badge ' + verdict[0] + '">' + (game || o.edit !== 'none' ? verdict[1] : '用途に十分') + '</span></div>' +
           '<div class="total">' + yen(ev.total) + '</div><div class="muted">' + (gr.labels.length > 1 ? 'どの予算でも、この構成がちょうどよい見込みです' : p.desc) + '</div>' + (r.over ? '<div class="chk warn sp"><span class="mk">!</span><div>この予算では組めなかったため、条件を満たす中でいちばん安い構成です。</div></div>' : '') +
-          '<table class="t sp"><tbody>' + ['cpu', 'gpu', 'mem', 'ssd', 'mb', 'psu', 'case', 'cooler'].map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + esc(B[k].name) + '</td></tr>').join('') + '</tbody></table>' +
+          '<table class="t sp"><tbody>' + ['cpu', 'gpu', 'mem', 'ssd', 'mb', 'psu', 'case', 'cooler'].map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + ((k === 'cpu' || k === 'gpu') && B[k].id !== 'none' ? '<a href="#/part/' + k + '/' + B[k].id + '">' + esc(B[k].name) + '</a>' : esc(B[k].name)) + '</td></tr>').join('') + '</tbody></table>' +
+          reqSummary(ev2) +
           (ev2.fpsRows.length && game ? '<div class="sp">' + ev2.fpsRows.map(f => '<div class="row" style="justify-content:space-between;font-size:.9rem"><span>' + esc(f.game.name.replace(/ \(.*\)$/, '')) + '</span><b>約' + Math.round(f.fps) + 'fps</b></div>').join('') + '</div>' : '') +
           '<div class="row sp"><a class="btn sm" href="#/build?' + U.idsToQuery(ids) + '">自作で組む</a><a class="btn sub sm" href="#/bto?cpu=' + ids.cpu + '&gpu=' + ids.gpu + '&mem=' + ids.mem + '&ssd=' + ids.ssd + '&size=' + W.size + (W.quiet ? '&quiet=1' : '') + '">BTOで探す</a><button class="btn sub sm" data-save="' + i + '">保存</button></div></div>';
       });
-      h += '</div><p class="muted sp">「自作で組む」では細かくパーツを変えられます。「BTOで探す」では、ショップで選ぶ目安と、メーカー比較が見られます。</p>';
+      h += '</div>';
+      const best = (groups.find(g => g.star) || groups[0]).p.rec.ids;
+      h += U.nextSteps('次にやること', [
+        ['気に入ったプランを、パーツごとに細かく調整する', '#/build?' + U.idsToQuery(best), '自作で組む'],
+        ['同じくらいの中身のBTOパソコン（完成品）と値段を比べる', '#/compare', 'BTOモデル比較'],
+        ['おすすめのグラボを、ほかのグラボと並べて比べる', '#/vs?add=gpu:' + best.gpu, 'グラボをくらべる'],
+        ['各プランの「保存」で、あとで見返せるようにしておく', '', '']
+      ]);
       return h;
     }
   });
@@ -200,7 +215,7 @@
       const rows = D.gpu.filter(x => x.id !== 'none').sort((a, b) => b.score - a.score).map(gpu => {
         const B = { cpu: cpu, gpu: gpu, mem: D.by.mem[st.mem] };
         const rq = E.req(g, B), RL = E.REQ_LABEL[rq.lv];
-        return '<tr><td><b>' + esc(gpu.name) + '</b><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span>' + (rq.lv !== 'none' ? '<br><span class="badge ' + RL.c + '">' + RL.mk + ' ' + RL.t + '</span>' : '') + '</td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
+        return '<tr><td><a href="#/part/gpu/' + gpu.id + '"><b>' + esc(gpu.name) + '</b></a><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span>' + (rq.lv !== 'none' ? '<br><span class="badge ' + RL.c + '">' + RL.mk + ' ' + RL.t + '</span>' : '') + '</td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
       }).join('');
       $('#g-out', el).innerHTML = U.reqCard(g) + '<div class="card sp"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + ' ／ ' + E.QUALITY[st.quality].t + '画質</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
         '<p class="sp"><a href="fps/' + esc(g.id) + '.html">' + esc(g.name) + 'のおすすめグラボまとめ（目標fpsに届くいちばん安いグラボ）</a></p><p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';

@@ -176,6 +176,7 @@ const sm = read('sitemap.xml');
   if (!fs.existsSync(f)) E_(`sitemap.xml: ファイルがありません ${p}`);
 });
 D.games.forEach(g => { if (!fs.existsSync(path.join(root, 'fps', g.id + '.html'))) W_(`fps/${g.id}.html がありません（node tools/build-pages.mjs を実行してください）`); });
+['cpu', 'gpu'].forEach(k => D[k].filter(p => p.id !== 'none').forEach(p => { if (!fs.existsSync(path.join(root, 'parts', k + '-' + p.id + '.html'))) W_(`parts/${k}-${p.id}.html がありません（node tools/build-pages.mjs を実行してください）`); }));
 
 /* ---------- 8. 自動の提案がちゃんと組めるか ---------- */
 [120000, 200000, 300000, 500000].forEach(b => {

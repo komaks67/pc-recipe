@@ -14,6 +14,12 @@
       '<section class="hero home-hero"><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
       '<p class="lead tipify">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。パーツ同士が合うか、電源は足りるか、ゲームが何fpsで動くかも、その場でチェックできます。</p>' +
       '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる（約1分）</a></div></section>' +
+      (U.store.get('pcr.welcome.done', false) ? '' :
+        '<div class="card welcome sp2" id="welcome"><div class="row" style="justify-content:space-between"><h2 style="margin:0">はじめての方へ：3ステップで決まります</h2><button type="button" class="icon-btn" id="wl-x" aria-label="この案内を閉じる">✕</button></div>' +
+        '<ol class="wl-steps"><li><b>① 診断する</b><span>用途と予算を答えると、3つのプランが出ます（約1分）</span><a class="btn sm" href="#/wizard">診断する</a></li>' +
+        '<li><b>② 比べる</b><span>BTO（完成品）や、ほかのグラボ・CPUと並べて比べます</span><a class="btn sub sm" href="#/vs">比べる</a></li>' +
+        '<li><b>③ 組む・買う</b><span>パーツを細かく調整して、合うかどうか確認してから買います</span><a class="btn sub sm" href="#/build">組む</a></li></ol>' +
+        '<p class="muted">点線の下線がある言葉は、押す（カーソルを合わせる）と意味が出ます。</p></div>') +
       '<h2 class="sp2">何をしたいですか？</h2>' +
       '<div class="goals">' +
         goal('#/wizard', '🧭', 'おすすめのPCを知りたい', '用途と予算を答えるだけ。3つのプランを提案します', true) +
@@ -30,6 +36,7 @@
         [['guide/bto-or-diy.html', '🤔', 'BTOと自作、どっちがいい？'], ['guide/checklist.html', '✅', 'BTO購入チェックリスト'], ['guide/glossary.html', '📖', 'むずかしい言葉の用語集']]
           .map(a => '<a class="card flat card-link feat" href="' + a[0] + '"><span class="ico">' + a[1] + '</span><span><b>' + a[2] + '</b></span></a>').join('') + '</div>' +
       '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>価格は<b>' + esc(D.priceDate || CFG.dataDate) + '</b>時点の目安です。購入前に必ずお店で確認してください。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
+    const wx = $('#wl-x', el); if (wx) wx.onclick = () => { U.store.set('pcr.welcome.done', true); $('#welcome', el).remove(); };
   });
 
   U.route('/404', 'ページが見つかりません', function (el) {

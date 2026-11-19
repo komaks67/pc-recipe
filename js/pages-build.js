@@ -155,7 +155,7 @@
       '<p class="muted tipify no-print">パーツの「変更」を押すと、名前で探したり、安い順・性能順に並べたりできます。今の構成に合わないものは、最初から外して表示します。</p>' +
       '<div id="parts"></div><div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
       '<div class="sticky"><div data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">買う・保存へ →</button></div></div>' +
-      '<div data-step="3"><div id="buy"></div><div id="act"></div></div></div></div>';
+      '<div data-step="3"><div id="buy"></div><div id="act"></div><div id="nx"></div></div></div></div>';
 
     // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
     function goStep(n, scroll) {
@@ -184,6 +184,12 @@
       const ev = E.evaluate(ids, c);
       $('#sum', el).innerHTML = panelHtml(ev, ids, c, 'build');
       $('#buy', el).innerHTML = buyHtml(ev);
+      $('#nx', el).innerHTML = U.nextSteps('次にやること', [
+        ['同じくらいの中身のBTOパソコンと、値段を比べる', '#/compare', 'BTOモデル比較'],
+        ['このグラボとCPUを、ほかと並べて比べる', '#/vs?add=gpu:' + ids.gpu, 'くらべる'],
+        ['保存した構成どうしを並べて比べる', '#/vs?t=build', '構成をくらべる'],
+        ['買う時期の目安と、買う前のチェックリストを見る', '#/buy', '購入ガイド']
+      ]);
       U.sumBar(ev, () => goStep(2, true));
       U.tipify($('#sum', el));
       history.replaceState(null, '', '#/build?' + U.idsToQuery(ids));
