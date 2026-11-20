@@ -97,7 +97,7 @@
       if (st.tab === 'gpu') body.innerHTML = gpuView();
       else if (st.tab === 'cpu') body.innerHTML = cpuView();
       else body.innerHTML = buildView();
-      U.tipify(body);
+      U.cardFold(body, { skip: 1, key: 'vs' }); U.tipify(body);
     }
 
     /* ---------- グラボ ---------- */

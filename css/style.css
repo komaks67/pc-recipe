@@ -423,3 +423,140 @@ body.noscroll { overflow: hidden; }
 .pair-fix { margin-top: 10px; }
 .pair-fix ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .pair-fix .m-key { margin: 0 4px; }
+
+/* ============================================================
+   C案「白×緑・レシピ帳」
+   白い背景を線で区切るだけ。影・グラデーション・浮き上がりは使わない。
+   （上の設定をこの下で上書きしている）
+   ============================================================ */
+:root {
+  --bg: #ffffff; --bg2: #ffffff; --card: #ffffff; --ink: #1b1f1c; --muted: #646b66;
+  --line: #e4e9e5; --sep: #f1f5f2; --accent: #15803d; --accent2: #16a34a; --accent-ink: #ffffff; --accent-soft: #ecf8f0;
+  --ok: #15803d; --ok-bg: #e8f7ee; --warn: #8a5a00; --warn-bg: #fff6e0; --ng: #c62839; --ng-bg: #fdebee;
+  --shadow: none; --radius: 14px; --r-sm: 10px; --hero: #ffffff;
+}
+[data-theme="dark"] {
+  --bg: #0f1411; --bg2: #0f1411; --card: #151c18; --ink: #e8f0ea; --muted: #9aa8a0;
+  --line: #26302a; --sep: #19211c; --accent: #4ade80; --accent2: #22c55e; --accent-ink: #052e14; --accent-soft: #15291d;
+  --ok: #4ade80; --ok-bg: #12261a; --warn: #f5c451; --warn-bg: #2e260f; --ng: #ff6b81; --ng-bg: #33171d;
+  --shadow: none; --hero: #0f1411;
+}
+body { line-height: 1.7; }
+main { animation: none; }
+h1 { font-size: clamp(1.5rem, 4.2vw, 2.1rem); font-weight: 900; }
+h2 { font-size: 1.2rem; font-weight: 800; }
+.hd { border-bottom: 1px solid var(--line); }
+.logo i { border-radius: 50%; background: var(--accent2); }
+.nav a { border-radius: 8px; }
+.nav a.on { background: none; color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); border-radius: 0; }
+.prbar { background: var(--sep); border: 0; }
+
+/* カード：影なし・細い線だけ */
+.card { box-shadow: none; border: 1px solid var(--line); border-radius: var(--radius); }
+.card.flat { background: var(--sep); border-color: transparent; }
+.hero { background: none; border: 0; border-radius: 0; padding: 8px 0 22px; border-bottom: 8px solid var(--sep); margin-bottom: 8px; }
+.hero::before, .hero::after { display: none; }
+.eyebrow { display: block; font-size: .75rem; font-weight: 800; letter-spacing: .1em; color: var(--accent2); margin-bottom: 4px; }
+
+/* ボタン：角を少し丸めた四角、影なし */
+.btn { border-radius: 10px; box-shadow: none; }
+.btn:hover { transform: none; filter: brightness(1.08); }
+.btn.sub { border: 1.5px solid var(--line); }
+.chip span, .pk-chip { border-radius: 10px; }
+.goal { box-shadow: none; border-radius: var(--radius); }
+.goal:hover { transform: none; }
+.goal .g-ico { border-radius: 50%; }
+.steps button { border-radius: 10px; }
+.mode:hover { transform: none; box-shadow: none; }
+.bar, .meter, .pp-bar, .pk-pf, .prog { background: var(--sep); }
+
+/* ---------- 要点＋開く（U.fold） ---------- */
+.folds { border-top: 1px solid var(--line); }
+.card > .folds:first-child { border-top: 0; }
+.fold { border-bottom: 1px solid var(--line); }
+.fold > summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 14px 4px; min-height: 64px; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary:hover .fd-t { color: var(--accent); }
+.fd-n { width: 28px; height: 28px; border-radius: 50%; background: var(--accent2); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .82rem; flex: none; }
+.fd-n.warn { background: #d99a00; } .fd-n.ng { background: var(--ng); }
+.fd-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.45; }
+.fd-t { font-weight: 800; font-size: 1rem; }
+.fd-s { font-size: .84rem; color: var(--muted); }
+.fd-go { flex: none; font-size: .84rem; font-weight: 800; color: var(--accent); }
+.fd-go::after { content: "見る"; }
+.fold[open] > summary .fd-go::after { content: "閉じる"; }
+.fold-b { padding: 0 4px 18px 44px; }
+@media (max-width: 720px) { .fold-b { padding-left: 4px; } }
+.fold-b > *:last-child { margin-bottom: 0; }
+
+/* ---------- 結論（大きな数字） ---------- */
+.sum-top { padding-bottom: 14px; }
+.sum-top .total { font-size: 2.4rem; font-weight: 900; line-height: 1.15; }
+.kpis { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 12px; }
+.kpis div { display: flex; flex-direction: column; line-height: 1.3; }
+.kpis b { font-size: 1.35rem; font-weight: 900; }
+.kpis span { font-size: .78rem; color: var(--muted); }
+
+/* 画面下の合計バー：白・線で区切る */
+@media (max-width: 720px) {
+  .sumbar:not([hidden]) { left: 0; right: 0; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); border-radius: 0; background: var(--bg2); color: var(--ink); border-top: 1px solid var(--line); box-shadow: none; padding: 8px 14px; }
+  [data-theme="dark"] .sumbar:not([hidden]) { background: var(--bg2); border: 0; border-top: 1px solid var(--line); }
+  .sb-ok { color: var(--ok); } .sb-ng { color: var(--ng); }
+  .sb-sub { color: var(--muted); }
+  .sumbar .btn { background: var(--accent); color: var(--accent-ink); }
+  body.has-sumbar { padding-bottom: calc(var(--tabbar-h) + 64px + env(safe-area-inset-bottom)); }
+  .tabbar { box-shadow: none; }
+  .card { padding: 16px 14px; }
+}
+
+/* 次にやること：リンクの一覧 */
+.next { border: 1px solid var(--line); }
+.nx-l { display: grid; }
+.nx-r { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 2px; border-top: 1px solid var(--line); color: var(--ink); margin: 0; }
+.nx-r:hover { text-decoration: none; } .nx-r:hover b { text-decoration: underline; }
+.nx-r b { color: var(--accent); font-size: .88rem; white-space: nowrap; flex: none; }
+.nx-r span { font-size: .92rem; }
+
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kpis b { font-size: 1.2rem; white-space: nowrap; }
+.card .sum-top { padding-bottom: 0; }
+#ctl .ctl { background: var(--sep); }
+
+/* パーツのページ */
+.pp-top { padding-bottom: 18px; border-bottom: 8px solid var(--sep); }
+.pp-top h1 { margin: 0 0 6px; }
+.pp-top .kpis { margin-top: 14px; }
+
+/* ホームなどの1行ずつの一覧 */
+.hl { border-top: 1px solid var(--line); }
+.hl-r { display: flex; align-items: center; gap: 14px; padding: 14px 4px; min-height: 64px; border-bottom: 1px solid var(--line); color: var(--ink); }
+.hl-r:hover { text-decoration: none; } .hl-r:hover b { color: var(--accent); }
+.hl-i { font-size: 1.35rem; width: 32px; text-align: center; flex: none; }
+.hl-i .fd-n { margin: 0 auto; }
+.hl-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.45; }
+.hl-tx b { font-size: 1rem; } .hl-tx span { font-size: .84rem; color: var(--muted); }
+.hl-go { color: var(--accent); font-size: 1.4rem; flex: none; }
+.welcome { border: 0; position: relative; }
+.welcome h2 { padding-right: 52px; }
+#wl-x { top: -4px; right: 0; }
+.home-hero .lead { margin-bottom: 0; }
+/* 診断の結果：プランの要点 */
+.pl-key { display: grid; gap: 4px; margin: 10px 0; font-size: .92rem; }
+.pl-key > div { display: flex; gap: 10px; align-items: baseline; }
+.pl-key .muted { width: 3.4em; flex: none; font-size: .8rem; }
+
+/* ゲーム別fps：数字だけ。色の濃さで快適さ */
+.g-t tr.more { display: none; } .g-t.all tr.more { display: table-row; }
+.g-t td.fpsn { white-space: nowrap; font-size: 1.05rem; }
+.fv { display: inline-block; min-width: 2.6em; text-align: center; border-radius: 6px; padding: 1px 4px; }
+.fv.a { background: #14532d; color: #fff; } .fv.b { background: var(--ok); color: #fff; } .fv.c { background: #c9efd5; color: #0c3b1b; }
+.fv.d { background: var(--warn-bg); color: var(--warn); } .fv.e, .fv.f { background: var(--ng-bg); color: var(--ng); }
+.fv-key { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .8rem; }
+
+.bto-c h3 { margin: 0 0 4px; font-size: 1rem; }
+.bto-c .total { font-size: 1.7rem; }
+.bto-sp { font-size: .86rem; color: var(--muted); }
+.card .folds { margin-top: 12px; }
+.folds + .folds { border-top: 0; }
+.pk-btn-c { border-radius: 8px; }
+.pk-btn { border-radius: var(--r-sm); }

@@ -243,7 +243,7 @@
         h += '<div class="card sp"><h3>電源を替えるなら</h3><p>今のCPU・GPUと、上位のGPU候補までを考えると、<b>' + topGpu + 'W以上</b>がおすすめです（今 ' + ST.psuW + 'W）。</p>' + (ps.length ? '<div class="tbl-wrap"><table class="t"><thead><tr><th>候補</th><th>費用の目安</th></tr></thead><tbody>' + ps.map(p => '<tr><td><b>' + esc(p.name) + '</b><br><span class="neg" style="font-size:.82rem">! ケースの電源の規格（ATXかSFX）を確認</span></td><td>' + yen(p.price) + '</td></tr>').join('') + '</tbody></table></div>' : '') + '</div>';
       }
       h += '<p class="muted sp">価格・fpsは目安です。ケースの大きさ、マザーボードの規格、電源のケーブルは、購入前に必ず製品ページで確認してください。</p>';
-      out.innerHTML = h; U.tipify(out);
+      out.innerHTML = h; U.cardFold(out, { skip: 1, key: 'mypc' }); U.tipify(out);
     }
     setForm(); draw();
   }, '/tools');

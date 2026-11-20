@@ -41,6 +41,56 @@ window.PCR_UI = (function () {
     return words.every(w => k.indexOf(w) >= 0) || k.indexOf(words.join('')) >= 0;
   };
 
+  /* ---------- 要点＋開く（番号・見出し・ひとこと → 押すと中身） ----------
+     n: 番号や記号 / t: 見出し / s: ひとこと（HTML可） / body: 中身
+     o: { lv: 'warn'|'ng'（番号の色）, key: 開いた状態を覚える名前, open: 最初から開く }
+     画面を描き直しても、開いた・閉じた状態はそのまま残る */
+  const FOLD_OPEN = {};
+  U.fold = function (n, t, s, body, o) {
+    o = o || {};
+    const key = o.key || t, op = key in FOLD_OPEN ? FOLD_OPEN[key] : !!o.open;
+    return '<details class="fold" data-fk="' + U.esc(key) + '"' + (op ? ' open' : '') + '><summary><span class="fd-n ' + (o.lv || '') + '">' + n + '</span><span class="fd-tx"><span class="fd-t">' + t + '</span>' + (s ? '<span class="fd-s">' + s + '</span>' : '') + '</span><span class="fd-go" aria-hidden="true"></span></summary><div class="fold-b">' + body + '</div></details>';
+  };
+  /* すでにある文章を、見出し(h2)ごとに「開く」形にする（長い説明のページ用） */
+  U.h2fold = function (root, o) {
+    o = o || {};
+    const hs = Array.from(root.children).filter(x => x.tagName === 'H2');
+    if (!hs.length) return;
+    const wrap = document.createElement('div'); wrap.className = 'folds';
+    hs[0].before(wrap);
+    hs.forEach((h, i) => {
+      const body = document.createElement('div'); body.className = 'fold-b';
+      let n = h.nextElementSibling;
+      while (n && n.tagName !== 'H2') { const nx = n.nextElementSibling; body.appendChild(n); n = nx; }
+      const p = body.querySelector('p');
+      const s = o.summary === false || !p ? '' : p.textContent.replace(/\s+/g, ' ').slice(0, 34) + (p.textContent.length > 34 ? '…' : '');
+      const tmp = document.createElement('div');
+      tmp.innerHTML = U.fold(i + 1, U.esc(h.textContent), U.esc(s), '', { key: (o.key || 'h2') + i, open: o.openFirst && i === 0 });
+      const d = tmp.firstChild; if (h.id) d.id = h.id;
+      d.querySelector('.fold-b').replaceWith(body);
+      h.remove(); wrap.appendChild(d);
+    });
+  };
+  /* 「見出し(h2/h3)で始まるカード」を「開く」形にする。o.skip: 先頭から何枚をそのまま残すか（結論のカード用） */
+  U.cardFold = function (root, o) {
+    o = o || {};
+    if (!root) return;
+    const cards = Array.from(root.querySelectorAll('.card')).filter(c => !c.closest('.fold') && c.firstElementChild && /^H[23]$/.test(c.firstElementChild.tagName));
+    cards.slice(o.skip || 0).forEach((c, i) => {
+      const h = c.firstElementChild, t = h.textContent.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, '');
+      h.remove();
+      const p = c.querySelector('p');
+      const s = (o.summary && o.summary[i]) || (p ? p.textContent.replace(/\s+/g, ' ').slice(0, 34) + (p.textContent.length > 34 ? '…' : '') : '');
+      const tmp = document.createElement('div');
+      tmp.innerHTML = U.folds([U.fold((o.n || 1) + i, U.esc(t), U.esc(s), '', { key: (o.key || 'cf') + ':' + t })]);
+      const body = tmp.querySelector('.fold-b');
+      while (c.firstChild) body.appendChild(c.firstChild);
+      c.replaceWith(tmp.firstChild);
+    });
+  };
+  U.folds = function (list) { return '<div class="folds">' + list.filter(Boolean).join('') + '</div>'; };
+  document.addEventListener('toggle', e => { const d = e.target; if (d && d.classList && d.classList.contains('fold') && d.dataset.fk) FOLD_OPEN[d.dataset.fk] = d.open; }, true);
+
   /* 相性（◎○△✕）の小さい印。j は E.pair / E.judge の結果 */
   U.pairTag = function (j, sm) { return j ? '<span class="m-key ' + j.c + (sm ? ' sm' : '') + '" title="CPUとグラボの相性: ' + U.esc(j.t) + '"><b>' + j.mk + '</b>' + U.esc(j.t) + '</span>' : ''; };
   /* 判定の条件（どのゲーム・解像度・画質で見たか） */
@@ -48,7 +98,7 @@ window.PCR_UI = (function () {
 
   /* 「次にやること」のカード。items: [[番号の後の文, リンク, ボタンの文字], ...] */
   U.nextSteps = function (title, items) {
-    return '<div class="card next sp no-print"><h3>👉 ' + U.esc(title) + '</h3><ol class="next-l">' + items.map(x => '<li><span>' + x[0] + '</span>' + (x[1] ? '<a class="btn sub sm" href="' + U.esc(x[1]) + '">' + U.esc(x[2]) + '</a>' : '') + '</li>').join('') + '</ol></div>';
+    return '<div class="card next sp no-print"><h3>' + U.esc(title) + '</h3><div class="nx-l">' + items.map(x => x[1] ? '<a class="nx-r" href="' + U.esc(x[1]) + '"><span>' + x[0] + '</span><b>' + U.esc(x[2]) + ' ›</b></a>' : '<p class="muted nx-r">' + x[0] + '</p>').join('') + '</div></div>';
   };
 
   /* ゲームの公式の必要スペック（最低・推奨）と、それに当たる今買えるパーツ */
@@ -346,7 +396,7 @@ window.PCR_UI = (function () {
     const f = ev.fpsRows && ev.fpsRows[0];
     bar.innerHTML = '<div class="sb-l"><div class="sb-tot">' + U.yen(ev.total) + '</div><div class="sb-sub">' +
       (ng ? '<span class="sb-ng">✕ 要修正 ' + ng + '</span>' : '<span class="sb-ok">✓ 互換性OK</span>') + (wr ? ' ・ 注意 ' + wr : '') +
-      (ev.pair ? ' ・ 相性' + ev.pair.mk : '') + (f ? ' ・ ' + U.esc(f.game.name.replace(/ \(.*\)$/, '')) + ' 約' + Math.round(f.fps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
+      (ev.pair ? ' ・ 相性' + ev.pair.mk : '') + (f ? ' ・ 平均 約' + Math.round(ev.avgFps) + 'fps' : '') + '</div></div><button class="btn sm" type="button">結果を見る</button>';
     bar.querySelector('button').onclick = onOpen || (() => { const t = U.$('#sum'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     bar.hidden = false; document.body.classList.add('has-sumbar');
   };

@@ -112,13 +112,14 @@ window.PCR_PARTINFO = (function () {
     const list = (k === 'gpu' ? PAIR_CPU : PAIR_GPU).map(id => D.by[k === 'gpu' ? 'cpu' : 'gpu'][id]).filter(Boolean)
       .map(x => ({ p: x, j: k === 'gpu' ? E.pair(x, p) : E.pair(p, x) })).filter(x => x.j);
     const ok = pt.best.slice(0, 4);
-    let h = '<div class="card sp"><h2>' + (k === 'gpu' ? 'CPUとの相性' : 'グラボとの相性') + '</h2>';
+    let h = '';
     if (pt.limit) h += '<p>' + (k === 'gpu' ? '<b>' + esc(pt.limit.name) + '</b>（ゲーム性能 ' + pt.limit.gs + '）くらい以上のCPUなら、このグラボの力を出し切れます。' : 'このCPUなら、<b>' + esc(pt.limit.name) + '</b>（性能 ' + pt.limit.score + '）くらいまでのグラボの力を出し切れます。それより上のグラボは、CPUが先に限界になりやすくなります。') + '</p>';
     if (k === 'gpu' && ok.length) h += '<p class="muted">◎か○になる、いちばん安いCPU: ' + ok.map(x => '<a href="' + link('cpu', x.p.id) + '">' + esc(x.p.name) + '</a>（' + yen(x.p.price) + '）').join('、') + '</p>';
     h += '<div class="tbl-wrap"><table class="t"><thead><tr><th>' + (k === 'gpu' ? 'CPU' : 'グラボ') + '</th><th>相性</th><th>価格</th></tr></thead><tbody>' +
       list.map(x => '<tr><td><a href="' + link(k === 'gpu' ? 'cpu' : 'gpu', x.p.id) + '">' + esc(x.p.name) + '</a></td><td>' + tag(x.j) + '</td><td>' + yen(x.p.price) + '</td></tr>').join('') + '</tbody></table></div>' +
-      '<p class="muted">◎ ぴったり ／ ○ 問題なし（グラボの性能でfpsが決まる）／ △ CPUやや不足 ／ ✕ CPU不足。WQHD・高画質・代表的なゲーム' + E.PAIR_GAMES.length + '本で判定した目安です。<a href="' + base + '#/match">相性表でゲーム・解像度を変えて見る</a></p></div>';
-    return h;
+      '<p class="muted">◎ ぴったり ／ ○ 問題なし（グラボの性能でfpsが決まる）／ △ CPUやや不足 ／ ✕ CPU不足。WQHD・高画質・代表的なゲーム' + E.PAIR_GAMES.length + '本で判定した目安です。<a href="' + base + '#/match">相性表でゲーム・解像度を変えて見る</a></p>';
+    const short = pt.limit ? (k === 'gpu' ? esc(pt.limit.name) + ' くらい以上のCPUなら◎○' : esc(pt.limit.name) + ' くらいまでのグラボなら◎○') : '主なパーツとの相性';
+    return { body: h, s: short };
   }
 
   function html(k, p, opt) {
@@ -131,25 +132,39 @@ window.PCR_PARTINFO = (function () {
     const H = (window.PCR_HISTORY || {})[k] && window.PCR_HISTORY[k][p.id];
     const chk = (D.priceChecked && D.priceChecked[k] && D.priceChecked[k][p.id]) || D.priceDate || CFG.dataDate;
     const kind = k === 'cpu' ? 'CPU' : 'グラフィックボード';
+    const pf = Math.round(perf(k, p) / perf(k, rk.top) * 100);
+    const link = (kk, id) => opt.static ? kk + '-' + esc(id) + '.html' : base + '#/part/' + kk + '/' + esc(id);
+    const ps = pairSec(k, p, link, base);
+    const gf = goodFor(k, p);
+    const spec = specRows(k, p);
+    // ① 結論：名前・価格・順位・ボタン
     let h = '<article class="part-page">' +
-      '<p class="muted">' + kind + '</p><h1>' + esc(p.name) + '</h1><p>' + badges(p) + '</p>' +
-      '<div class="grid g2 sp"><div class="card"><div class="muted">価格の目安' + (p.used ? '（中古）' : '') + '</div><div class="total">' + yen(p.price) + '</div><div class="muted">' + (p.priceUnverified ? '価格を確認できていません' : '確認日 ' + esc(chk)) + '</div>' +
-      (H && H.length > 1 ? '<div class="muted">記録: ' + H.length + '回（いちばん安かったとき ' + yen(Math.min(...H.map(x => x[1]))) + '）</div>' : '') +
-      '<div class="row sp">' + (opt.shopLinks || '') + '</div></div>' +
-      '<div class="card"><div class="muted">' + (k === 'cpu' ? 'ゲーム性能' : '性能') + 'の順位（新品で買える ' + rk.n + ' 個の中で）</div><div class="total">' + rk.r + '位</div>' +
-      '<div class="pp-bar"><i style="width:' + Math.round(perf(k, p) / perf(k, rk.top) * 100) + '%"></i></div><div class="muted">いちばん速い ' + esc(rk.top.name) + ' を100としたとき <b>' + Math.round(perf(k, p) / perf(k, rk.top) * 100) + '</b></div>' +
-      '<div class="row sp"><a class="btn sm" href="' + base + '#/build?' + q + '">このパーツで組む</a><a class="btn sub sm" href="' + base + '#/vs?add=' + k + ':' + esc(p.id) + '">くらべるに追加</a></div></div></div>' +
-      '<div class="card sp"><h2>向いている使い方</h2><ul>' + goodFor(k, p).map(x => '<li>' + x + '</li>').join('') + '</ul><p class="muted">このサイトの計算モデルによる目安です。' + (k === 'gpu' ? 'CPUは Ryzen 7 9800X3D、' : 'グラボは RTX 5070 Ti、') + 'メモリ32GBで計算しています。</p></div>' +
-      '<div class="card sp"><h2>仕様</h2><table class="t"><tbody>' + specRows(k, p).map(r => '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</tbody></table>' +
-      '<p class="muted">仕様はメーカーの公表値、性能の目安は Tom\'s Hardware の階層表などの公開ベンチマークに合わせた相対値です。購入前にメーカーの製品ページで確認してください。</p></div>' +
-      '<div class="card sp"><h2>ライバルとの比較</h2><div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>価格</th><th>' + (k === 'cpu' ? 'ゲーム性能' : '性能') + '</th><th>性能÷価格</th></tr></thead><tbody>' +
-      [p].concat(rv).map(x => { const v = perf(k, x) / x.price * 10000; return '<tr' + (x === p ? ' class="vs-best"' : '') + '><td>' + (x === p ? '<b>' + esc(x.name) + '</b>（このパーツ）' : '<a href="' + (opt.static ? k + '-' + esc(x.id) + '.html' : base + '#/part/' + k + '/' + esc(x.id)) + '">' + esc(x.name) + '</a>') + '</td><td>' + yen(x.price) + '</td><td>' + perf(k, x) + '</td><td>' + v.toFixed(1) + '</td></tr>'; }).join('') +
-      '</tbody></table></div><p class="muted">「性能÷価格」は、1万円あたりの性能です。大きいほどお得です。</p></div>' +
-      pairSec(k, p, (kk, id) => opt.static ? kk + '-' + esc(id) + '.html' : base + '#/part/' + kk + '/' + esc(id), base) +
-      '<div class="card sp"><h2>ゲームごとのfpsの目安（高画質）</h2>' + fpsTable(k, p) + '<p class="muted">* はCPUの速さで頭打ちになっているゲームです。公式スペックは、Steamなどの公式発表と比べた判定です。</p></div>' +
-      '<div class="card sp"><h2>一緒に使うパーツの目安</h2>' + pairing(k, p).replace(/\{BASE\}/g, base) + '</div>' +
-      '</article>';
+      '<div class="pp-top"><span class="eyebrow">' + kind + '</span><h1>' + esc(p.name) + '</h1><p style="margin:0">' + badges(p) + '</p>' +
+      '<div class="kpis"><div><b>' + yen(p.price) + '</b><span>価格の目安' + (p.used ? '（中古）' : '') + '</span></div><div><b>' + rk.r + '位</b><span>' + (k === 'cpu' ? 'ゲーム性能' : '性能') + '（' + rk.n + '個中）</span></div><div><b>' + pf + '</b><span>最速＝100</span></div></div>' +
+      '<div class="pp-bar"><i style="width:' + pf + '%"></i></div>' +
+      '<p class="muted" style="font-size:.78rem;margin:4px 0 0">' + (p.priceUnverified ? '価格を確認できていません' : '価格の確認日 ' + esc(chk)) + (H && H.length > 1 ? '・いちばん安かったとき ' + yen(Math.min(...H.map(x => x[1]))) : '') + '・最速は ' + esc(rk.top.name) + '</p>' +
+      '<div class="row sp"><a class="btn" href="' + base + '#/build?' + q + '">このパーツで組む</a><a class="btn sub" href="' + base + '#/vs?add=' + k + ':' + esc(p.id) + '">くらべるに追加</a></div>' +
+      (opt.shopLinks ? '<div class="row sp">' + opt.shopLinks + '</div>' : '') + '</div>';
+    // ② くわしくは開いて見る
+    let n = 0;
+    const F = (t, sm, body, o) => fold(++n, t, sm, body, o);
+    h += '<div class="folds sp">' +
+      F('向いている使い方', k === 'gpu' ? '解像度ごとの目安・VRAM' : 'ゲーム・配信・動画編集の向き不向き', '<ul>' + gf.map(x => '<li>' + x + '</li>').join('') + '</ul><p class="muted">このサイトの計算モデルによる目安です。' + (k === 'gpu' ? 'CPUは Ryzen 7 9800X3D、' : 'グラボは RTX 5070 Ti、') + 'メモリ32GBで計算しています。</p>', { open: true }) +
+      (ps ? F(k === 'gpu' ? 'CPUとの相性' : 'グラボとの相性', ps.s, ps.body) : '') +
+      F('ゲームごとのfps', D.games.length + '本・フルHD／WQHD／4K・高画質', fpsTable(k, p) + '<p class="muted">* はCPUの速さで頭打ちになっているゲームです。公式スペックは、Steamなどの公式発表と比べた判定です。</p>') +
+      F('ライバルとの比較', rv.slice(0, 3).map(x => esc(x.name)).join('・'), '<div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>価格</th><th>' + (k === 'cpu' ? 'ゲーム性能' : '性能') + '</th><th>1万円あたり</th></tr></thead><tbody>' +
+        [p].concat(rv).map(x => { const v = perf(k, x) / x.price * 10000; return '<tr' + (x === p ? ' class="vs-best"' : '') + '><td>' + (x === p ? '<b>' + esc(x.name) + '</b>（このパーツ）' : '<a href="' + link(k, x.id) + '">' + esc(x.name) + '</a>') + '</td><td>' + yen(x.price) + '</td><td>' + perf(k, x) + '</td><td>' + v.toFixed(1) + '</td></tr>'; }).join('') +
+        '</tbody></table></div><p class="muted">「1万円あたり」は、1万円あたりの性能です。大きいほどお得です。</p>') +
+      F('仕様', spec.slice(0, 3).map(r => esc(r[0]) + ' ' + esc(r[1])).join('・'), '<table class="t"><tbody>' + spec.map(r => '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</tbody></table>' +
+        '<p class="muted">仕様はメーカーの公表値、性能の目安は Tom\'s Hardware の階層表などの公開ベンチマークに合わせた相対値です。購入前にメーカーの製品ページで確認してください。</p>') +
+      F('一緒に使うパーツの目安', k === 'cpu' ? 'マザーボード・メモリ・CPUクーラー' : '電源・ケース', pairing(k, p).replace(/\{BASE\}/g, base)) +
+      '</div></article>';
     return h;
+  }
+  /* 要点＋開く（ui.js の U.fold と同じ形。静的ページでも使うので、ここにも置く） */
+  function fold(n, t, sm, body, o) {
+    o = o || {};
+    return '<details class="fold"' + (o.open ? ' open' : '') + '><summary><span class="fd-n">' + n + '</span><span class="fd-tx"><span class="fd-t">' + t + '</span>' + (sm ? '<span class="fd-s">' + sm + '</span>' : '') + '</span><span class="fd-go" aria-hidden="true"></span></summary><div class="fold-b">' + body + '</div></details>';
   }
   return { html: html, rank: rank, badges: badges };
 })();
