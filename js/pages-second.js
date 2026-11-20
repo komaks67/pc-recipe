@@ -59,7 +59,7 @@
           '<p class="muted sp">足したお金に対して、fpsがあまり増えない段階は「お得感が薄い」目安です。</p>';
       }
       h += '</div>';
-      $('#out', el).innerHTML = h;
+      $('#out', el).innerHTML = h; U.cardFold($('#out', el), { skip: 0, key: 'best' });
       const sv = $('#sv', el); if (sv) sv.onclick = () => { const r = U.saveBuild('最強構成 ' + yen(BEST.budget), main.ids, 'build'); U.toast(r.ok ? '保存しました' : r.msg); };
     }
     $('#bs', el).oninput = e => { BEST.budget = +e.target.value; draw(); };
@@ -90,13 +90,13 @@
         '<div><label class="f">上限金額（円）</label><input type="number" id="cx" min="0" step="10000" placeholder="例 300000"></div></div>' +
         '<div class="row sp"><label class="f" style="margin:0">並び順</label><select id="cs" style="width:auto"><option value="price">安い順</option><option value="perf">性能が高い順</option><option value="value">コスパ順（性能÷価格）</option></select></div></div><div id="list" class="sp"></div>';
     }
-    h += '<div class="card sp tipify"><h2>BTOと自作のちがい</h2><div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>BTO（完成品）</th><th>自作</th></tr></thead><tbody>' +
+    h += '<div class="sp2 tipify">' + U.folds([U.fold('?', 'BTOと自作のちがい', '手間・保証・値段・向いている人', '<div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>BTO（完成品）</th><th>自作</th></tr></thead><tbody>' +
       '<tr><th>手間</th><td>注文して待つだけ</td><td>パーツ選びと組み立てが必要</td></tr>' +
       '<tr><th>保証</th><td>まとめて1か所に相談できる</td><td>パーツごとに別々</td></tr>' +
       '<tr><th>値段</th><td>組み立て代込み。セールで安くなることも</td><td>選び方しだいで安くできるが、OSなども別買い</td></tr>' +
       '<tr><th>選べる自由度</th><td>メーカーが用意した範囲</td><td>ほぼ自由</td></tr>' +
       '<tr><th>向いている人</th><td>初めて・時間がない・サポート重視</td><td>こだわりたい・安くしたい・組み立てが楽しみ</td></tr></tbody></table></div>' +
-      '<p class="muted sp">迷ったら、まず <a href="#/guide/bto-or-diy">BTOか自作か</a> の読みものをどうぞ。</p></div>';
+      '<p class="muted sp">迷ったら、まず <a href="#/guide/bto-or-diy">BTOか自作か</a> の読みものをどうぞ。</p>', { key: 'cm-diff' })]) + '</div>';
     el.innerHTML = h;
     if (!models.length) return;
 
@@ -115,11 +115,14 @@
         '<p class="muted"><b>' + total + '件</b>見つかりました' + (total > info.length ? '（' + info.length + '件を表示中）' : '') + '</p>' +
         '<div class="grid g2">' + info.map(x => {
           const m = x.m, d = m.price - x.diy;
-          return '<div class="card"><div class="muted">' + esc(MAKER_NAME(m.maker)) + '</div><h3>' + esc(m.name) + '</h3><div class="total">' + yen(m.price) + '</div>' +
-            '<table class="t sp"><tbody><tr><th>CPU</th><td>' + esc(D.by.cpu[m.cpu].name) + '</td></tr><tr><th>GPU</th><td>' + esc(D.by.gpu[m.gpu].name) + '</td></tr>' + (m.gpu !== 'none' ? '<tr><th>相性</th><td>' + U.pairTag(E.pair(D.by.cpu[m.cpu], D.by.gpu[m.gpu]), 1) + '</td></tr>' : '') + '<tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + (m.ssdTB < 1 ? Math.round(m.ssdTB * 1000) + 'GB' : m.ssdTB + 'TB') + '</td></tr>' +
-            (m.warranty ? '<tr><th>保証</th><td>' + m.warranty + '年</td></tr>' : '') + (m.days ? '<tr><th>納期の目安</th><td>' + m.days + '日</td></tr>' : '') + '</tbody></table>' +
-            '<p class="sp">同じ中身で自作すると 約' + yen(x.diy) + '。BTOは<b>' + (d >= 0 ? '約' + yen(d) + ' 高い' : '約' + yen(-d) + ' 安い') + '</b>（組み立て・保証・サポート込みの価格）。</p>' +
-            '<div class="muted">価格確認日: ' + esc(m.updated) + '</div>' +
+          const cpu = D.by.cpu[m.cpu], gpu = D.by.gpu[m.gpu];
+          // 要点：メーカー・名前・価格・中身・相性・自作との差。細かい仕様は開いて見る
+          return '<div class="card bto-c"><span class="eyebrow">' + esc(MAKER_NAME(m.maker)) + '</span><h3>' + esc(m.name) + '</h3><div class="total">' + yen(m.price) + '</div>' +
+            '<div class="bto-sp">' + esc(cpu.name) + ' ／ ' + esc(gpu.name) + ' ／ ' + m.memGB + 'GB</div>' +
+            '<div class="row" style="gap:6px;margin-top:6px">' + (m.gpu !== 'none' ? U.pairTag(E.pair(cpu, gpu), 1) : '') + '<span class="badge ' + (d >= 0 ? '' : 'ok') + '">自作より' + (d >= 0 ? '約' + yen(d) + '高い' : '約' + yen(-d) + '安い') + '</span></div>' +
+            U.folds([U.fold('≡', 'くわしい中身', 'SSD・保証・納期・自作した場合', '<table class="t"><tbody><tr><th>CPU</th><td>' + esc(cpu.name) + '</td></tr><tr><th>グラボ</th><td>' + esc(gpu.name) + '</td></tr><tr><th>メモリ/SSD</th><td>' + m.memGB + 'GB / ' + (m.ssdTB < 1 ? Math.round(m.ssdTB * 1000) + 'GB' : m.ssdTB + 'TB') + '</td></tr>' +
+              (m.warranty ? '<tr><th>保証</th><td>' + m.warranty + '年</td></tr>' : '') + (m.days ? '<tr><th>納期の目安</th><td>' + m.days + '日</td></tr>' : '') + '</tbody></table>' +
+              '<p class="sp">同じ中身で自作すると 約' + yen(x.diy) + '。BTOの価格は、組み立て・保証・サポート込みです。</p><p class="muted">価格確認日: ' + esc(m.updated) + '</p>', { key: 'cm-' + m.maker + m.name })]) +
             '<div class="row sp"><span class="pr">PR</span>' + (U.makerDeepLink(m.maker, m.url)
               // 機種ページへの広告リンクが使えるメーカー
               ? '<a class="btn sm" target="_blank" rel="sponsored noopener" href="' + esc(U.makerDeepLink(m.maker, m.url)) + '">商品ページへ</a>' + U.makerDeepImp(m.maker)
@@ -159,15 +162,16 @@
   U.route('/buy', '購入ガイド', function (el) {
     const st = U.store.get('pcr.check.v1', {});
     el.innerHTML = '<h1>購入ガイド</h1><p class="muted tipify">セールの時期の目安と、買う前・買うとき・届いたあとのチェックリストです。チェックはこの端末に保存されます。</p>' +
-      '<div class="card"><h2>セール時期の目安（例年の傾向）</h2><div class="tbl-wrap"><table class="t"><tbody>' + SALES.map(s => '<tr><th>' + s[0] + '</th><td><b>' + s[1] + '</b><div class="muted">' + s[2] + '</div></td></tr>').join('') + '</tbody></table></div>' +
-      '<p class="muted sp">実際の開催日や内容は毎年変わります。各社の公式ページで必ず確認してください。「今が買い時か」は <a href="#/guide/timing">買い時の読みもの</a> も参考にどうぞ。</p></div>' +
+      U.folds([U.fold('📅', 'セール時期の目安（例年の傾向）', '初売り・プライムデー・ブラックフライデーなど', '<div class="tbl-wrap"><table class="t"><tbody>' + SALES.map(s => '<tr><th>' + s[0] + '</th><td><b>' + s[1] + '</b><div class="muted">' + s[2] + '</div></td></tr>').join('') + '</tbody></table></div>' +
+      '<p class="muted sp">実際の開催日や内容は毎年変わります。各社の公式ページで必ず確認してください。「今が買い時か」は <a href="#/guide/timing">買い時の読みもの</a> も参考にどうぞ。</p>', { key: 'buy-sale' })]) +
       '<div class="sp" id="lists"></div><div class="row sp"><button class="btn sub sm" id="rst">チェックをすべて外す</button></div>';
     function draw() {
-      $('#lists', el).innerHTML = '<div class="grid g2">' + Object.keys(LISTS).map(k => {
-        const done = LISTS[k].filter((_, i) => st[k + i]).length;
-        return '<div class="card"><div class="row" style="justify-content:space-between"><h3>' + LNAME[k] + '</h3><span class="badge ' + (done === LISTS[k].length ? 'ok' : 'warn') + '">' + done + '/' + LISTS[k].length + '</span></div>' +
-          LISTS[k].map((t, i) => '<label class="chk-row" style="display:flex;gap:8px;align-items:flex-start;padding:6px 0"><input type="checkbox" data-k="' + k + i + '"' + (st[k + i] ? ' checked' : '') + '><span>' + esc(t) + '</span></label>').join('') + '</div>';
-      }).join('') + '</div>';
+      // チェックリストは1つずつ開く。見出しの横に「何個チェックしたか」
+      $('#lists', el).innerHTML = U.folds(Object.keys(LISTS).map((k, n) => {
+        const done = LISTS[k].filter((_, i) => st[k + i]).length, all = done === LISTS[k].length;
+        return U.fold(all ? '✓' : n + 1, LNAME[k], (all ? 'すべてチェック済み' : done + ' / ' + LISTS[k].length + ' 個チェック済み'),
+          LISTS[k].map((t, i) => '<label class="chk-row" style="display:flex;gap:8px;align-items:flex-start;padding:6px 0"><input type="checkbox" data-k="' + k + i + '"' + (st[k + i] ? ' checked' : '') + '><span>' + esc(t) + '</span></label>').join(''), { key: 'buy-' + k });
+      }));
       $$('input[data-k]', el).forEach(c => c.onchange = () => { if (c.checked) st[c.dataset.k] = 1; else delete st[c.dataset.k]; U.store.set('pcr.check.v1', st); draw(); });
     }
     $('#rst', el).onclick = () => { Object.keys(st).forEach(k => delete st[k]); U.store.set('pcr.check.v1', st); draw(); };

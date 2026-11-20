@@ -9,34 +9,31 @@
   U.route('/', '', function (el) {
     const saved = (U.store.get('pcr.saved.v1', []) || []).length;
     const last = U.store.get('pcr.last.build', null);
-    const goal = (href, ico, t, d, main) => '<a class="goal' + (main ? ' main' : '') + '" href="' + href + '"><span class="g-ico">' + ico + '</span><span class="g-tx"><b>' + t + '</b><span>' + d + '</span></span><span class="g-go" aria-hidden="true">›</span></a>';
+    // 1行ずつの一覧（箱にしない）
+    const row = (href, ico, t, d) => '<a class="hl-r" href="' + href + '"><span class="hl-i">' + ico + '</span><span class="hl-tx"><b>' + t + '</b><span>' + d + '</span></span><span class="hl-go" aria-hidden="true">›</span></a>';
     el.innerHTML =
-      '<section class="hero home-hero"><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
-      '<p class="lead tipify">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。パーツ同士が合うか、電源は足りるか、ゲームが何fpsで動くかも、その場でチェックできます。</p>' +
-      '<div class="row sp"><a class="btn" href="#/wizard">🧭 まず診断してみる（約1分）</a></div>' +
+      '<section class="hero home-hero"><span class="eyebrow">PC RECIPE</span><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
+      '<p class="lead">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。</p>' +
+      '<div class="row sp"><a class="btn" href="#/wizard">まず診断してみる（約1分）</a></div>' +
       '<form class="home-sf sp" id="hsf" role="search"><input type="search" id="hsq" placeholder="🔍 例: 9800X3D、RTX 5070" aria-label="パーツ名やページを探す"><button class="btn sub" type="submit">探す</button></form></section>' +
+      (last || saved ? '<h2 class="sp">前回の続き</h2><div class="hl">' + (last ? row('#/build?' + U.idsToQuery(last), '🔧', '前回の自作構成を開く', 'パーツの調整を続ける') : '') + (saved ? row('#/saved', '⭐', '保存した構成', saved + '件') : '') + '</div>' : '') +
       (U.store.get('pcr.welcome.done', false) ? '' :
-        '<div class="card welcome sp2" id="welcome"><div class="row" style="justify-content:space-between"><h2 style="margin:0">はじめての方へ：3ステップで決まります</h2><button type="button" class="icon-btn" id="wl-x" aria-label="この案内を閉じる">✕</button></div>' +
-        '<ol class="wl-steps"><li><b>① 診断する</b><span>用途と予算を答えると、3つのプランが出ます（約1分）</span><a class="btn sm" href="#/wizard">診断する</a></li>' +
-        '<li><b>② 比べる</b><span>BTO（完成品）や、ほかのグラボ・CPUと並べて比べます</span><a class="btn sub sm" href="#/vs">比べる</a></li>' +
-        '<li><b>③ 組む・買う</b><span>パーツを細かく調整して、合うかどうか確認してから買います</span><a class="btn sub sm" href="#/build">組む</a></li></ol>' +
-        '<p class="muted">点線の下線がある言葉は、押す（カーソルを合わせる）と意味が出ます。</p></div>') +
-      '<h2 class="sp2">何をしたいですか？</h2>' +
-      '<div class="goals">' +
-        goal('#/wizard', '🧭', 'おすすめのPCを知りたい', '用途と予算を答えるだけ。3つのプランを提案します', true) +
-        goal('#/compare', '⚖️', 'BTOパソコンを比べたい', '6社・' + ((window.PCR_BTO_MODELS || []).length) + '機種を、同じ中身の自作と比べます') +
-        goal('#/build', '🔧', '自分でパーツを選んで組みたい', '合わない組み合わせは、すぐ教えます') +
-        goal('#/mypc', '💻', '今のPCを強化したい', '今のパーツを読み取って、替える候補と費用を出します') +
-        goal('#/server', '🖥', 'ゲームのサーバーを建てたい', 'ARK・マイクラ・パルワールドなど。24時間の電気代も') +
-        goal('#/games', '🎮', 'ゲームが何fpsで動くか知りたい', D.games.length + '本のゲームを、グラボごとに比べます') +
-        goal('#/match', '🧩', 'CPUとグラボの相性を知りたい', 'ムダのない組み合わせが、ひと目で分かります') +
-        goal('#/vs', '⚖️', 'グラボやCPUを比べたい', '最大4つを並べて、fps・価格・消費電力を比べます') +
+        '<div class="welcome sp" id="welcome"><h2>はじめての方へ：3ステップで決まります</h2><button type="button" class="icon-btn" id="wl-x" aria-label="この案内を閉じる">✕</button>' +
+        '<div class="hl">' + row('#/wizard', '<span class="fd-n">1</span>', '診断する', '用途と予算から、3つのプランが出ます') + row('#/vs', '<span class="fd-n">2</span>', '比べる', 'BTOや、ほかのグラボ・CPUと並べます') + row('#/build', '<span class="fd-n">3</span>', '組む・買う', '合うか確認してから買います') + '</div></div>') +
+      '<h2 class="sp2">何をしたいですか？</h2><div class="hl">' +
+        row('#/compare', '⚖️', 'BTOパソコンを比べたい', '6社・' + ((window.PCR_BTO_MODELS || []).length) + '機種を、同じ中身の自作と比べます') +
+        row('#/build', '🔧', '自分でパーツを選んで組みたい', '合わない組み合わせは、すぐ教えます') +
+        row('#/mypc', '💻', '今のPCを強化したい', '替える候補と費用を出します') +
+        row('#/games', '🎮', 'ゲームが何fpsで動くか知りたい', D.games.length + '本のゲームを、グラボごとに') +
       '</div>' +
-      (last || saved ? '<div class="card flat sp2 resume"><b>前回の続き</b><div class="row sp">' + (last ? '<a class="btn sub sm" href="#/build?' + U.idsToQuery(last) + '">🔧 前回の自作構成を開く</a>' : '') + (saved ? '<a class="btn sub sm" href="#/saved">⭐ 保存した構成（' + saved + '件）</a>' : '') + '</div></div>' : '') +
-      '<h2 class="sp2">はじめての人へ</h2><div class="grid g3">' +
-        [['guide/bto-or-diy.html', '🤔', 'BTOと自作、どっちがいい？'], ['guide/checklist.html', '✅', 'BTO購入チェックリスト'], ['guide/glossary.html', '📖', 'むずかしい言葉の用語集']]
-          .map(a => '<a class="card flat card-link feat" href="' + a[0] + '"><span class="ico">' + a[1] + '</span><span><b>' + a[2] + '</b></span></a>').join('') + '</div>' +
-      '<div class="card flat sp2"><h3>ご利用にあたって</h3><ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>価格は<b>' + esc(D.priceDate || CFG.dataDate) + '</b>時点の目安です。購入前に必ずお店で確認してください。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul></div>';
+      U.folds([U.fold('⋯', 'そのほかのこと', 'サーバー・相性表・くらべる・読みもの', '<div class="hl">' +
+        row('#/server', '🖥', 'ゲームのサーバーを建てたい', 'ARK・マイクラ・パルワールドなど') +
+        row('#/match', '🧩', 'CPUとグラボの相性を知りたい', 'ムダのない組み合わせが、ひと目で分かります') +
+        row('#/vs', '⚖️', 'グラボやCPUを比べたい', '最大4つを並べて比べます') +
+        row('guide/bto-or-diy.html', '🤔', 'BTOと自作、どっちがいい？', '読みもの') +
+        row('guide/checklist.html', '✅', 'BTO購入チェックリスト', '読みもの') +
+        row('guide/glossary.html', '📖', 'むずかしい言葉の用語集', '読みもの') + '</div>', { key: 'h-more' }),
+      U.fold('i', 'ご利用にあたって', 'fpsは目安・価格は' + esc(D.priceDate || CFG.dataDate) + '時点', '<ul><li>fps・性能の数値は、実測ではなく<b>計算モデルによる目安</b>です。</li><li>価格は<b>' + esc(D.priceDate || CFG.dataDate) + '</b>時点の目安です。購入前に必ずお店で確認してください。</li><li>互換性チェックは参考情報です。購入前に、メーカーの製品ページで<b>対応情報を必ず確認</b>してください。詳しくは<a href="#/about">このサイトについて</a>へ。</li></ul>', { key: 'h-note' })]);
     $('#hsf', el).onsubmit = e => { e.preventDefault(); const v = $('#hsq', el).value.trim(); if (v) U.go('#/search?q=' + encodeURIComponent(v)); };
   const wx = $('#wl-x', el); if (wx) wx.onclick = () => { U.store.set('pcr.welcome.done', true); $('#welcome', el).remove(); };
   });
@@ -139,7 +136,6 @@
     const op = CFG.operatorName || (CFG.siteName + ' 運営者');
     const pd = D.priceDate ? esc(D.priceDate) : esc(CFG.dataDate);
     el.innerHTML = '<h1>このサイトについて</h1><div class="article tipify">' +
-      '<p class="muted">目次: <a href="#about-what">PC Recipe とは</a> / <a href="#about-data">データと計算方法</a> / <a href="#about-ad">広告について</a> / <a href="#about-disclaimer">免責事項</a> / <a href="#about-privacy">プライバシーポリシー</a> / <a href="#about-contact">運営者・お問い合わせ</a></p>' +
       '<h2 id="about-what">PC Recipe とは</h2><p>BTOパソコンや自作PCを選ぶ人のための、診断・チェックサイトです。むずかしい言葉は、カーソルを合わせると説明が出ます。利用は無料で、会員登録もいりません。</p>' +
       '<h2 id="about-data">データと計算方法</h2><ul>' +
       '<li><b>パーツの仕様</b>（ソケット、メモリ規格、消費電力、推奨電源など）は、メーカー公式の情報をもとにしています。データ確認日: <b>' + esc(CFG.dataDate) + '</b>。</li>' +
@@ -174,6 +170,7 @@
       '<p class="muted">価格・仕様の誤りを見つけたら、フォームから教えていただけると助かります。</p>' +
       '</div>';
     // 目次のリンク（#about-xxx）は、ページ切り替えに使う # とぶつかるので、スクロールだけ行う
-    el.querySelectorAll('a[href^="#about-"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = el.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); }));
+    U.h2fold($('.article', el), { key: 'about', openFirst: true });
+    el.querySelectorAll('a[href^="#about-"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const t = el.querySelector(a.getAttribute('href')); if (t) { t.open = true; t.scrollIntoView({ behavior: 'smooth' }); } }));
   });
 })();

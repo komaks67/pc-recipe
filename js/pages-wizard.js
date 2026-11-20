@@ -107,7 +107,7 @@
       const rs = ev.fpsRows.map(f => E.req(f.game, ev.B)).filter(r => r.lv !== 'none');
       if (!rs.length) return '';
       const rec = rs.filter(r => r.lv === 'rec' || r.noRec).length, low = rs.filter(r => r.lv === 'low').length;   // 推奨の発表がないゲームは、最低を満たせばOK
-      return '<div class="sp"><span class="badge ' + (low ? 'ng' : rec === rs.length ? 'ok' : 'warn') + '">' + (low ? '✕ 最低スペック未満のゲームあり' : rec === rs.length ? '✓ 選んだゲームはすべて公式の推奨スペック以上' : '△ 推奨スペックに届かないゲームあり（' + (rs.length - rec) + '本）') + '</span></div>';
+      return '<span class="badge ' + (low ? 'ng' : rec === rs.length ? 'ok' : 'warn') + '">' + (low ? '✕ 最低スペック未満のゲームあり' : rec === rs.length ? '✓ 選んだゲームはすべて公式の推奨スペック以上' : '△ 推奨スペックに届かないゲームあり（' + (rs.length - rec) + '本）') + '</span>';
     }
     function resultHtml() {
       const game = W.purposes.indexOf('game') >= 0 && W.games.length > 0;
@@ -140,10 +140,11 @@
         const ev2 = E.evaluate(ids, c);
         h += '<div class="card"><div class="row" style="justify-content:space-between"><h3>' + gr.labels.join('・') + (gr.star ? ' ⭐' : '') + '</h3><span class="badge ' + verdict[0] + '">' + (game || o.edit !== 'none' ? verdict[1] : '用途に十分') + '</span></div>' +
           '<div class="total">' + yen(ev.total) + '</div><div class="muted">' + (gr.labels.length > 1 ? 'どの予算でも、この構成がちょうどよい見込みです' : p.desc) + '</div>' + (r.over ? '<div class="chk warn sp"><span class="mk">!</span><div>この予算では組めなかったため、条件を満たす中でいちばん安い構成です。</div></div>' : '') +
-          '<table class="t sp"><tbody>' + ['cpu', 'gpu', 'mem', 'ssd', 'mb', 'psu', 'case', 'cooler'].map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + ((k === 'cpu' || k === 'gpu') && B[k].id !== 'none' ? '<a href="#/part/' + k + '/' + B[k].id + '">' + esc(B[k].name) + '</a>' : esc(B[k].name)) + '</td></tr>').join('') + '</tbody></table>' +
-          (B.gpu.id !== 'none' ? '<div class="sp">' + U.pairTag(E.pair(B.cpu, B.gpu, { games: c.games, res: c.res, quality: c.quality })) + ' <span class="muted">CPUとグラボの相性</span></div>' : '') +
-          reqSummary(ev2) +
-          (ev2.fpsRows.length && game ? '<div class="sp">' + ev2.fpsRows.map(f => '<div class="row" style="justify-content:space-between;font-size:.9rem"><span>' + esc(f.game.name.replace(/ \(.*\)$/, '')) + '</span><b>約' + Math.round(f.fps) + 'fps</b></div>').join('') + '</div>' : '') +
+          '<div class="pl-key">' + ['cpu', 'gpu'].map(k => '<div><span class="muted">' + (k === 'cpu' ? 'CPU' : 'グラボ') + '</span>' + (B[k].id !== 'none' ? '<a href="#/part/' + k + '/' + B[k].id + '">' + esc(B[k].name) + '</a>' : esc(B[k].name)) + '</div>').join('') +
+            (ev2.fpsRows.length && game ? '<div><span class="muted">fps</span><b>平均 約' + Math.round(ev2.avgFps) + 'fps</b></div>' : '') + '</div>' +
+          '<div class="row" style="gap:6px">' + (B.gpu.id !== 'none' ? U.pairTag(E.pair(B.cpu, B.gpu, { games: c.games, res: c.res, quality: c.quality }), 1) : '') + reqSummary(ev2) + '</div>' +
+          U.folds([U.fold('≡', 'パーツ8個' + (ev2.fpsRows.length && game ? 'とゲームごとのfps' : ''), 'メモリ・SSD・電源など', '<table class="t"><tbody>' + ['cpu', 'gpu', 'mem', 'ssd', 'mb', 'psu', 'case', 'cooler'].map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + ((k === 'cpu' || k === 'gpu') && B[k].id !== 'none' ? '<a href="#/part/' + k + '/' + B[k].id + '">' + esc(B[k].name) + '</a>' : esc(B[k].name)) + '</td></tr>').join('') + '</tbody></table>' +
+            (ev2.fpsRows.length && game ? '<div class="sp">' + ev2.fpsRows.map(f => '<div class="row" style="justify-content:space-between;font-size:.9rem"><span>' + esc(f.game.name.replace(/ \(.*\)$/, '')) + '</span><b>約' + Math.round(f.fps) + 'fps</b></div>').join('') + '</div>' : ''), { key: 'w-' + i })]) +
           '<div class="row sp"><a class="btn sm" href="#/build?' + U.idsToQuery(ids) + '">自作で組む</a><a class="btn sub sm" href="#/bto?cpu=' + ids.cpu + '&gpu=' + ids.gpu + '&mem=' + ids.mem + '&ssd=' + ids.ssd + '&size=' + W.size + (W.quiet ? '&quiet=1' : '') + '">BTOで探す</a><button class="btn sub sm" data-save="' + i + '">保存</button></div></div>';
       });
       h += '</div>';
@@ -170,7 +171,7 @@
       '<div><label class="f">今のグラフィックボード</label><select id="u-gpu">' + D.oldGpu.map(x => '<option value="' + x.id + '">' + esc(x.name) + '</option>').join('') + '</select></div>' +
       '<div><label class="f">今のメモリ</label><select id="u-mem">' + [8, 16, 32, 64].map(x => '<option value="' + x + '">' + x + 'GB</option>').join('') + '</select></div>' +
       '<div><label class="f">今の電源の容量</label><select id="u-psu">' + [450, 500, 550, 650, 750, 850, 1000].map(x => '<option value="' + x + '">' + x + 'W</option>').join('') + '</select></div></div>' +
-      '<label class="f sp">遊ぶゲーム</label><div class="chips" id="u-games">' + D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div>' +
+      '<details class="sp"><summary><b>遊ぶゲーム</b>（<span id="u-gn"></span>本選択中）</summary><div class="chips sp" id="u-games">' + D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div></details>' +
       '<div class="grid g2 sp"><div><label class="f">解像度</label><select id="u-res"><option value="1080">フルHD</option><option value="1440">WQHD</option><option value="2160">4K</option></select></div>' +
       '<div><label class="f">目標のfps</label><select id="u-tg"><option>60</option><option>100</option><option>144</option><option>240</option></select></div></div></div></div>' +
       '<div class="sticky"><div id="u-out"></div></div></div>';
@@ -180,6 +181,7 @@
     function run() {
       st.cpu = $('#u-cpu', el).value; st.gpu = $('#u-gpu', el).value; st.memGB = +$('#u-mem', el).value; st.psuW = +$('#u-psu', el).value;
       st.res = +$('#u-res', el).value; st.target = +$('#u-tg', el).value; st.games = $$('#u-games input:checked', el).map(i => i.value);
+      $('#u-gn', el).textContent = st.games.length;
       const out = $('#u-out', el);
       if (!st.games.length) { out.innerHTML = '<div class="card"><p>遊ぶゲームをひとつ以上選んでください。</p></div>'; return; }
       const r = E.upgradeDiag(st), n = st.games.length;
@@ -194,7 +196,7 @@
       h += '<div class="card sp"><h3>CPUを替えるなら</h3>' + (cOpts.length ? '<div class="tbl-wrap"><table class="t"><thead><tr><th>候補</th><th>費用の目安</th><th>平均fps</th></tr></thead><tbody>' +
         cOpts.map(o => '<tr><td><b>' + esc(o.cpu.name) + '</b><br><span class="muted">' + esc(o.note) + '</span></td><td>' + yen(o.cost) + '</td><td>約' + Math.round(o.r.avg) + '</td></tr>').join('') + '</tbody></table></div>' : '<p>今より大きく性能が上がる候補がありません。</p>') + '</div>';
       h += '<p class="muted sp">価格とfpsは目安です。電源は、ケーブルの種類（コネクタ）も確認してください。</p>';
-      out.innerHTML = h; U.tipify(out);
+      out.innerHTML = h; U.cardFold(out, { skip: 2, key: 'upg' }); U.tipify(out);
     }
     el.addEventListener('change', run);
     run();
@@ -213,13 +215,18 @@
     function draw() {
       st.game = $('#g-game', el).value; st.cpu = $('#g-cpu', el).value; st.quality = ($('input[name=gq]:checked', el) || { value: 'high' }).value;
       const g = D.by.games[st.game], cpu = D.by.cpu[st.cpu];
-      const rows = D.gpu.filter(x => x.id !== 'none').sort((a, b) => b.score - a.score).map(gpu => {
+      const rows = D.gpu.filter(x => x.id !== 'none').sort((a, b) => b.score - a.score).map((gpu, gi) => {
         const B = { cpu: cpu, gpu: gpu, mem: D.by.mem[st.mem] };
         const rq = E.req(g, B), RL = E.REQ_LABEL[rq.lv];
-        return '<tr><td><a href="#/part/gpu/' + gpu.id + '"><b>' + esc(gpu.name) + '</b></a><br><span class="muted">VRAM ' + gpu.vram + 'GB / ' + yen(gpu.price) + '</span>' + (rq.lv !== 'none' ? '<br><span class="badge ' + RL.c + '">' + RL.mk + ' ' + RL.t + '</span>' : '') + '</td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td><b>' + Math.round(f) + '</b> <span class="fl ' + l.c + '">' + l.t + '</span>' + (x.vramPen ? '<br><span class="neg" style="font-size:.75rem">VRAM不足ぎみ</span>' : '') + '</td>'; }).join('') + '</tr>';
+        // 数字だけを大きく。色の濃さで快適さを表す（文字の説明は表の下に）
+        return '<tr' + (gi >= 15 ? ' class="more"' : '') + '><td><a href="#/part/gpu/' + gpu.id + '"><b>' + esc(gpu.name) + '</b></a><br><span class="muted" style="font-size:.78rem">' + gpu.vram + 'GB・' + yen(gpu.price) + (rq.lv !== 'none' ? '・<span class="' + (rq.lv === 'low' ? 'neg' : '') + '">' + RL.mk + RL.t.replace('スペック', '') + '</span>' : '') + '</span></td>' + [1080, 1440, 2160].map(r => { const x = E.fps(g, r, B, { quality: st.quality }), f = x.fps, l = E.fpsLabel(f); return '<td class="fpsn"><b class="fv ' + l.c + '">' + Math.round(f) + '</b>' + (x.vramPen ? '<span class="neg" title="VRAM不足ぎみ">*</span>' : '') + '</td>'; }).join('') + '</tr>';
       }).join('');
-      $('#g-out', el).innerHTML = U.reqCard(g) + '<div class="card sp"><h2>' + esc(g.name) + ' ／ ' + esc(cpu.name) + ' ／ ' + E.QUALITY[st.quality].t + '画質</h2><p class="muted">快適に遊べるメモリの目安: ' + g.mem + 'GB以上</p><div class="tbl-wrap"><table class="t"><thead><tr><th>グラフィックボード</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      const rc = U.reqCard(g).replace(/^<div class="card[^"]*"><h2>.*?<\/h2>/, '<div>');
+      $('#g-out', el).innerHTML = (rc ? U.folds([U.fold('📋', esc(g.name.replace(/ \(.*\)$/, '')) + 'の公式の必要スペック', '最低・推奨スペックと、それに当たる今のパーツ', rc, { key: 'g-req' })]) : '') +
+        '<div class="sp"><h2>' + esc(g.name) + '</h2><p class="muted">CPU ' + esc(cpu.name) + '・' + E.QUALITY[st.quality].t + '画質・メモリ' + g.mem + 'GB以上で計算。数字は平均fpsの目安です。</p><p class="fv-key"><b class="fv a">240+</b><b class="fv b">144+</b><b class="fv c">100+</b><b class="fv d">60+</b><b class="fv e">60未満</b> <span class="muted">* はVRAM不足ぎみ</span></p><div class="tbl-wrap"><table class="t g-t" id="g-t"><thead><tr><th>グラボ</th><th>フルHD</th><th>WQHD</th><th>4K</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+        '<button type="button" class="btn sub sp" id="g-all" style="width:100%">残りのグラボも表示（' + Math.max(0, D.gpu.length - 16) + '枚）</button>' +
         '<p class="sp"><a href="fps/' + esc(g.id) + '.html">' + esc(g.name) + 'のおすすめグラボまとめ（目標fpsに届くいちばん安いグラボ）</a></p><p class="muted sp">※fpsは「平均的なシーンの目安」です。ゲームの更新、画質設定、DLSS/FSRの有無で大きく変わります。購入前にレビュー記事の実測値も確認しましょう。</p></div>';
+      $('#g-all', el).onclick = e => { $('#g-t', el).classList.add('all'); e.target.remove(); };
     }
     el.addEventListener('change', draw); draw();
   }, '/tools');

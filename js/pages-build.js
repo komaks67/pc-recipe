@@ -30,7 +30,7 @@
   /* ---------- 操作パネル（解像度・ゲーム・電気代） ---------- */
   function controlsHtml(c) {
     const sel = D.games.filter(g => c.games.indexOf(g.id) >= 0).map(g => g.name.replace(/ \(.*\)$/, ''));
-    return '<details class="card flat ctl"><summary><b>🎮 計算の条件を変える</b><span class="muted ctl-now">' + esc(RES[c.res] + ' ・ ' + E.QUALITY[c.quality || 'high'].t + '画質 ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></summary><div class="sp">' +
+    return '<details class="card flat ctl fold"><summary><span class="fd-n">⚙</span><span class="fd-tx"><span class="fd-t">計算の条件を変える</span><span class="fd-s">' + esc(RES[c.res] + ' ・ ' + E.QUALITY[c.quality || 'high'].t + '画質 ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></span><span class="fd-go" aria-hidden="true"></span></summary><div>' +
       '<label class="f">画面の解像度</label><div class="chips" id="c-res">' +
       [1080, 1440, 2160].map(r => '<label class="chip"><input type="radio" name="res" value="' + r + '"' + (c.res == r ? ' checked' : '') + '><span>' + RES[r] + (r == 1080 ? '(1920×1080)' : r == 1440 ? '(2560×1440)' : '(3840×2160)') + '</span></label>').join('') + '</div>' +
       '<label class="f sp">画質（ゲームの設定）</label><div id="c-q">' + U.qualityChips('cq', c.quality || 'high') + '</div>' +
@@ -97,7 +97,7 @@
     const B = ev.B, j = pairOf(ev, c);
     if (!j) return chkHtml([{ lv: ev.bottleneck.lv, title: 'CPUとGPUのバランス', msg: ev.bottleneck.msg }]);
     const opt = { games: c.games, res: c.res, quality: c.quality, mem: B.mem };
-    let h = '<div class="pair-box"><div class="row"><b>CPUとグラボの相性</b>' + U.pairTag(j) + '</div><p>' + esc(j.msg) + '</p>' +
+    let h = '<div><p>' + esc(j.msg) + '</p>' +
       (j.bad.length && j.mk !== '✕' ? '<p class="muted">CPUが先に限界になるゲーム: ' + j.bad.map(g => esc(g.name.replace(/ \(.*\)$/, ''))).join('、') + '</p>' : '') +
       '<p class="muted">' + U.pairCond(j) + '。<a href="#/match?g=' + esc((c.games && c.games[0]) || 'apex') + '&r=' + j.res + '&q=' + j.quality + '">相性表で見る</a></p>';
     if (j.mk === '△' || j.mk === '✕') {
@@ -121,46 +121,58 @@
     const pwCls = psu.w < pw.need ? 'ng' : psu.w < pw.rec ? 'warn' : '';
     const pwPct = Math.min(100, pw.need / psu.w * 100);
     const maxF = 360;
-    let h = '<div class="card"><div class="muted">合計金額（目安）</div><div class="total" data-yen>' + yen(ev.total) + '</div>' +
-      '<div class="muted">' + (CFG.priceIsPlaceholder ? '※価格は仮の目安です。' : '※価格確認日 ' + esc(D.priceDate || CFG.dataDate) + ' 時点の目安です。') + '購入前に各店で確認してください。</div>' +
-      '<div class="row sp">' + (ng.length ? '<span class="badge ng">要修正 ' + ng.length + '</span>' : '<span class="badge ok">互換性OK</span>') + (wr.length ? '<span class="badge warn">注意 ' + wr.length + '</span>' : '') + U.pairTag(pairOf(ev, c), 1) + '</div></div>';
+    const j = pairOf(ev, c);
+    const cond = RES[c.res] + '・' + E.QUALITY[c.quality || 'high'].t + '画質';
 
-    h += '<div class="card sp"><h3>⚠ チェック結果</h3>' + (ng.length || wr.length ? chkHtml(ng.concat(wr)) : '<div class="chk ok"><span class="mk">✓</span><div><b>問題は見つかりませんでした</b>パーツ同士の組み合わせは合っています。</div></div>') +
+    // ① 結論：合計・印・大きな数字3つ
+    let h = '<div class="card"><div class="sum-top"><span class="eyebrow">この構成の合計（目安）</span><div class="total" data-yen>' + yen(ev.total) + '</div>' +
+      '<div class="row" style="gap:6px;margin-top:6px">' + (ng.length ? '<span class="badge ng">✕ 要修正 ' + ng.length + '</span>' : '<span class="badge ok">✓ 互換性OK</span>') + (wr.length ? '<span class="badge warn">注意 ' + wr.length + '</span>' : '') + U.pairTag(j, 1) + '</div>' +
+      '<div class="kpis">' + (ev.fpsRows.length ? '<div><b>' + Math.round(ev.avgFps) + 'fps</b><span>平均（' + esc(RES[c.res]) + '）</span></div>' : '') +
+      '<div><b>' + pw.need + 'W</b><span>最大消費電力</span></div><div><b>' + yen(ev.monthly) + '</b><span>電気代/月</span></div></div>' +
+      '<p class="muted" style="margin:10px 0 0;font-size:.78rem">' + (CFG.priceIsPlaceholder ? '価格は仮の目安です。' : '価格は ' + esc(D.priceDate || CFG.dataDate) + ' 時点の目安。') + '購入前に各店で確認してください。</p></div></div>';
+
+    // ② くわしくは開いて見る
+    const chkBody = (ng.length || wr.length ? chkHtml(ng.concat(wr)) : '<div class="chk ok"><span class="mk">✓</span><div><b>問題は見つかりませんでした</b>パーツ同士の組み合わせは合っています。</div></div>') +
       (tips.length ? '<h3 class="sp">この構成の注意ポイント</h3>' + chkHtml(tips.map(t => ({ lv: 'warn', title: t.title, msg: t.msg }))) : '') +
       '<details class="sp"><summary>問題なしの項目（' + ok.length + '件）</summary><div class="sp">' + chkHtml(ok) + '</div></details>' +
-      '<p class="muted">パーツごとの寸法・対応CPUなどは、購入前に必ず製品ページで最終確認してください。</p></div>';
-
-    h += '<div class="card sp"><h3>⚡ 電源とCPU・グラボの相性</h3>' +
-      '<div class="meter ' + pwCls + '"><i style="width:' + pwPct.toFixed(0) + '%"></i></div>' +
-      '<p class="muted sp">最大消費電力の目安 <b>約' + pw.need + 'W</b> ／ 選んだ電源 <b>' + psu.w + 'W</b> ／ 推奨 <b>' + pw.rec + 'W以上</b></p>' +
-      pairHtml(ev, ids, c) + '</div>';
-
-    h += '<div class="card sp"><h3>🎮 fpsの目安（' + RES[c.res] + '・' + E.QUALITY[c.quality || 'high'].t + '画質）</h3>';
-    if (!ev.fpsRows.length) h += '<p class="muted">上の「遊ぶゲーム」を選ぶと表示されます。</p>';
+      '<p class="muted">パーツごとの寸法・対応CPUなどは、購入前に必ず製品ページで最終確認してください。</p>';
+    let fpsBody = '';
+    if (!ev.fpsRows.length) fpsBody = '<p class="muted">下の「計算の条件を変える」で、遊ぶゲームを選ぶと表示されます。</p>';
     ev.fpsRows.forEach(r => {
       const l = E.fpsLabel(r.fps);
-      h += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c) + reqLine(r.game, ev);
+      fpsBody += '<div class="fps-row"><span class="nm">' + esc(r.game.name) + '<br><span class="muted">' + r.limit + '性能で決まる' + (r.memPen ? '・メモリ不足の影響あり' : '') + '</span></span><div class="bar"><i style="width:' + Math.min(100, r.fps / maxF * 100).toFixed(0) + '%"></i></div><span><b>' + Math.round(r.fps) + '</b><br><span class="fl ' + l.c + '">' + l.t + '</span></span></div>' + qline(r.game, ev, c) + reqLine(r.game, ev);
     });
-    h += '<p class="muted">※実測ではなく、性能の目安から計算したものです。設定やゲームの更新で変わります。計算方法は「このサイトについて」にあります。</p></div>';
-
-    h += '<div class="card sp"><h3>💡 電気代の目安</h3><p>ゲーム中の消費電力 <b>約' + pw.load + 'W</b>。1日' + c.hours + '時間・30日・' + c.kwh + '円/kWhなら、<b>月 約' + yen(ev.monthly) + '</b>（年 約' + yen(ev.monthly * 12) + '）です。</p></div>';
-
-    h += '<div class="card sp"><h3>🔁 パーツを替えたらどうなる？</h3>' + simHtml(ids, ev, c) + '</div>';
+    if (ev.fpsRows.length) fpsBody += '<p class="muted">実測ではなく、性能の目安から計算したものです。計算方法は「このサイトについて」にあります。</p>';
+    const reqs = ev.fpsRows.map(r => E.req(r.game, ev.B)).filter(r => r.lv !== 'none');
+    // 推奨スペックの発表がないゲームは「届かない」に数えない
+    const recN = reqs.filter(r => r.lv === 'rec' || r.noRec).length, lowN = reqs.filter(r => r.lv === 'low').length;
+    const pwBody = '<div class="meter ' + pwCls + '"><i style="width:' + pwPct.toFixed(0) + '%"></i></div>' +
+      '<p class="sp">最大消費電力の目安 <b>約' + pw.need + 'W</b> ／ 選んだ電源 <b>' + psu.w + 'W</b> ／ 推奨 <b>' + pw.rec + 'W以上</b></p>' +
+      '<p class="muted">ゲーム中の消費電力は約' + pw.load + 'W。1日' + c.hours + '時間・30日・' + c.kwh + '円/kWhなら、電気代は<b>月 約' + yen(ev.monthly) + '</b>（年 約' + yen(ev.monthly * 12) + '）です。条件は「計算の条件を変える」で変えられます。</p>';
+    h += '<div class="sp">' + U.folds([
+      U.fold(ng.length ? '✕' : wr.length ? '!' : '✓', 'チェック結果', ng.length ? '<span class="neg">要修正 ' + ng.length + '件</span>' + (wr.length ? '・注意 ' + wr.length + '件' : '') : wr.length ? '問題なし・注意 ' + wr.length + '件' : '問題なし', chkBody, { lv: ng.length ? 'ng' : wr.length ? 'warn' : '', key: 'b-chk', open: !!ng.length }),
+      U.fold('🎮', 'ゲームのfps', ev.fpsRows.length ? esc(cond) + '・平均 約' + Math.round(ev.avgFps) + 'fps' + (reqs.length ? '・' + (lowN ? '<span class="neg">最低スペック未満あり</span>' : recN === reqs.length ? '公式の推奨以上' : '推奨に届かないゲームあり') : '') : 'ゲームを選ぶと表示', fpsBody, { key: 'b-fps' }),
+      j ? U.fold(j.mk, 'CPUとグラボの相性', esc(j.t) + '（' + esc(U.pairCond(j)) + '）', pairHtml(ev, ids, c), { lv: j.mk === '✕' ? 'ng' : j.mk === '△' ? 'warn' : '', key: 'b-pair', open: j.mk === '✕' }) : '',
+      U.fold('⚡', '電源と電気代', psu.w + 'W（推奨 ' + pw.rec + 'W以上）・' + (pwCls === 'ng' ? '<span class="neg">足りない</span>' : pwCls === 'warn' ? '少し足りない' : '余裕あり') + '・月 約' + yen(ev.monthly), pwBody, { lv: pwCls, key: 'b-pw' }),
+      U.fold('🔁', 'パーツを替えたらどうなる？', 'ひとつ上げる・下げるときの値段とfpsの差', simHtml(ids, ev, c), { key: 'b-sim' })
+    ]) + '</div>';
     return h;
   }
 
   /* ---------- 買い物リスト ---------- */
   function buyHtml(ev) {
-    return '<div class="card sp" id="buylist"><h3>🛒 この構成のパーツを買う</h3><div>' +
-      E.KEYS.filter(k => ev.B[k].q).map(k => '<div class="row" style="justify-content:space-between;margin-bottom:8px"><span>' + E.LABEL[k] + '：' + esc(ev.B[k].name) + '</span><span>' + U.links(ev.B[k].q) + '</span></div>').join('') +
-      '<p class="muted">リンクは商品の検索結果ページです。同じ規格・型番かを確認してから購入してください。</p></div></div>';
+    const ks = E.KEYS.filter(k => ev.B[k].q);
+    return '<div class="sp" id="buylist">' + U.folds([U.fold('🛒', 'この構成のパーツを買う', ks.length + '個のパーツを、ショップで探す', ks.map(k => '<div class="row" style="justify-content:space-between;margin-bottom:8px"><span>' + E.LABEL[k] + '：' + esc(ev.B[k].name) + '</span><span>' + U.links(ev.B[k].q) + '</span></div>').join('') +
+      '<p class="muted">リンクは商品の検索結果ページです。同じ規格・型番かを確認してから購入してください。</p>', { key: 'b-buy', open: true })]) + '</div>';
   }
 
   function actionsHtml(mode) {
-    return '<div class="card sp no-print"><h3>💾 保存・共有</h3>' +
+    return '<div class="card sp no-print"><h3>💾 保存する</h3>' +
       '<div class="row"><input type="text" id="s-name" placeholder="この構成の名前（例: 144fps狙い）" maxlength="30" style="flex:1;min-width:160px"><button class="btn" id="b-save">保存する</button></div>' +
-      '<div class="row sp"><button class="btn sub sm" id="b-share">🔗 共有URLをコピー</button><button class="btn sub sm" id="b-copy">📋 テキストをコピー</button><button class="btn sub sm" id="b-dl">⬇ テキスト保存</button><button class="btn sub sm" id="b-img">🖼 画像で保存</button><button class="btn sub sm" id="b-qr">▦ QRコード</button><button class="btn sub sm" id="b-print">🖨 印刷・PDF</button><button class="btn sub sm" id="b-reset">↺ 最初に戻す</button></div>' +
-      '<p class="muted sp">共有URLを送ると、相手にも同じ構成が開きます。PDFにするには、印刷画面で「PDFに保存」を選んでください。</p></div>';
+      '<div class="row sp"><button class="btn sub sm" id="b-share">🔗 共有URLをコピー</button></div>' +
+      '<div class="sp">' + U.folds([U.fold('⋯', 'そのほかの保存・共有', 'テキスト・画像・QRコード・印刷・最初に戻す',
+      '<div class="row"><button class="btn sub sm" id="b-copy">📋 テキストをコピー</button><button class="btn sub sm" id="b-dl">⬇ テキスト保存</button><button class="btn sub sm" id="b-img">🖼 画像で保存</button><button class="btn sub sm" id="b-qr">▦ QRコード</button><button class="btn sub sm" id="b-print">🖨 印刷・PDF</button><button class="btn sub sm" id="b-reset">↺ 最初に戻す</button></div>' +
+      '<p class="muted sp">共有URLを送ると、相手にも同じ構成が開きます。PDFにするには、印刷画面で「PDFに保存」を選んでください。</p>', { key: 'b-more' })]) + '</div></div>';
   }
 
   /* ============================================================
@@ -177,7 +189,7 @@
       '<div class="build stepped"><div data-step="1">' +
       '<p class="muted tipify no-print">パーツの「変更」を押すと、名前で探したり、安い順・性能順に並べたりできます。今の構成に合わないものは、最初から外して表示します。</p>' +
       '<div id="parts"></div><div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
-      '<div class="sticky"><div data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">買う・保存へ →</button></div></div>' +
+      '<div class="sticky"><div data-step="2"><div id="sum"></div><div id="ctl" class="sp"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">買う・保存へ →</button></div></div>' +
       '<div data-step="3"><div id="buy"></div><div id="act"></div><div id="nx"></div></div></div></div>';
 
     // スマホでは1ステップずつ表示する（パソコンでは全部並べて表示）
@@ -273,7 +285,7 @@
       '<div style="align-self:end"><label class="chip"><input type="checkbox" id="b-quiet"><span>静音重視</span></label></div></div>' +
       '<div class="row sp step-next"><button class="btn" type="button" data-go="2">結果を見る →</button></div></div>' +
       '<div data-step="3"><div id="buyguide" class="sp"></div><div id="makers" class="sp"></div><div class="row sp step-next"><button class="btn sub" type="button" data-go="4">価格メモへ →</button></div></div><div id="memo" class="sp" data-step="4"></div></div>' +
-      '<div class="sticky" data-step="2"><div id="ctl"></div><div id="sum" class="sp"></div><div id="act"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">ショップで選ぶときの目安へ →</button></div></div></div>';
+      '<div class="sticky" data-step="2"><div id="sum"></div><div id="ctl" class="sp"></div><div id="act"></div><div class="row sp step-next"><button class="btn" type="button" data-go="3">ショップで選ぶときの目安へ →</button></div></div></div>';
 
     const SELK = [['cpu', 'CPU'], ['gpu', 'グラフィックボード'], ['mem', 'メモリ'], ['ssd', 'ストレージ']];
     const drawSel = () => { $('#sel', el).innerHTML = SELK.map(([k, l]) => '<div><span class="f">' + l + '</span>' + U.pickButton(k, st[k]) + '</div>').join(''); };

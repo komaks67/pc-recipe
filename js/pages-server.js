@@ -151,7 +151,8 @@
         h += '<div class="card sp"><div class="row" style="justify-content:space-between"><h2>' + esc(names) + '</h2><span class="badge ' + (r.short ? 'warn' : 'ok') + '">' + (r.short ? '条件に届きません' : '条件OK') + '</span></div>' +
           '<p class="muted">' + esc(PLAN[main][1]) + '</p>' +
           '<div class="total">' + yen(r.total) + '</div>' +
-          '<table class="t sp"><tbody>' + ['cpu', 'mb', 'mem', 'ssd', 'psu', 'case', 'cooler'].concat(r.ids.gpu !== 'none' ? ['gpu'] : []).map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + U.partImg(k, B[k].id, 32) + ' ' + esc(B[k].name) + '</td></tr>').join('') + '</tbody></table>' +
+          '<div class="row sp" style="gap:6px 16px;font-size:.9rem"><span>電気代 <b>月 約' + yen(r.monthly) + '</b></span><span>3年の合計 <b>約' + yen(r.total3) + '</b></span></div>' +
+          U.folds([U.fold('≡', 'パーツと電気代のくわしい中身', 'CPU ' + esc(B.cpu.name) + '・メモリ ' + B.mem.cap + 'GB', '<table class="t"><tbody>' + ['cpu', 'mb', 'mem', 'ssd', 'psu', 'case', 'cooler'].concat(r.ids.gpu !== 'none' ? ['gpu'] : []).map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + U.partImg(k, B[k].id, 32) + ' ' + esc(B[k].name) + '</td></tr>').join('') + '</tbody></table>' +
           '<div class="grid g2 sp"><div class="card" style="margin:0"><b>電気代（24時間つけっぱなし）</b><div class="total" style="font-size:1.3rem">月 約' + yen(r.monthly) + '</div><span class="muted">消費電力 約' + r.watts + 'W ／ 1kWh=' + kwh + '円で計算</span></div>' +
           '<div class="card" style="margin:0"><b>3年間の合計（本体＋電気代）</b><div class="total" style="font-size:1.3rem">約' + yen(r.total3) + '</div><span class="muted">電気代は目安です</span></div></div>' +
           '<div class="sp">' + [
@@ -162,6 +163,7 @@
           (r.ids.gpu !== 'none' ? '<p class="muted sp">このCPUは内蔵グラフィックスがないため、いちばん安いグラフィックボードを入れています。内蔵グラフィックス付きのCPUなら、ボードは不要です。</p>' : '') +
           (r.short ? '<div class="chk warn sp"><span class="mk">!</span><div>この条件は、家庭用のパーツでは余裕をもって満たせません。人数やMODを減らすか、レンタルサーバーも検討してください。</div></div>' : '') +
           r.ev.checks.filter(c => c.lv !== 'ok').map(c => '<div class="chk ' + c.lv + ' sp"><span class="mk">!</span><div><b>' + esc(c.title) + '</b>: ' + esc(c.msg) + '</div></div>').join('') +
+          '', { key: 'sv-' + idx })]) +
           '<div class="row sp"><a class="btn sm" href="#/build?' + U.idsToQuery(r.ids) + '">自作で組む</a><button class="btn sub sm" data-sv="' + idx + '">保存</button></div></div>';
       });
       h += '<p class="muted sp">24時間動かす前提のため、動作が不安定になる問題が報告された第13・14世代のCPUは、おすすめから外しています。</p>';
