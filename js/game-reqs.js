@@ -586,34 +586,6 @@ window.PCR_REQS = {
    }
   }
  },
- "mcshader": {
-  "src": "Minecraft 公式（minecraft.net、内容は検索で確認）",
-  "url": "https://www.minecraft.net/ja-jp/article/minecraft-java-edition-system-requirements",
-  "checked": "2026-11-19",
-  "note": "シェーダーなしの公式スペックです。重いシェーダーを入れる場合は、これよりかなり高い性能が必要です。",
-  "min": {
-   "cpu": 14,
-   "gpu": 6.5,
-   "ram": 8,
-   "vram": 2,
-   "text": {
-    "cpu": "4コアのCPU",
-    "gpu": "Vulkan 1.3 対応（VRAM 2GB以上）",
-    "ram": "8 GB RAM（内蔵グラフィックスなら12GB）"
-   }
-  },
-  "rec": {
-   "cpu": 26,
-   "gpu": 15.0,
-   "ram": 16,
-   "vram": 6,
-   "text": {
-    "cpu": "（型番の指定なし）",
-    "gpu": "VRAM 6GB以上",
-    "ram": "16 GB RAM（1080p・60fps・Fancy）"
-   }
-  }
- },
  "lol": {
   "src": "Riot Games 公式サポート（内容は検索で確認）",
   "url": "https://support-leagueoflegends.riotgames.com/hc/articles/201752654",
