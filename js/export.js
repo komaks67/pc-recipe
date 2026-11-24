@@ -2,7 +2,7 @@
    構成を画像(PNG)で保存 / QRコード表示
    ============================================================ */
 (function () {
-  const U = PCR_UI, E = PCR_ENGINE, CFG = PCR_CONFIG;
+  const U = PCR_UI, E = PCR_ENGINE, CFG = PCR_CONFIG, D = PCR_DATA;
   const FONT = '"Hiragino Sans","Noto Sans JP","Yu Gothic","Meiryo",sans-serif';
 
   function drawQr(ctx, text, x, y, size) {
@@ -54,7 +54,7 @@
       y += 30;
       ev.fpsRows.slice(0, fpsN).forEach((f, i) => {
         const cy = y + i * 44 + 22;
-        g.fillStyle = '#334155'; g.font = '500 24px ' + FONT; g.fillText(trim(g, f.game.name.replace(/ \(.*\)$/, ''), 480), pad, cy);
+        g.fillStyle = '#334155'; g.font = '500 24px ' + FONT; g.fillText(trim(g, D.gname(f.game), 480), pad, cy);
         g.fillStyle = '#dbe5f3'; g.fillRect(pad + 500, cy - 10, 320, 20);
         g.fillStyle = grad; g.fillRect(pad + 500, cy - 10, Math.min(320, 320 * f.fps / 300), 20);
         g.textAlign = 'right'; g.fillStyle = '#0f172a'; g.font = '700 24px ' + FONT; g.fillText('約' + Math.round(f.fps) + 'fps', W - pad, cy); g.textAlign = 'left';
