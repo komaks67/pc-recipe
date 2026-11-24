@@ -560,3 +560,6 @@ h2 { font-size: 1.2rem; font-weight: 800; }
 .folds + .folds { border-top: 0; }
 .pk-btn-c { border-radius: 8px; }
 .pk-btn { border-radius: var(--r-sm); }
+/* 用語の説明の下線：まわりの文字の大きさ・色に合わせる */
+.term { font-size: inherit !important; color: inherit; }
+.term-ex { border-bottom: 2px dotted var(--accent2); }

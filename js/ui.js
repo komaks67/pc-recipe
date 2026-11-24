@@ -241,36 +241,60 @@ window.PCR_UI = (function () {
   };
   U.makerDeepImp = k => { const u = (CFG.affiliate.bto[k] || {}).deepImp; return u ? '<img src="' + U.esc(u) + '" width="1" height="1" alt="" style="border:0;position:absolute">' : ''; };
 
-  /* ---------- 用語ホバー ---------- */
+  /* ---------- 用語の説明（点線の下線。押す・カーソルを合わせると意味が出る） ----------
+     ページの中の専門用語に、自動で説明を付ける。
+     同じ用語に下線を付けるのは、区切り（カード・開く部分・表の行）ごとに最初の1回だけ。 */
   let termMap = null, termRe = null;
   function prepTerms() {
     termMap = {};
     D.glossary.forEach(g => { termMap[g[0]] = g[1]; });
-    termRe = new RegExp('(' + D.glossary.map(g => g[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'g');
+    const words = D.glossary.map(g => g[0]).sort((a, b) => b.length - a.length).map(w => {
+      const e = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // 英字の用語は、ほかの英単語の一部（BIOS の OS など）には付けない
+      return (/^[A-Za-z]/.test(w) ? '(?<![A-Za-z0-9])' : '') + e + (/[A-Za-z]$/.test(w) ? '(?![A-Za-z])' : '');
+    });
+    termRe = new RegExp('(' + words.join('|') + ')', 'g');
   }
+  // 下線を付けない場所（押すと別の動きをする所・見出し・表のマス目など）
+  const NO_TIP = 'a,button,select,option,textarea,input,label,summary,.term,script,style,h1,h2,h3,.fps-row .nm,.m-tab,.pk-list,.tabbar,.sheet,.hd,.sumbar,.chips,.no-tip,svg';
+  const BLOCK = '.fold-b,.card,tr,li,.chk,.sum-top,.pp-top';
   U.tipify = function (root) {
+    if (!root || !root.nodeType) return;
     if (!termMap) prepTerms();
-    U.$$('.tipify', root).concat(root.classList && root.classList.contains('tipify') ? [root] : []).forEach(box => {
-      const done = {};
-      const walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT, {
-        acceptNode: n => (n.parentElement && n.parentElement.closest('a,button,select,option,textarea,input,.term,script,style,h1,h2,.fps-row .nm')) ? NodeFilter.FILTER_REJECT : (n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT)
-      });
-      const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
-      nodes.forEach(n => {
-        const text = n.nodeValue; termRe.lastIndex = 0;
-        let m, last = 0, frag = null;
-        while ((m = termRe.exec(text))) {
-          if (done[m[1]]) continue;
-          done[m[1]] = 1;
-          frag = frag || document.createDocumentFragment();
-          frag.appendChild(document.createTextNode(text.slice(last, m.index)));
-          const s = document.createElement('span'); s.className = 'term'; s.tabIndex = 0; s.dataset.t = m[1]; s.textContent = m[1];
-          frag.appendChild(s); last = m.index + m[1].length;
-        }
-        if (frag) { frag.appendChild(document.createTextNode(text.slice(last))); n.parentNode.replaceChild(frag, n); }
-      });
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => (!n.nodeValue.trim() || !n.parentElement || n.parentElement.closest(NO_TIP)) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+    });
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    const seen = new Map();   // 区切りごとに、もう下線を付けた用語
+    const doneIn = blk => {
+      if (!seen.has(blk)) { const d = {}; blk.querySelectorAll('.term').forEach(t => { d[t.dataset.t] = 1; }); seen.set(blk, d); }
+      return seen.get(blk);
+    };
+    nodes.forEach(n => {
+      const blk = n.parentElement.closest(BLOCK) || root, done = doneIn(blk);
+      const text = n.nodeValue; termRe.lastIndex = 0;
+      let m, last = 0, frag = null;
+      while ((m = termRe.exec(text))) {
+        if (done[m[1]]) continue;
+        done[m[1]] = 1;
+        frag = frag || document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+        const sp = document.createElement('span'); sp.className = 'term'; sp.tabIndex = 0; sp.dataset.t = m[1]; sp.textContent = m[1];
+        frag.appendChild(sp); last = m.index + m[1].length;
+      }
+      if (frag) { frag.appendChild(document.createTextNode(text.slice(last))); n.parentNode.replaceChild(frag, n); }
     });
   };
+  // あとから書き換わった部分（結果の再計算など）にも、自動で説明を付ける
+  function watchTips() {
+    const main = U.$('#app'); if (!main || !window.MutationObserver) return;
+    let tm = 0, busy = false;
+    new MutationObserver(() => {
+      if (busy) return;
+      clearTimeout(tm);
+      tm = setTimeout(() => { busy = true; U.tipify(main); setTimeout(() => { busy = false; }, 0); }, 60);
+    }).observe(main, { childList: true, subtree: true });
+  }
   function initTip() {
     prepTerms();
     const tip = document.createElement('div'); tip.className = 'tip'; tip.setAttribute('role', 'tooltip'); document.body.appendChild(tip);
@@ -418,7 +442,7 @@ window.PCR_UI = (function () {
     U.$('#sf').addEventListener('submit', searchGo(() => U.$('#sq')));
     U.$('#sf3').addEventListener('submit', searchGo(() => U.$('#sq3')));
     if (CFG.priceIsPlaceholder) U.$('#ribbon').hidden = false;
-    initTheme(); initTip();
+    initTheme(); initTip(); watchTips();
     window.addEventListener('hashchange', render);
     render();
   };

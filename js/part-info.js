@@ -66,7 +66,7 @@ window.PCR_PARTINFO = (function () {
       if (p.vram >= 16) lines.push('VRAMが' + p.vram + 'GBあるので、最高画質やMOD・動画編集にも余裕があります');
     } else {
       const lim = gs.filter(g => { const f = E.fps(g, 1080, B, { quality: 'high' }); return f.cpuF < f.gpuF * 0.95; }).length;
-      lines.push('RTX 5070 Ti と組み合わせると、フルHDで ' + gs.length + '本のうち <b>' + lim + '本がCPUの速さで頭打ち</b>（数が少ないほど、速いグラボの力を出し切れます）');
+      lines.push('RTX 5070 Ti と組み合わせると、フルHDで ' + gs.length + '本のうち <b>' + lim + '本でCPUが先に限界になる</b>（数が少ないほど、速いグラボの力を出し切れます）');
       lines.push(p.mt >= 75 ? 'コア数が多く、動画編集・配信もしながらのゲームに向いています' : p.mt >= 50 ? 'ゲームと配信・軽い動画編集なら十分です' : '本格的な動画編集には、もっとコア数の多いCPUがおすすめです');
       if (p.igpu !== false) lines.push('内蔵グラフィックスがあるので、グラボが壊れたときも画面を映せます');
     }
@@ -151,12 +151,12 @@ window.PCR_PARTINFO = (function () {
     h += '<div class="folds sp">' +
       F('向いている使い方', k === 'gpu' ? '解像度ごとの目安・VRAM' : 'ゲーム・配信・動画編集の向き不向き', '<ul>' + gf.map(x => '<li>' + x + '</li>').join('') + '</ul><p class="muted">このサイトの計算モデルによる目安です。' + (k === 'gpu' ? 'CPUは Ryzen 7 9800X3D、' : 'グラボは RTX 5070 Ti、') + 'メモリ32GBで計算しています。</p>', { open: true }) +
       (ps ? F(k === 'gpu' ? 'CPUとの相性' : 'グラボとの相性', ps.s, ps.body) : '') +
-      F('ゲームごとのfps', D.games.length + '本・フルHD／WQHD／4K・高画質', fpsTable(k, p) + '<p class="muted">* はCPUの速さで頭打ちになっているゲームです。公式スペックは、Steamなどの公式発表と比べた判定です。</p>') +
+      F('ゲームごとのfps', D.games.length + '本・フルHD／WQHD／4K・高画質', fpsTable(k, p) + '<p class="muted">* は、CPUが先に限界になって、fpsがそれ以上伸びないゲームです。公式スペックは、Steamなどの公式発表と比べた判定です。</p>') +
       F('ライバルとの比較', rv.slice(0, 3).map(x => esc(x.name)).join('・'), '<div class="tbl-wrap"><table class="t"><thead><tr><th></th><th>価格</th><th>' + (k === 'cpu' ? 'ゲーム性能' : '性能') + '</th><th>1万円あたり</th></tr></thead><tbody>' +
         [p].concat(rv).map(x => { const v = perf(k, x) / x.price * 10000; return '<tr' + (x === p ? ' class="vs-best"' : '') + '><td>' + (x === p ? '<b>' + esc(x.name) + '</b>（このパーツ）' : '<a href="' + link(k, x.id) + '">' + esc(x.name) + '</a>') + '</td><td>' + yen(x.price) + '</td><td>' + perf(k, x) + '</td><td>' + v.toFixed(1) + '</td></tr>'; }).join('') +
         '</tbody></table></div><p class="muted">「1万円あたり」は、1万円あたりの性能です。大きいほどお得です。</p>') +
       F('仕様', spec.slice(0, 3).map(r => esc(r[0]) + ' ' + esc(r[1])).join('・'), '<table class="t"><tbody>' + spec.map(r => '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>').join('') + '</tbody></table>' +
-        '<p class="muted">仕様はメーカーの公表値、性能の目安は Tom\'s Hardware の階層表などの公開ベンチマークに合わせた相対値です。購入前にメーカーの製品ページで確認してください。</p>') +
+        '<p class="muted">仕様はメーカーの公表値、性能の目安は Tom\'s Hardware の階層表などの公開されている測定結果に合わせて、いちばん速いものを100とした数字です。購入前にメーカーの製品ページで確認してください。</p>') +
       F('一緒に使うパーツの目安', k === 'cpu' ? 'マザーボード・メモリ・CPUクーラー' : '電源・ケース', pairing(k, p).replace(/\{BASE\}/g, base)) +
       '</div></article>';
     return h;

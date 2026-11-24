@@ -71,21 +71,52 @@ function page({ dir, file, title, desc, body, crumbs, jsonld }) {
 </header>
 <main id="app">
 <p class="muted" style="font-size:.85rem">${bc.map(c => `<a href="${c[0]}">${esc(c[1])}</a>`).join(' › ')} › ${esc(title)}</p>
-${body}
+${tipHtml(body)}
 <div class="card flat sp2"><h3>診断ツールで、自分に合う構成を探す</h3><p>用途と予算を答えるだけで、おすすめ構成と互換性・電源・fpsの目安が分かります。</p><div class="row sp"><a class="btn" href="../#/wizard">🧭 まず診断してみる</a><a class="btn sub" href="../#/build">自作PCビルダー</a><a class="btn sub" href="../#/compare">BTOモデル比較</a></div></div>
 </main>
 <footer class="ft"><div class="ft-in">
 <p><b>PR</b>　当サイトにはアフィリエイト広告が含まれます。表示しているfps・性能は計算モデルによる目安です。価格は確認日時点の目安で、毎日変わります。（価格確認日: ${esc(priceDate)}）</p>
+<p>点線の下線が付いた言葉は、押す（カーソルを合わせる）と意味が出ます。言葉の一覧は<a href="../guide/glossary.html">用語集</a>にあります。</p>
 <p><a href="../guide/">読みもの</a>　<a href="../fps/">ゲーム別fpsの目安</a>　<a href="../parts/">CPU・グラボの一覧</a>　<a href="../#/about">このサイトについて・プライバシーポリシー</a>${CFG.contactUrl ? `　<a href="${esc(CFG.contactUrl)}" target="_blank" rel="noopener">お問い合わせ</a>` : ''}</p>
 <p>© ${new Date().getFullYear()} ${esc(CFG.siteName)}</p>
 </div></footer>
 <nav class="tabbar" aria-label="よく使うページ">${tabs.map(t => `<a href="../${t[0]}"${(t[0] === 'guide/' && dir === 'guide') ? ' class="on"' : ''}><span class="ti">${t[1]}</span>${t[2]}</a>`).join('')}</nav>
+<script src="../js/tips-static.js"></script>
 <script src="../js/config.js"></script>
 <script src="../js/analytics.js"></script>
 <script>window.PCR_TRACK && window.PCR_TRACK();</script>
 </body>
 </html>
 `;
+}
+
+/* 専門用語に説明を付ける（点線の下線。押すと js/tips-static.js が説明を出す）
+   アプリの U.tipify と同じ決まり：リンク・見出し・ボタンなどの中には付けない。
+   同じ用語は、区切り（カード・開く部分・表の行・箇条書き）ごとに最初の1回だけ。 */
+const TERMS = D.glossary.map(g => g[0]).sort((a, b) => b.length - a.length);
+const TERM_D = Object.fromEntries(D.glossary);
+const TERM_RE = new RegExp('(' + TERMS.map(w => {
+  const e = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return (/^[A-Za-z]/.test(w) ? '(?<![A-Za-z0-9])' : '') + e + (/[A-Za-z]$/.test(w) ? '(?![A-Za-z])' : '');
+}).join('|') + ')', 'g');
+const SKIP_TAGS = new Set(['dt', 'a', 'button', 'select', 'option', 'textarea', 'label', 'summary', 'script', 'style', 'h1', 'h2', 'h3', 'svg', 'title']);
+const BLOCK_RE = /^<(details|tr|li)\b|class="[^"]*\b(card|fold-b|chk)\b/;
+function tipHtml(html) {
+  let skip = 0, done = {};
+  return html.split(/(<[^>]+>)/).map(part => {
+    if (part.startsWith('<')) {
+      const m = part.match(/^<(\/?)([a-zA-Z0-9]+)/);
+      if (m && SKIP_TAGS.has(m[2].toLowerCase())) skip += m[1] ? -1 : (part.endsWith('/>') ? 0 : 1);
+      if (!m || !m[1]) { if (BLOCK_RE.test(part)) done = {}; }
+      return part;
+    }
+    if (skip > 0 || !part.trim()) return part;
+    return part.replace(TERM_RE, w => {
+      if (done[w]) return w;
+      done[w] = 1;
+      return `<span class="term" tabindex="0" data-t="${esc(w)}" data-d="${esc(TERM_D[w])}">${w}</span>`;
+    });
+  }).join('');
 }
 
 /* 記事の中の「#/guide/xxx」などのリンクを、静的ページ用に直す */

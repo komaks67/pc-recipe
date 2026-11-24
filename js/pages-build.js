@@ -20,7 +20,7 @@
       case 'mb': return p.chip + ' / ' + p.form + ' / ' + p.sock + ' / ' + p.mem + ' / M.2は Gen' + p.m2g + 'まで / Wi-Fi: ' + WIFI[p.wifi];
       case 'mem': return p.type + ' / 合計 ' + p.cap + 'GB（2枚組）';
       case 'ssd': return p.type + (p.gen ? ' / PCIe Gen' + p.gen : '') + ' / ' + p.cap + 'TB';
-      case 'case': return p.size + 'サイズ / 静音性: ' + p.noise + ' / 入るGPU 〜' + p.gpuMax + 'mm / 空冷クーラー 〜' + p.coolerMax + 'mm / 対応マザボ ' + p.form.join('・');
+      case 'case': return p.size + 'サイズ / 音の静かさ: ' + p.noise + ' / 入るGPU 〜' + p.gpuMax + 'mm / 空冷クーラー 〜' + p.coolerMax + 'mm / 対応マザボ ' + p.form.join('・');
       case 'cooler': return p.kind + ' / 冷却の目安 〜' + p.tdpMax + 'W / 音: ' + p.noise;
       case 'psu': return p.w + 'W / 80PLUS ' + p.grade + ' / ' + p.form + (p.atx3 ? ' / ATX 3.x' : '');
       default: return '';
@@ -68,7 +68,7 @@
       const dp = ev2.total - ev.total;
       const df = ev2.avgFps - ev.avgFps, pc = ev.avgFps ? df / ev.avgFps * 100 : 0;
       let perf;
-      if (k === 'ssd') perf = '<span class="muted">fpsは変わらず。ロード時間の体感差は小さめ</span>';
+      if (k === 'ssd') perf = '<span class="muted">fpsは変わらず。読み込み時間の差も、感じにくい程度です</span>';
       else if (Math.abs(df) < 0.5) perf = '<span class="muted">fpsの変化なし（今の構成で足りています）</span>';
       else perf = '<span class="' + (df > 0 ? 'pos' : 'neg') + '">平均 ' + (df > 0 ? '+' : '−') + Math.abs(Math.round(df)) + 'fps（' + (df > 0 ? '+' : '−') + Math.abs(Math.round(pc)) + '%）</span>';
       const bad = ev2.hasNg ? '<br><span class="neg">⚠ この組み合わせは他のパーツと合いません</span>' : '';

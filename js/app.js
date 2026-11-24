@@ -5,6 +5,7 @@
     (CFG.affiliate.amazonTag ? 'Amazonのアソシエイトとして、当サイトは適格販売により収入を得ています。' : '') + '</p>' +
     '<p>表示しているfps・性能は計算モデルによる目安です。価格は確認日時点の目安で、毎日変わります。パーツの互換性と価格は、購入前に必ず公式の製品ページ・購入先で確認してください。（価格確認日: ' + U.esc(PCR_DATA.priceDate || CFG.dataDate) + '）</p>' +
     (U.hasImages() ? '<p>パーツ画像: <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">Supported by Rakuten Developers</a>（画像の著作権は各ショップに帰属します）</p>' : '') +
+    '<p class="no-tip">点線の下線が付いた言葉は、押す（カーソルを合わせる）と意味が出ます。言葉の一覧は<a href="guide/glossary.html">用語集</a>にあります。</p>' +
     '<p><a href="guide/">読みもの・用語集</a>　<a href="fps/">ゲーム別fpsの目安</a>　<a href="parts/">CPU・グラボの一覧</a>　<a href="#/about">このサイトについて</a>　<a href="#/about">プライバシーポリシー・免責事項</a>' + (CFG.contactUrl ? '　<a href="' + U.esc(CFG.contactUrl) + '" target="_blank" rel="noopener">お問い合わせ</a>' : '') + '</p><p>© ' + new Date().getFullYear() + ' ' + CFG.siteName + '</p></div>';
   U.start();
 })();
