@@ -14,6 +14,7 @@
     el.innerHTML =
       '<section class="hero home-hero"><span class="eyebrow">PC RECIPE</span><h1>はじめてでも迷わない、<br>PCの“レシピ”づくり。</h1>' +
       '<p class="lead">用途と予算を答えるだけで、おすすめのパーツの組み合わせが分かります。</p>' +
+      '<p class="muted no-tip" style="font-size:.85rem;margin:8px 0 0"><span class="term-ex">点線の下線</span>が付いた言葉は、押すと意味が出ます。</p>' +
       '<div class="row sp"><a class="btn" href="#/wizard">まず診断してみる（約1分）</a></div>' +
       '<form class="home-sf sp" id="hsf" role="search"><input type="search" id="hsq" placeholder="🔍 例: 9800X3D、RTX 5070" aria-label="パーツ名やページを探す"><button class="btn sub" type="submit">探す</button></form></section>' +
       (last || saved ? '<h2 class="sp">前回の続き</h2><div class="hl">' + (last ? row('#/build?' + U.idsToQuery(last), '🔧', '前回の自作構成を開く', 'パーツの調整を続ける') : '') + (saved ? row('#/saved', '⭐', '保存した構成', saved + '件') : '') + '</div>' : '') +

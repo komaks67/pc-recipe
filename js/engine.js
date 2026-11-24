@@ -274,7 +274,7 @@ window.PCR_ENGINE = (function () {
     const ratio = cpuLim / gs.length;
     if (ratio >= 0.7 && B.gpu.score >= 35) return { lv: 'warn', msg: '選んだゲームの多くで、CPUが先に限界になりそうです。GPUの力を使い切れません。CPUを一段上げるか、GPUを少し下げて、その分をCPUに回すとバランスが良くなります。' };
     if (B.cpu.gs >= 90 && B.gpu.score < 30) return { lv: 'warn', msg: 'CPUが強いわりにGPUが控えめです。ゲームではGPUのほうが効きやすいので、CPUを少し下げてGPUを強くしたほうが、fpsが伸びる可能性が高いです。' };
-    if (ratio >= 0.4) return { lv: 'ok', msg: 'おおむねバランスは良好です。ゲームによってはCPUが先に頭打ちになります（フルHDの軽いゲームなど）。' };
+    if (ratio >= 0.4) return { lv: 'ok', msg: 'おおむねバランスは良好です。ゲームによっては、CPUが先に限界になり、fpsがそれ以上伸びなくなります（フルHDの軽いゲームなど）。' };
     return { lv: 'ok', msg: 'CPUとGPUのバランスは良好です。画質や解像度を上げるほど、GPU性能が効いてきます。' };
   };
 
@@ -289,7 +289,7 @@ window.PCR_ENGINE = (function () {
     if (B.cpu.sock === 'AM4' || B.cpu.sock === 'LGA1700') add('warn', '新しい買い替えには向かない世代', B.cpu.sock + ' は、新しいCPUが出ない世代です。DDR4を使うなど安く組めますが、将来CPUだけを新しいものに替えることはできません。長く使いたいなら、AM5やLGA1851も検討しましょう。');
     if (B.os.id === 'none') add('warn', 'OSなしの構成', 'Windowsのライセンスを別に用意する必要があります（持っていなければ追加費用）。');
     if (ctx.stream && B.cpu.mt < 55) add('warn', '配信にはCPUが弱め', 'ゲームをしながら配信すると、CPUの負担が増えます。コア数の多いCPUが安心です。');
-    if (B.mb.chip === 'A620' && B.cpu.pw >= 120) add('warn', 'A620は拡張性が低め', 'A620は安価ですが、将来CPUを強いものに替えにくい場合があります。');
+    if (B.mb.chip === 'A620' && B.cpu.pw >= 120) add('warn', 'A620は、あとから強くしにくい', 'A620は安いマザーボードですが、将来CPUを強いものに替えにくい場合があります。');
     if (B.gpu.id !== 'none' && B.gpu.score >= 55 && B.psu.w < 650) add('warn', '電源が小さい', '高性能GPUに、650W未満の電源は避けましょう。');
     if (B.gpu.id === 'none' && ctx.games && ctx.games.length && ctx.purposeGame) add('warn', 'ゲーム用なのにGPUなし', 'CPU内蔵グラフィックスでは、最新の3Dゲームはほぼ遊べません。グラフィックボードを追加しましょう。');
     return out;
@@ -505,7 +505,7 @@ window.PCR_ENGINE = (function () {
     const n = games.length || 1;
     if (now.ok >= n) res.advice.push({ lv: 'ok', t: '今の構成でも目標に届いています', m: '選んだゲームでは、目標のfpsをほぼ達成できる見込みです。急いで交換する必要はありません。' });
     else if (now.cpuLim / n >= 0.6) res.advice.push({ lv: 'warn', t: 'まずはCPUがボトルネックです', m: 'GPUを替えても、CPUが先に限界になるゲームが多い見込みです。CPUの交換（または全体の買い替え）を先に検討しましょう。' });
-    else res.advice.push({ lv: 'warn', t: 'まずはGPUの交換が効果的です', m: 'GPUが足を引っ張っています。グラフィックボードの交換が、いちばん費用対効果が高い見込みです。' });
+    else res.advice.push({ lv: 'warn', t: 'まずはGPUの交換が効果的です', m: 'GPUが足を引っ張っています。グラフィックボードの交換が、いちばん少ないお金で効果が大きくなる見込みが高い見込みです。' });
     if (inp.memGB < 32) res.advice.push({ lv: 'warn', t: 'メモリが' + inp.memGB + 'GBです', m: '最新のゲームでは32GBがおすすめです。今のマザーボードがDDR4かDDR5かを確認して、同じ規格のメモリを増設しましょう。' });
     if (oc.path === 'board' || oc.path === 'am4') res.advice.push({ lv: 'ok', t: 'CPUを新世代にするなら、土台ごと交換', m: '今のCPUは ' + oc.plat + ' です。新しいCPUに替える場合は、マザーボードとメモリ（DDR5）も一緒に交換することになります。実質的に「買い替え」に近い費用です。' });
     return res;
