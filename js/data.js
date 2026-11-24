@@ -361,8 +361,7 @@ window.PCR_DATA = (function () {
     /* ---- 追加分（fpsは計算モデルによる目安。実測ではありません） ---- */
     { id: 'asa',       name: 'ARK: Survival Ascended', genre: '重量級AAA', g: { 1080: 99, 1440: 72, 2160: 37 },   c: 108,  k: 0.75,  mem: 32 },
     { id: 'ase',       name: 'ARK: Survival Evolved',  genre: 'サバイバル', g: { 1080: 240, 1440: 170, 2160: 90 }, c: 130, k: 0.8,  mem: 16 },
-    { id: 'minecraft', name: 'Minecraft Java版 (MODなし)',     genre: 'サンドボックス', g: { 1080: 700, 1440: 600, 2160: 420 }, c: 420, k: 0.45, mem: 8 },
-    { id: 'mcshader',  name: 'Minecraft Java版 (重いシェーダー)', genre: 'サンドボックス', g: { 1080: 260, 1440: 170, 2160: 80 }, c: 300, k: 0.75, mem: 16 },
+    { id: 'minecraft', name: 'Minecraft',     genre: 'サンドボックス', g: { 1080: 700, 1440: 600, 2160: 420 }, c: 420, k: 0.45, mem: 8 },
     { id: 'valheim',   name: 'Valheim (ヴァルヘイム)',         genre: 'サバイバル', g: { 1080: 297, 1440: 217, 2160: 114 }, c: 180, k: 0.75, mem: 16 },
     { id: 'rust',      name: 'Rust',                           genre: 'サバイバル', g: { 1080: 220, 1440: 160, 2160: 90 },  c: 191, k: 0.91,  mem: 16 },
     { id: '7dtd',      name: '7 Days to Die',                  genre: 'サバイバル', g: { 1080: 396, 1440: 283, 2160: 142 }, c: 170, k: 0.75, mem: 16 },
@@ -622,6 +621,8 @@ window.PCR_DATA = (function () {
     D.priceChecked = window.PCR_PRICES.__checked || {};
   }
   /* おまかせ提案・交換の提案に出してよいパーツか（旧世代と、価格を確認できていないものは出さない） */
+  /* ゲームの短い名前（ボタンや一覧用）。かっこの中を消すと同じ名前になるゲームは short を持たせる */
+  D.gname = g => g.short || g.name.replace(/ \(.*\)$/, '');
   D.suggestable = function (p) { return !p.legacy && !p.priceUnverified && !p.used && !p.real; };
 
   return D;

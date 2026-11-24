@@ -128,7 +128,7 @@
       '<div><label class="f">電源の容量（箱やラベルで確認）</label><select id="m-psu">' + [450, 500, 550, 650, 750, 850, 1000].map(x => '<option value="' + x + '">' + x + 'W</option>').join('') + '</select></div>' +
       '<div><label class="f">画面の解像度 / 目標のfps</label><div class="row"><select id="m-res"><option value="1080">フルHD</option><option value="1440">WQHD</option><option value="2160">4K</option></select><select id="m-tg"><option>60</option><option>100</option><option>144</option><option>240</option></select></div></div></div>' +
       '<div id="m-info" class="sp"></div>' +
-      '<details class="sp"><summary>遊ぶゲーム（<span id="m-gn"></span>本）</summary><div class="chips sp" id="m-games">' + D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div></details></div>' +
+      '<details class="sp"><summary>遊ぶゲーム（<span id="m-gn"></span>本）</summary><div class="chips sp" id="m-games">' + D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"><span>' + esc(D.gname(g)) + '</span></label>').join('') + '</div></details></div>' +
       '<div class="card sp"><h2>③ 替えたいパーツを選ぶ</h2><div class="chips" id="m-sel">' +
       [['gpu', 'グラフィックボード'], ['cpu', 'CPU'], ['mem', 'メモリ'], ['psu', '電源']].map(x => '<label class="chip"><input type="checkbox" value="' + x[0] + '"><span>' + x[1] + '</span></label>').join('') + '</div></div>' +
       '<div id="m-out" class="sp"></div>';

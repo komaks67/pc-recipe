@@ -116,6 +116,8 @@ pairs(D.ssd.filter(s => !s.real), (a, b) => `ssd: ${a.name} が ${b.name} より
 pairs(D.gpu.filter(g => g.id !== 'none' && D.suggestable(g)), (a, b) => `gpu: ${a.name}（性能${a.score}・${a.price}円）が ${b.name}（性能${b.score}・${b.price}円）よりかなり安い`, (a, b) => a.score > b.score + 5 && a.price < b.price * 0.8);
 
 /* ---------- 5. ゲーム ---------- */
+// ボタンや一覧で使う短い名前が、ほかのゲームと同じにならないか
+{ const seen = {}; D.games.forEach(g => { const n = D.gname(g); if (seen[n]) E_(`ゲームの短い名前「${n}」が ${seen[n]} と ${g.id} で同じです（data.js で short を付けてください）`); seen[n] = g.id; }); }
 D.games.forEach(g => {
   if (!(g.g[1080] >= g.g[1440] && g.g[1440] >= g.g[2160])) E_(`games/${g.id}: 解像度が上がるとfpsが上がる設定になっています`);
   if (!num(g.c, 20, 2000) || !num(g.k, 0.1, 2) || !num(g.mem, 4, 64)) E_(`games/${g.id}: 計算の値がおかしい`);

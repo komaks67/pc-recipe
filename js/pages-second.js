@@ -33,7 +33,7 @@
         '<div class="total">' + yen(ev.total) + '</div>' +
         (main.over ? '<div class="chk warn sp"><span class="mk">!</span><div>この予算では組めなかったため、条件を満たす中でいちばん安い構成を出しています。</div></div>' : '') +
         '<table class="t sp"><tbody>' + ['cpu', 'gpu', 'mem', 'ssd', 'mb', 'psu', 'case', 'cooler'].map(k => '<tr><th>' + E.LABEL[k] + '</th><td>' + esc(B[k].name) + '</td></tr>').join('') + '</tbody></table>' +
-        '<div class="sp">' + ev.fpsRows.map(f => '<div class="row" style="justify-content:space-between;font-size:.92rem"><span>' + esc(f.game.name.replace(/ \(.*\)$/, '')) + '（' + RES[BEST.res] + '）</span><b>約' + Math.round(f.fps) + 'fps</b></div>').join('') + '</div>' +
+        '<div class="sp">' + ev.fpsRows.map(f => '<div class="row" style="justify-content:space-between;font-size:.92rem"><span>' + esc(D.gname(f.game)) + '（' + RES[BEST.res] + '）</span><b>約' + Math.round(f.fps) + 'fps</b></div>').join('') + '</div>' +
         '<p class="muted">平均 <b>約' + Math.round(ev.avgFps) + 'fps</b>。fpsは計算モデルによる目安で、実測ではありません。</p>' +
         '<div class="row sp"><a class="btn sm" href="#/build?' + U.idsToQuery(main.ids) + '">自作で組む</a><a class="btn sub sm" href="#/bto?cpu=' + main.ids.cpu + '&gpu=' + main.ids.gpu + '&mem=' + main.ids.mem + '&ssd=' + main.ids.ssd + '&size=' + BEST.size + (BEST.quiet ? '&quiet=1' : '') + '">BTOで探す</a><button class="btn sub sm" id="sv">保存</button></div></div>';
 

@@ -29,13 +29,13 @@
 
   /* ---------- 操作パネル（解像度・ゲーム・電気代） ---------- */
   function controlsHtml(c) {
-    const sel = D.games.filter(g => c.games.indexOf(g.id) >= 0).map(g => g.name.replace(/ \(.*\)$/, ''));
+    const sel = D.games.filter(g => c.games.indexOf(g.id) >= 0).map(g => D.gname(g));
     return '<details class="card flat ctl fold"><summary><span class="fd-n">⚙</span><span class="fd-tx"><span class="fd-t">計算の条件を変える</span><span class="fd-s">' + esc(RES[c.res] + ' ・ ' + E.QUALITY[c.quality || 'high'].t + '画質 ・ ' + (sel.length ? sel.slice(0, 3).join('・') + (sel.length > 3 ? ' ほか' + (sel.length - 3) + '本' : '') : 'ゲーム未選択')) + '</span></span><span class="fd-go" aria-hidden="true"></span></summary><div>' +
       '<label class="f">画面の解像度</label><div class="chips" id="c-res">' +
       [1080, 1440, 2160].map(r => '<label class="chip"><input type="radio" name="res" value="' + r + '"' + (c.res == r ? ' checked' : '') + '><span>' + RES[r] + (r == 1080 ? '(1920×1080)' : r == 1440 ? '(2560×1440)' : '(3840×2160)') + '</span></label>').join('') + '</div>' +
       '<label class="f sp">画質（ゲームの設定）</label><div id="c-q">' + U.qualityChips('cq', c.quality || 'high') + '</div>' +
       '<label class="f sp">遊ぶゲーム（fpsの目安を出します）</label><div class="chips" id="c-games">' +
-      D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"' + (c.games.indexOf(g.id) >= 0 ? ' checked' : '') + '><span>' + esc(g.name.replace(/ \(.*\)$/, '')) + '</span></label>').join('') + '</div>' +
+      D.games.map(g => '<label class="chip"><input type="checkbox" value="' + g.id + '"' + (c.games.indexOf(g.id) >= 0 ? ' checked' : '') + '><span>' + esc(D.gname(g)) + '</span></label>').join('') + '</div>' +
       '<div class="row sp"><label class="chip"><input type="checkbox" id="c-stream"' + (c.stream ? ' checked' : '') + '><span>ゲーム配信もする</span></label>' +
       '<span class="muted">1日</span><input type="number" id="c-hours" min="0" max="24" step="0.5" value="' + c.hours + '" style="width:76px"><span class="muted">時間 ／ 電気代</span><input type="number" id="c-kwh" min="10" max="80" value="' + c.kwh + '" style="width:76px"><span class="muted">円/kWh</span></div></div></details>';
   }
@@ -98,7 +98,7 @@
     if (!j) return chkHtml([{ lv: ev.bottleneck.lv, title: 'CPUとGPUのバランス', msg: ev.bottleneck.msg }]);
     const opt = { games: c.games, res: c.res, quality: c.quality, mem: B.mem };
     let h = '<div><p>' + esc(j.msg) + '</p>' +
-      (j.bad.length && j.mk !== '✕' ? '<p class="muted">CPUが先に限界になるゲーム: ' + j.bad.map(g => esc(g.name.replace(/ \(.*\)$/, ''))).join('、') + '</p>' : '') +
+      (j.bad.length && j.mk !== '✕' ? '<p class="muted">CPUが先に限界になるゲーム: ' + j.bad.map(g => esc(D.gname(g))).join('、') + '</p>' : '') +
       '<p class="muted">' + U.pairCond(j) + '。<a href="#/match?g=' + esc((c.games && c.games[0]) || 'apex') + '&r=' + j.res + '&q=' + j.quality + '">相性表で見る</a></p>';
     if (j.mk === '△' || j.mk === '✕') {
       const ups = D.cpu.filter(x => D.suggestable(x) && x.gs > B.cpu.gs).map(x => ({ p: x, j: E.pair(x, B.gpu, opt) })).filter(x => x.j.mk === '◎' || x.j.mk === '○').sort((a, b) => a.p.price - b.p.price);
